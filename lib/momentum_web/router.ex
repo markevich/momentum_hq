@@ -8,6 +8,7 @@ defmodule MomentumWeb.Router do
     plug :put_root_layout, html: {MomentumWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+
   end
 
   pipeline :api do
@@ -18,6 +19,14 @@ defmodule MomentumWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+
+
+    live "/areas", AreaLive.Index, :index
+    live "/areas/new", AreaLive.Index, :new
+    live "/areas/:id/edit", AreaLive.Index, :edit
+
+    live "/areas/:id", AreaLive.Show, :show
+    live "/areas/:id/show/edit", AreaLive.Show, :edit
   end
 
   # Other scopes may use custom stacks.

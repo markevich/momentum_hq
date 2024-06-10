@@ -2,7 +2,9 @@ defmodule Momentum.Repo.Migrations.CreateTasks do
   use Ecto.Migration
 
   def change do
-    create_query = "CREATE TYPE task_status_type AS ENUM ('waiting_for_user', 'completed', 'failed')"
+    create_query =
+      "CREATE TYPE task_status_type AS ENUM ('waiting_for_user', 'completed', 'failed')"
+
     drop_query = "DROP TYPE task_status_type"
     execute(create_query, drop_query)
 

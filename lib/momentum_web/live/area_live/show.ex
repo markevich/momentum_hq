@@ -10,8 +10,7 @@ defmodule MomentumWeb.AreaLive.Show do
      |> assign(:degrees, calc_angle(50))
      |> assign(:score, 50)
      |> assign(:text, "")
-     |> assign(:replay_index, 0)
-    }
+     |> assign(:replay_index, 0)}
   end
 
   def replay do
@@ -51,7 +50,7 @@ defmodule MomentumWeb.AreaLive.Show do
         type: :negative,
         momentum: 60
       },
-            %{
+      %{
         text: "🥇 Сделал в четверг",
         type: :positive,
         momentum: 70
@@ -70,7 +69,7 @@ defmodule MomentumWeb.AreaLive.Show do
         text: "👎 Не cделал в воскресенье",
         type: :negative,
         momentum: 70
-      },
+      }
     ]
   end
 
@@ -85,7 +84,7 @@ defmodule MomentumWeb.AreaLive.Show do
   def handle_info(:tick, socket) do
     index = socket.assigns.replay_index
 
-    if index < (length(replay())) do
+    if index < length(replay()) do
       replay = Enum.at(replay(), index)
 
       Process.send_after(self(), :tick, 800)
@@ -101,6 +100,7 @@ defmodule MomentumWeb.AreaLive.Show do
     else
       {:noreply, assign(socket, :replay_index, 0)}
     end
+
     # if socket.assigns.timer_status == :running do
     #   Process.send_after(self(), :tick, 1000)
     #   time = Time.add(socket.assigns.time, 1, :second)
@@ -108,7 +108,6 @@ defmodule MomentumWeb.AreaLive.Show do
     # else
     #   {:noreply, socket}
     # end
-
   end
 
   @impl true
@@ -126,7 +125,7 @@ defmodule MomentumWeb.AreaLive.Show do
     deg_min = -90
     deg_max = 90
 
-    new_deg = ( (current_value - abs_min) / (abs_max - abs_min) ) * (deg_max - deg_min) + deg_min
+    new_deg = (current_value - abs_min) / (abs_max - abs_min) * (deg_max - deg_min) + deg_min
     trunc(new_deg)
   end
 

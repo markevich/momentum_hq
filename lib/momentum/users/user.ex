@@ -2,8 +2,6 @@ defmodule Momentum.Users.User do
   use Ecto.Schema
   import Ecto.Changeset
 
-  @primary_key {:id, Ecto.UUID, autogenerate: true}
-
   schema "users" do
     field :telegram_id, :integer
 

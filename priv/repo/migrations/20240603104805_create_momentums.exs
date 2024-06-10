@@ -9,7 +9,9 @@ defmodule Momentum.Repo.Migrations.CreateMomentums do
       add :value_at_start, :decimal, null: false
       add :value_at_end, :decimal, null: false
       add :user_id, references(:users, on_delete: :restrict), null: false
-      add :momentum_blueprint_id, references(:momentum_blueprints, on_delete: :restrict), null: false
+
+      add :momentum_blueprint_id, references(:momentum_blueprints, on_delete: :restrict),
+        null: false
 
       timestamps(type: :utc_datetime)
     end
@@ -20,7 +22,10 @@ defmodule Momentum.Repo.Migrations.CreateMomentums do
 
     create table(:current_momentums) do
       add :user_id, references(:users, on_delete: :restrict), null: false
-      add :momentum_blueprint_id, references(:momentum_blueprints, on_delete: :restrict), null: false
+
+      add :momentum_blueprint_id, references(:momentum_blueprints, on_delete: :restrict),
+        null: false
+
       add :momentum_id, references(:momentums), null: false
     end
 

@@ -6,12 +6,16 @@ defmodule Momentum.Repo.Migrations.CreateTaskBlueprints do
     drop_query = "DROP TYPE task_blueprint_affect_type"
     execute(create_query, drop_query)
 
-    create_query = "CREATE TYPE task_blueprint_week_day_type AS ENUM ('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday')"
+    create_query =
+      "CREATE TYPE task_blueprint_week_day_type AS ENUM ('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday')"
+
     drop_query = "DROP TYPE task_blueprint_week_day_type"
     execute(create_query, drop_query)
 
     create table(:task_blueprints) do
-      add :momentum_blueprint_id, references(:momentum_blueprints, on_delete: :restrict), null: false
+      add :momentum_blueprint_id, references(:momentum_blueprints, on_delete: :restrict),
+        null: false
+
       add :affect_type, :task_blueprint_affect_type, null: false, default: fragment("'medium'")
       add :week_number, :integer
       add :week_day, {:array, :task_blueprint_week_day_type}, null: false
@@ -22,6 +26,5 @@ defmodule Momentum.Repo.Migrations.CreateTaskBlueprints do
     end
 
     create index(:task_blueprints, [:momentum_blueprint_id])
-
   end
 end

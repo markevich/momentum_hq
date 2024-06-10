@@ -1,0 +1,50 @@
+<.header>
+  Listing MomentumBlueprints
+  <:actions>
+    <.link patch={~p"/momentum_blueprints/new"}>
+      <.button>New MomentumBlueprint</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="momentum_blueprints"
+  rows={@streams.momentum_blueprints}
+  row_click={
+    fn {_id, momentum_blueprint} ->
+      JS.navigate(~p"/momentum_blueprints/#{momentum_blueprint}")
+    end
+  }
+>
+  <:col :let={{_id, momentum_blueprint}} label="Name"><%= momentum_blueprint.name %></:col>
+  <:action :let={{_id, momentum_blueprint}}>
+    <div class="sr-only">
+      <.link navigate={~p"/momentum_blueprints/#{momentum_blueprint}"}>Show</.link>
+    </div>
+    <.link patch={~p"/momentum_blueprints/#{momentum_blueprint}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, momentum_blueprint}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: momentum_blueprint.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="momentum_blueprint-modal"
+  show
+  on_cancel={JS.patch(~p"/momentum_blueprints")}
+>
+  <.live_component
+    module={MomentumWeb.MomentumBlueprintLive.FormComponent}
+    id={@momentum_blueprint.id || :new}
+    title={@page_title}
+    action={@live_action}
+    momentum_blueprint={@momentum_blueprint}
+    patch={~p"/momentum_blueprints"}
+  />
+</.modal>

@@ -14,7 +14,9 @@ defmodule Momentum.Blueprinting do
 
   """
   def list_momentum_blueprints do
-    Repo.all(MomentumBlueprint)
+    MomentumBlueprint
+    |> order_by(asc: :inserted_at)
+    |> Repo.all()
     |> Repo.preload(:task_blueprints)
   end
 

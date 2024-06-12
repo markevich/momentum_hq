@@ -53,7 +53,7 @@ defmodule Momentum.Blueprinting do
   """
   def create_momentum_blueprint(attrs \\ %{}) do
     %MomentumBlueprint{}
-    |> MomentumBlueprint.changeset(attrs)
+    |> MomentumBlueprint.changeset_for_create(attrs)
     |> Repo.insert()
   end
 
@@ -71,7 +71,7 @@ defmodule Momentum.Blueprinting do
   """
   def update_momentum_blueprint(%MomentumBlueprint{} = momentum_blueprint, attrs) do
     momentum_blueprint
-    |> MomentumBlueprint.changeset(attrs)
+    |> MomentumBlueprint.changeset_for_edit(attrs)
     |> Repo.update()
   end
 
@@ -96,11 +96,15 @@ defmodule Momentum.Blueprinting do
 
   ## Examples
 
-      iex> change_momentum_blueprint(momentum_blueprint)
+      iex> momentum_blueprint_changeset_for_edit(momentum_blueprint)
       %Ecto.Changeset{data: %MomentumBlueprint{}}
 
   """
-  def change_momentum_blueprint(%MomentumBlueprint{} = momentum_blueprint, attrs \\ %{}) do
-    MomentumBlueprint.changeset(momentum_blueprint, attrs)
+  def momentum_blueprint_changeset_for_edit(momentum_blueprint, attrs \\ %{}) do
+    MomentumBlueprint.changeset_for_edit(momentum_blueprint, attrs)
+  end
+
+  def momentum_blueprint_changeset_for_create(momentum_blueprint, attrs \\ %{}) do
+    MomentumBlueprint.changeset_for_create(momentum_blueprint, attrs)
   end
 end

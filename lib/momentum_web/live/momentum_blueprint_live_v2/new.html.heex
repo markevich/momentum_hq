@@ -1,0 +1,29 @@
+<div>
+  <.simple_form
+    for={@form}
+    id="momentum_blueprint-new-form"
+    phx-submit="save"
+  >
+    <!-- TODO: use real user -->
+    <input name="momentum_blueprint[user_id]" type="hidden" value="20f0782c-78b5-4904-9b4d-069d60221a7f"/>
+    <.input
+      field={@form[:name]}
+      type="text"
+      label="Name"
+    />
+
+    <.radio_group field={@form[:generator_type]}>
+      <!-- TODO: make explicit mapping -->
+      <:radio value="weekly">Weekly</:radio>
+      <:radio value="biweekly">Biweekly</:radio>
+    </.radio_group>
+
+    <.input
+      field={@form[:generator_type]}
+      type="select"
+      options={Ecto.Enum.mappings(MomentumBlueprint, :generator_type)}
+      label="Generator type"
+    />
+    <.button phx-disable-with="Saving...">Save blueprint</.button>
+  </.simple_form>
+</div>

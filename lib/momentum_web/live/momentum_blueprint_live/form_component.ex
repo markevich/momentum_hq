@@ -6,7 +6,7 @@ defmodule MomentumWeb.MomentumBlueprintLive.FormComponent do
 
   @impl true
   def update(%{momentum_blueprint: momentum_blueprint} = assigns, socket) do
-    changeset = Blueprinting.change_momentum_blueprint(momentum_blueprint)
+    changeset = Blueprinting.momentum_blueprint_changeset_for_edit(momentum_blueprint)
 
     {:ok,
      socket
@@ -18,7 +18,7 @@ defmodule MomentumWeb.MomentumBlueprintLive.FormComponent do
   def handle_event("validate", %{"momentum_blueprint" => momentum_blueprint_params}, socket) do
     changeset =
       socket.assigns.momentum_blueprint
-      |> Blueprinting.change_momentum_blueprint(momentum_blueprint_params)
+      |> Blueprinting.momentum_blueprint_changeset_for_edit(momentum_blueprint_params)
       |> Map.put(:action, :validate)
 
     {:noreply, assign_form(socket, changeset)}

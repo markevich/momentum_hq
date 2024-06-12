@@ -8,6 +8,8 @@
 </.header>
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2 gap-5 mt-10">
+
+  <!-- Cards from db -->
   <div :for={{id, momentum_blueprint} <- @streams.momentum_blueprints} id={id} class="row-span-1 relative border-2 rounded-lg shadow-md hover:shadow-xl">
     <.link
       class="cursor-pointer absolute right-0 top-0 p-2"

@@ -1,4 +1,4 @@
-defmodule MomentumWeb.MomentumBlueprintV2Live.Edit do
+defmodule MomentumWeb.MomentumBlueprintLive.Edit do
   use MomentumWeb, :live_view
 
   alias Momentum.Blueprinting
@@ -35,7 +35,7 @@ defmodule MomentumWeb.MomentumBlueprintV2Live.Edit do
         {:noreply,
          socket
          |> put_flash(:info, "Momentum blueprint updated successfully")
-         |> push_navigate(to: ~p(/momentum_blueprints_v2))}
+         |> push_navigate(to: ~p(/momentum_blueprints))}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         IO.inspect(changeset)

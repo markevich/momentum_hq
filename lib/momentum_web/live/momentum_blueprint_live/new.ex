@@ -1,4 +1,4 @@
-defmodule MomentumWeb.MomentumBlueprintV2Live.New do
+defmodule MomentumWeb.MomentumBlueprintLive.New do
   use MomentumWeb, :live_view
 
   alias Momentum.Blueprinting
@@ -18,7 +18,7 @@ defmodule MomentumWeb.MomentumBlueprintV2Live.New do
       {:ok, momentum_blueprint} ->
         {:noreply,
          socket
-         |> push_navigate(to: ~p"/momentum_blueprints_v2/#{momentum_blueprint.id}/edit")}
+         |> push_navigate(to: ~p"/momentum_blueprints/#{momentum_blueprint.id}/edit")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign_form(socket, changeset)}

@@ -6,7 +6,6 @@
 
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-10">
-  <!-- Cards from db -->
   <div :for={{id, momentum_blueprint} <- @streams.momentum_blueprints} id={id} class="row-span-1 border-2 rounded-lg shadow-md hover:shadow-xl">
     <.link patch={~p"/momentum_blueprints/#{momentum_blueprint}/edit"}>
       <div class="h-auto text-center p-3">

@@ -18,12 +18,6 @@
       <:radio value="biweekly">Biweekly</:radio>
     </.radio_group>
 
-    <.input
-      field={@form[:generator_type]}
-      type="select"
-      options={Ecto.Enum.mappings(MomentumBlueprint, :generator_type)}
-      label="Generator type"
-    />
     <.button phx-disable-with="Saving...">Save blueprint</.button>
   </.simple_form>
 </div>

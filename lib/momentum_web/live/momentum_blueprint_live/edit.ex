@@ -5,13 +5,14 @@ defmodule MomentumWeb.MomentumBlueprintLive.Edit do
 
   @impl true
   def mount(params, _session, socket) do
+    :fitness_center
+    :utf8
     momentum_blueprint = Blueprinting.get_momentum_blueprint!(params["id"])
 
     changeset = Blueprinting.momentum_blueprint_changeset_for_edit(momentum_blueprint)
     {
       :ok,
       socket
-      |> assign(:momentum_blueprint, momentum_blueprint)
       |> assign_form(changeset)
     }
   end
@@ -43,7 +44,22 @@ defmodule MomentumWeb.MomentumBlueprintLive.Edit do
     end
   end
 
+
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
+    updated_momentum = Ecto.Changeset.apply_changes(changeset)
+
     assign(socket, :form, to_form(changeset))
+    |> assign(:momentum_blueprint, changeset.data)
+    |> assign(:task_days_schedules, task_days_schedules(updated_momentum.task_blueprints))
+  end
+
+  def task_days_schedules(task_blueprints) do
+    Enum.map(1..7, fn index ->
+      matched_items = Enum.filter(task_blueprints, fn item ->
+        index in item.schedules
+      end)
+
+      matched_items
+    end)
   end
 end

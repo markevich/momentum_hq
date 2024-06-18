@@ -328,6 +328,41 @@ defmodule MomentumWeb.CoreComponents do
     """
   end
 
+  def input(%{type: "checkgroup"} = assigns) do
+    ~H"""
+    <div phx-feedback-for={@name} class="text-sm">
+      <.label for={@id}><%= @label %></.label>
+      <input type="hidden" name={@name} value="" />
+
+      <div class="mt-1 w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+        <table class="text-sm items-baseline">
+          <thead class="text-sm text-left leading-6 text-zinc-500">
+            <tr>
+              <th :for={{header, _value} <- @options} class="p-0 pb-4 pr-6 font-normal"><%= header %></th>
+            </tr>
+          </thead>
+          <tbody class="relative divide-y divide-zinc-100 border-t border-zinc-200 text-sm leading-6 text-zinc-700">
+            <tr>
+              <td :for={{_header, value} <- @options}>
+                <input
+                  type="checkbox"
+                  id={"#{@name}-#{value}"}
+                  name={@name}
+                  value={value}
+                  checked={value in @value}
+                  class="mr-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 transition duration-150 ease-in-out"
+                  {@rest}
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <.error :for={msg <- @errors}><%= msg %></.error>
+    </div>
+    """
+  end
+
   def input(%{type: "select"} = assigns) do
     ~H"""
     <div>
@@ -388,6 +423,28 @@ defmodule MomentumWeb.CoreComponents do
       <.error :for={msg <- @errors}><%= msg %></.error>
     </div>
     """
+  end
+
+  @doc """
+  Generate a checkbox group for multi-select.
+  """
+  attr :id, :any
+  attr :name, :any
+  attr :label, :string, default: nil
+  attr :field, Phoenix.HTML.FormField,
+    doc: "a form field struct retrieved from the form, for example: @form[:email]"
+  attr :errors, :list
+  attr :options, :list, doc: "the options to pass to Phoenix.HTML.Form.options_for_select/2"
+  attr :rest, :global, include: ~w(disabled form readonly)
+  attr :class, :string, default: nil
+
+  def checkgroup(assigns) do
+    new_assigns =
+      assigns
+      |> assign(:multiple, true)
+      |> assign(:type, "checkgroup")
+
+    input(new_assigns)
   end
 
   @doc """
@@ -636,6 +693,24 @@ defmodule MomentumWeb.CoreComponents do
     <span class={[@name, @class]} />
     """
   end
+
+
+  attr :name, :atom, required: true
+  attr :style, :string, values: ~w(filled outlined round sharp two-tone), default: "filled"
+  attr :size, :integer, default: 24
+  attr :class, :string, default: nil
+
+  @doc """
+  A dynamic way of generating a Material icon
+
+  Example:
+
+      <.material_icon name={:fitness_center} size={20} class="inline-flex  fill-purple-900"/>
+  """
+  def material_icon(assigns) do
+    apply(MaterialIcons, assigns.name, [assigns])
+  end
+
 
   ## JS Commands
 

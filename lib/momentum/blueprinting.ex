@@ -3,6 +3,7 @@ defmodule Momentum.Blueprinting do
   alias Momentum.Repo
 
   alias Momentum.Blueprinting.MomentumBlueprint
+  alias Momentum.Blueprinting.TaskBlueprint
 
   @doc """
   Returns the list of momentum_blueprints.
@@ -37,6 +38,14 @@ defmodule Momentum.Blueprinting do
   def get_momentum_blueprint!(id) do
     Repo.get!(MomentumBlueprint, id)
     |> Repo.preload(:task_blueprints)
+  end
+
+  def get_task_blueprint!(id) do
+    Repo.get!(TaskBlueprint, id)
+  end
+
+  def delete_task_blueprint(%TaskBlueprint{} = task_blueprint) do
+    Repo.delete(task_blueprint)
   end
 
   @doc """
@@ -91,20 +100,28 @@ defmodule Momentum.Blueprinting do
     Repo.delete(momentum_blueprint)
   end
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking momentum_blueprint changes.
-
-  ## Examples
-
-      iex> momentum_blueprint_changeset_for_edit(momentum_blueprint)
-      %Ecto.Changeset{data: %MomentumBlueprint{}}
-
-  """
   def momentum_blueprint_changeset_for_edit(momentum_blueprint, attrs \\ %{}) do
     MomentumBlueprint.changeset_for_edit(momentum_blueprint, attrs)
   end
 
   def momentum_blueprint_changeset_for_create(momentum_blueprint, attrs \\ %{}) do
     MomentumBlueprint.changeset_for_create(momentum_blueprint, attrs)
+  end
+
+
+  def create_task_blueprint(attrs \\ %{}) do
+    %TaskBlueprint{}
+    |> TaskBlueprint.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def update_task_blueprint(%TaskBlueprint{} = task_blueprint, attrs) do
+    task_blueprint
+    |> TaskBlueprint.changeset(attrs)
+    |> Repo.update()
+  end
+
+  def task_blueprint_changeset(task_blueprint, attrs \\ %{}) do
+    TaskBlueprint.changeset(task_blueprint, attrs)
   end
 end

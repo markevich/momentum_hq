@@ -338,7 +338,9 @@ defmodule MomentumWeb.CoreComponents do
         <table class="text-sm items-baseline">
           <thead class="text-sm text-left leading-6 text-zinc-500">
             <tr>
-              <th :for={{header, _value} <- @options} class="p-0 pb-4 pr-6 font-normal"><%= header %></th>
+              <th :for={{header, _value} <- @options} class="p-0 pb-4 pr-6 font-normal">
+                <%= header %>
+              </th>
             </tr>
           </thead>
           <tbody class="relative divide-y divide-zinc-100 border-t border-zinc-200 text-sm leading-6 text-zinc-700">
@@ -431,8 +433,10 @@ defmodule MomentumWeb.CoreComponents do
   attr :id, :any
   attr :name, :any
   attr :label, :string, default: nil
+
   attr :field, Phoenix.HTML.FormField,
     doc: "a form field struct retrieved from the form, for example: @form[:email]"
+
   attr :errors, :list
   attr :options, :list, doc: "the options to pass to Phoenix.HTML.Form.options_for_select/2"
   attr :rest, :global, include: ~w(disabled form readonly)
@@ -694,7 +698,6 @@ defmodule MomentumWeb.CoreComponents do
     """
   end
 
-
   attr :name, :atom, required: true
   attr :style, :string, values: ~w(filled outlined round sharp two-tone), default: "filled"
   attr :size, :integer, default: 24
@@ -710,7 +713,6 @@ defmodule MomentumWeb.CoreComponents do
   def material_icon(assigns) do
     apply(MaterialIcons, assigns.name, [assigns])
   end
-
 
   ## JS Commands
 

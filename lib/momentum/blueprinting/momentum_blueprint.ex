@@ -29,7 +29,7 @@ defmodule Momentum.Blueprinting.MomentumBlueprint do
       drop_param: :task_blueprints_delete,
       with: &TaskBlueprint.changeset/2
     )
-    |> validate_required([:generator_type, :momentums_to_full, :current_value,:name])
+    |> validate_required([:generator_type, :momentums_to_full, :current_value, :name])
   end
 
   def changeset_for_create(momentum_blueprint, attrs) do

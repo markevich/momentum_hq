@@ -1,4 +1,4 @@
-defmodule MomentumWeb.MomentumBlueprintLive.Index do
+defmodule MomentumWeb.BlueprintingLive.ListMomentumBlueprints do
   use MomentumWeb, :live_view
 
   alias Momentum.Blueprinting
@@ -13,8 +13,8 @@ defmodule MomentumWeb.MomentumBlueprintLive.Index do
     {
       :noreply,
       socket
-        |> assign(:page_title, "Listing MomentumBlueprints")
-        |> assign(:momentum_blueprint, nil)
+      |> assign(:page_title, "Listing MomentumBlueprints")
+      |> assign(:momentum_blueprint, nil)
     }
   end
 end

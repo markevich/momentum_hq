@@ -26,9 +26,11 @@ defmodule MomentumWeb.Router do
     live "/areas/:id", AreaLive.Show, :show
     live "/areas/:id/show/edit", AreaLive.Show, :edit
 
-    live "/momentum_blueprints", MomentumBlueprintLive.Index, :index
-    live "/momentum_blueprints/new", MomentumBlueprintLive.New, :new
-    live "/momentum_blueprints/:id/edit", MomentumBlueprintLive.Edit, :edit
+    live "/blueprinting", BlueprintingLive.ListMomentumBlueprints, :index
+    live "/blueprinting/new", BlueprintingLive.NewMomentumBlueprint, :new
+    live "/blueprinting/:momentum_blueprint_id/edit", BlueprintingLive.EditMomentumBlueprint, :edit_momentum_blueprint
+    live "/blueprinting/:momentum_blueprint_id/edit/task_blueprints/:task_blueprint_id/edit", BlueprintingLive.EditMomentumBlueprint, :edit_task_blueprint
+    live "/blueprinting/:momentum_blueprint_id/edit/task_blueprints/new", BlueprintingLive.EditMomentumBlueprint, :new_task_blueprint
   end
 
   # Other scopes may use custom stacks.

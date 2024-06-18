@@ -4,7 +4,6 @@ defmodule Momentum.Blueprinting.TaskBlueprint do
 
   alias Momentum.Blueprinting.{TaskBlueprint, MomentumBlueprint}
 
-
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
 
@@ -26,8 +25,8 @@ defmodule Momentum.Blueprinting.TaskBlueprint do
 
   def changeset(task_blueprint = %TaskBlueprint{}, attrs) do
     task_blueprint
-    |> cast(attrs, [:name, :schedules, :icon, :color])
-    |> validate_required([:name, :schedules, :icon, :color])
+    |> cast(attrs, [:name, :schedules, :icon, :color, :momentum_blueprint_id])
+    |> validate_required([:name, :schedules, :icon, :color, :momentum_blueprint_id])
     |> put_change(:affect_value, 5)
   end
 end

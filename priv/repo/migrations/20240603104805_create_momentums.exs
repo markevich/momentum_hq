@@ -1,11 +1,11 @@
-defmodule Momentum.Repo.Migrations.CreateMomentums do
+defmodule MomentumHq.Repo.Migrations.CreateMomentums do
   use Ecto.Migration
 
   def change do
     create table(:momentums) do
       add :from, :date, null: false
       add :to, :date, null: false
-      add :name_override, :string
+      add :cycle_number, :integer, null: false
       add :value_at_start, :decimal, null: false
       add :value_at_end, :decimal, null: false
       add :user_id, references(:users, on_delete: :restrict), null: false

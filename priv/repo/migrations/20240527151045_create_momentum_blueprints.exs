@@ -1,4 +1,4 @@
-defmodule Momentum.Repo.Migrations.CreateMomentumBlueprints do
+defmodule MomentumHq.Repo.Migrations.CreateMomentumBlueprints do
   use Ecto.Migration
 
   def change do

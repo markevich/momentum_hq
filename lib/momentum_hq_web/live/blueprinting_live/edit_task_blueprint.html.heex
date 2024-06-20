@@ -1,0 +1,46 @@
+<div>
+  <.header>
+    <%= @title %>
+    <:subtitle>Use this form to manage area records in your database.</:subtitle>
+  </.header>
+
+  <.simple_form
+    for={@form}
+    id="area-form"
+    phx-target={@myself}
+    phx-change="validate"
+    phx-submit="save"
+  >
+    <.input field={@form[:name]} type="text" label="Name" />
+    <.input field={@form[:icon]} type="text" label="Icon" />
+    <.input field={@form[:color]} type="text" label="Color" />
+    <.input
+      field={@form[:affect_type]}
+      type="select"
+      options={Ecto.Enum.mappings(MomentumHq.Blueprinting.TaskBlueprint, :affect_type)}
+      label="Affect type"
+    />
+    <.checkgroup
+      field={@form[:schedules]}
+      label="Schedules"
+      options={[{"Пн", 1}, {"Вт", 2}, {"Ср", 3}, {"Чт", 4}, {"Пт", 5}, {"Сб", 6}, {"Вс", 7}]}
+    />
+    <.input
+      field={@form[:notify_at_hour]}
+      type="select"
+      options={0..23}
+      label="Notify at"
+    />
+    <:actions>
+      <.button phx-disable-with="Saving...">Save Task</.button>
+      <.link
+        class="text-red-700"
+        phx-click="delete"
+        phx-target={@myself}
+        data-confirm="Are you sure?"
+        >
+        Delete
+      </.link>
+    </:actions>
+  </.simple_form>
+</div>

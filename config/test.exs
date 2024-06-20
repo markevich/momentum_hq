@@ -5,7 +5,7 @@ import Config
 # The MIX_TEST_PARTITION environment variable can be used
 # to provide built-in test partitioning in CI environment.
 # Run `mix help test` for more information.
-config :momentum, Momentum.Repo,
+config :momentum_hq, MomentumHq.Repo,
   username: "postgres",
   password: "postgres",
   hostname: "localhost",
@@ -15,13 +15,15 @@ config :momentum, Momentum.Repo,
 
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
-config :momentum, MomentumWeb.Endpoint,
+config :momentum_hq, MomentumHqWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
   secret_key_base: "Ddmm1OQPS+yIQiyAa3apQj8C14JrSmB5wOMw05iKafZLwcMqEdm9i9FrD/OYD0/O",
   server: false
 
+config :momentum_hq, Oban, testing: :inline
+
 # In test we don't send emails.
-config :momentum, Momentum.Mailer, adapter: Swoosh.Adapters.Test
+config :momentum_hq, MomentumHq.Mailer, adapter: Swoosh.Adapters.Test
 
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false

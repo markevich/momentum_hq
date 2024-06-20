@@ -1,12 +1,12 @@
-defmodule Momentum.ConstructorTest do
-  use Momentum.DataCase
+defmodule MomentumHq.ConstructorTest do
+  use MomentumHqDataCase
 
-  alias Momentum.Constructor
+  alias MomentumHq.Constructor
 
   describe "areas" do
-    alias Momentum.Constructor.Area
+    alias MomentumHq.Constructor.Area
 
-    import Momentum.ConstructorFixtures
+    import MomentumHq.ConstructorFixtures
 
     @invalid_attrs %{name: nil, content: nil}
 

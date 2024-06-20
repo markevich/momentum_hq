@@ -1,4 +1,4 @@
-defmodule Momentum.DataCase do
+defmodule MomentumHqDataCase do
   @moduledoc """
   This module defines the setup for tests requiring
   access to the application's data layer.
@@ -10,7 +10,7 @@ defmodule Momentum.DataCase do
   we enable the SQL sandbox, so changes done to the database
   are reverted at the end of every test. If you are using
   PostgreSQL, you can even run database tests asynchronously
-  by setting `use Momentum.DataCase, async: true`, although
+  by setting `use MomentumHqDataCase, async: true`, although
   this option is not recommended for other databases.
   """
 
@@ -18,17 +18,17 @@ defmodule Momentum.DataCase do
 
   using do
     quote do
-      alias Momentum.Repo
+      alias MomentumHq.Repo
 
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
-      import Momentum.DataCase
+      import MomentumHqDataCase
     end
   end
 
   setup tags do
-    Momentum.DataCase.setup_sandbox(tags)
+    MomentumHqDataCase.setup_sandbox(tags)
     :ok
   end
 
@@ -36,7 +36,7 @@ defmodule Momentum.DataCase do
   Sets up the sandbox based on the test tags.
   """
   def setup_sandbox(tags) do
-    pid = Ecto.Adapters.SQL.Sandbox.start_owner!(Momentum.Repo, shared: not tags[:async])
+    pid = Ecto.Adapters.SQL.Sandbox.start_owner!(MomentumHq.Repo, shared: not tags[:async])
     on_exit(fn -> Ecto.Adapters.SQL.Sandbox.stop_owner(pid) end)
   end
 

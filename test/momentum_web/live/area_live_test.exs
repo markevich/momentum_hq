@@ -1,8 +1,8 @@
-defmodule MomentumWeb.AreaLiveTest do
-  use MomentumWeb.ConnCase
+defmodule MomentumHqWeb.AreaLiveTest do
+  use MomentumHqWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Momentum.ConstructorFixtures
+  import MomentumHq.ConstructorFixtures
 
   @create_attrs %{name: "some name", content: %{}}
   @update_attrs %{name: "some updated name", content: %{}}

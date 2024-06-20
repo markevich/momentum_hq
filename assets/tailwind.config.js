@@ -8,8 +8,8 @@ const path = require("path")
 module.exports = {
   content: [
     "./js/**/*.js",
-    "../lib/momentum_web.ex",
-    "../lib/momentum_web/**/*.*ex"
+    "../lib/momentum_hq_web.ex",
+    "../lib/momentum_hq_web/**/*.*ex"
   ],
   theme: {
     extend: {

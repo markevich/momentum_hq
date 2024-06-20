@@ -1,7 +1,7 @@
-defmodule Momentum.ConstructorFixtures do
+defmodule MomentumHq.ConstructorFixtures do
   @moduledoc """
   This module defines test helpers for creating
-  entities via the `Momentum.Constructor` context.
+  entities via the `MomentumHq.Constructor` context.
   """
 
   @doc """
@@ -14,7 +14,7 @@ defmodule Momentum.ConstructorFixtures do
         content: %{},
         name: "some name"
       })
-      |> Momentum.Constructor.create_area()
+      |> MomentumHq.Constructor.create_area()
 
     area
   end

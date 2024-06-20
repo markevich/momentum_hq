@@ -1,4 +1,4 @@
-defmodule Momentum.Repo.Migrations.CreateAreas do
+defmodule MomentumHq.Repo.Migrations.CreateAreas do
   use Ecto.Migration
 
   def change do

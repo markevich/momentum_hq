@@ -1,5 +1,5 @@
-defmodule MomentumWeb.PageControllerTest do
-  use MomentumWeb.ConnCase
+defmodule MomentumHqWeb.PageControllerTest do
+  use MomentumHqWeb.ConnCase
 
   test "GET /", %{conn: conn} do
     conn = get(conn, ~p"/")

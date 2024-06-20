@@ -1,7 +1,7 @@
 import Config
 
 # Configure your database
-config :momentum, Momentum.Repo,
+config :momentum_hq, MomentumHq.Repo,
   username: "postgres",
   password: "postgres",
   hostname: "localhost",
@@ -16,7 +16,7 @@ config :momentum, Momentum.Repo,
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we can use it
 # to bundle .js and .css sources.
-config :momentum, MomentumWeb.Endpoint,
+config :momentum_hq, MomentumHqWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
   http: [ip: {127, 0, 0, 1}, port: 4000],
@@ -25,8 +25,8 @@ config :momentum, MomentumWeb.Endpoint,
   debug_errors: true,
   secret_key_base: "QHd6G3i+PrNlPgnz87q2uayareoF+ve8n7HWMz15JwtNRDZ1O5X91vQWiVrfQt0g",
   watchers: [
-    esbuild: {Esbuild, :install_and_run, [:momentum, ~w(--sourcemap=inline --watch)]},
-    tailwind: {Tailwind, :install_and_run, [:momentum, ~w(--watch)]}
+    esbuild: {Esbuild, :install_and_run, [:momentum_hq, ~w(--sourcemap=inline --watch)]},
+    tailwind: {Tailwind, :install_and_run, [:momentum_hq, ~w(--watch)]}
   ]
 
 # ## SSL Support
@@ -53,7 +53,7 @@ config :momentum, MomentumWeb.Endpoint,
 # different ports.
 
 # Watch static and templates for browser reloading.
-config :momentum, MomentumWeb.Endpoint,
+config :momentum_hq, MomentumHqWeb.Endpoint,
   live_reload: [
     patterns: [
       ~r"priv/static/(?!uploads/).*(js|css|png|jpeg|jpg|gif|svg)$",
@@ -63,7 +63,7 @@ config :momentum, MomentumWeb.Endpoint,
   ]
 
 # Enable dev routes for dashboard and mailbox
-config :momentum, dev_routes: true
+config :momentum_hq, dev_routes: true
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"

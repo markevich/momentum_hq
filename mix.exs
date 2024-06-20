@@ -1,9 +1,9 @@
-defmodule Momentum.MixProject do
+defmodule MomentumHqMixProject do
   use Mix.Project
 
   def project do
     [
-      app: :momentum,
+      app: :momentum_hq,
       version: "0.1.0",
       elixir: "~> 1.14",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -18,7 +18,7 @@ defmodule Momentum.MixProject do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {Momentum.Application, []},
+      mod: {MomentumHqApplication, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end
@@ -57,7 +57,8 @@ defmodule Momentum.MixProject do
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
-      {:bandit, "~> 1.2"}
+      {:bandit, "~> 1.2"},
+      {:oban, "~> 2.17"},
     ]
   end
 
@@ -74,10 +75,10 @@ defmodule Momentum.MixProject do
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
-      "assets.build": ["tailwind momentum", "esbuild momentum"],
+      "assets.build": ["tailwind momentum_hq", "esbuild momentum_hq"],
       "assets.deploy": [
-        "tailwind momentum --minify",
-        "esbuild momentum --minify",
+        "tailwind momentum_hq --minify",
+        "esbuild momentum_hq --minify",
         "phx.digest"
       ]
     ]

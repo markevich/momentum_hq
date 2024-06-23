@@ -23,6 +23,7 @@ defmodule MomentumHq.Blueprinting do
   def get_momentum_blueprint!(id) do
     Repo.get!(MomentumBlueprint, id)
     |> Repo.preload(:task_blueprints)
+    |> Repo.preload(:current_momentum)
   end
 
   def get_task_blueprint!(id) do
@@ -39,10 +40,8 @@ defmodule MomentumHq.Blueprinting do
       |> MomentumBlueprint.changeset_for_create(attrs)
       |> Repo.insert()
 
-    # FYI: create current momentum if blueprint succesfully created
-    # That will fail with 500 error if current momentum fails to create
     with {:ok, momentum_blueprint} <- create_blueprint_result do
-      Lifecycle.create_new_current_momentum(momentum_blueprint)
+      Lifecycle.schedule_current_momentum_creation(momentum_blueprint)
     end
 
     create_blueprint_result

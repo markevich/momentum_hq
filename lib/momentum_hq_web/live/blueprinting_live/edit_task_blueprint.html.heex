@@ -4,13 +4,7 @@
     <:subtitle>Use this form to manage area records in your database.</:subtitle>
   </.header>
 
-  <.simple_form
-    for={@form}
-    id="area-form"
-    phx-target={@myself}
-    phx-change="validate"
-    phx-submit="save"
-  >
+  <.simple_form for={@form} id="area-form" phx-target={@myself} phx-submit="save">
     <.input field={@form[:name]} type="text" label="Name" />
     <.input field={@form[:icon]} type="text" label="Icon" />
     <.input field={@form[:color]} type="text" label="Color" />

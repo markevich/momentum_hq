@@ -13,16 +13,17 @@ defmodule MomentumHqWeb.BlueprintingLive.EditTaskBlueprint do
      |> assign_form(changeset)}
   end
 
+  #  @impl true
+  #  def handle_event("validate", %{"task_blueprint" => task_blueprint_params}, socket) do
+  #    changeset =
+  #      socket.assigns.task_blueprint
+  #      |> Blueprinting.task_blueprint_changeset(task_blueprint_params)
+  #      |> Map.put(:action, :validate)
+  #
+  #    {:noreply, assign_form(socket, changeset)}
+  #  end
+
   @impl true
-  def handle_event("validate", %{"task_blueprint" => task_blueprint_params}, socket) do
-    changeset =
-      socket.assigns.task_blueprint
-      |> Blueprinting.task_blueprint_changeset(task_blueprint_params)
-      |> Map.put(:action, :validate)
-
-    {:noreply, assign_form(socket, changeset)}
-  end
-
   def handle_event("delete", _params, socket) do
     {:ok, _} = Blueprinting.delete_task_blueprint(socket.assigns.task_blueprint)
 

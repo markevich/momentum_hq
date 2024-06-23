@@ -17,8 +17,9 @@ defmodule MomentumHq.Repo.Migrations.CreateMomentums do
     end
 
     create index(:momentums, [:user_id])
-    create index(:momentums, [:momentum_blueprint_id])
     create index(:momentums, [:from, :to])
+
+    create unique_index(:momentums, [:momentum_blueprint_id, :cycle_number])
 
     alter table(:momentum_blueprints) do
       add :current_momentum_id, references(:momentums), null: true

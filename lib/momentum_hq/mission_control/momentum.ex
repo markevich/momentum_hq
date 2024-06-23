@@ -2,6 +2,7 @@ defmodule MomentumHq.MissionControl.Momentum do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias __MODULE__
   alias MomentumHq.Users.User
   alias MomentumHq.Blueprinting.MomentumBlueprint
 
@@ -21,7 +22,7 @@ defmodule MomentumHq.MissionControl.Momentum do
     timestamps(type: :utc_datetime)
   end
 
-  def changeset(%MomentumHq.MissionControl.Momentum{} = momentum, attrs) do
+  def changeset(%Momentum{} = momentum, attrs) do
     momentum
     |> cast(attrs, [
       :from,
@@ -41,5 +42,6 @@ defmodule MomentumHq.MissionControl.Momentum do
       :momentum_blueprint_id,
       :user_id
     ])
+    |> unique_constraint([:momentum_id, :cycle_number])
   end
 end

@@ -27,6 +27,7 @@ defmodule MomentumHq.Blueprinting.TaskBlueprint do
     task_blueprint
     |> cast(attrs, [:name, :schedules, :icon, :color, :momentum_blueprint_id])
     |> validate_required([:name, :schedules, :icon, :color, :momentum_blueprint_id])
+    |> update_change(:schedules, &Enum.reject(&1, fn item -> !(item in 1..7) end))
     |> put_change(:affect_value, 5)
   end
 end

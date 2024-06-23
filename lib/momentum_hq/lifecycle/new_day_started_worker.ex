@@ -1,4 +1,4 @@
-defmodule MomentumHq.Lifecycle.NewDayStarted do
+defmodule MomentumHq.Lifecycle.NewDayStartedWorker do
   use Oban.Worker, queue: :lifecycle, max_attempts: 1
 
   @impl Oban.Worker

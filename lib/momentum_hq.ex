@@ -1,4 +1,4 @@
-defmodule Momentum do
+defmodule MomentumHq do
   @moduledoc """
   Momentum keeps the contexts that define your domain
   and business logic.

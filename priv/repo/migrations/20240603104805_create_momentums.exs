@@ -20,16 +20,8 @@ defmodule MomentumHq.Repo.Migrations.CreateMomentums do
     create index(:momentums, [:momentum_blueprint_id])
     create index(:momentums, [:from, :to])
 
-    create table(:current_momentums) do
-      add :user_id, references(:users, on_delete: :restrict), null: false
-
-      add :momentum_blueprint_id, references(:momentum_blueprints, on_delete: :restrict),
-        null: false
-
-      add :momentum_id, references(:momentums), null: false
+    alter table(:momentum_blueprints) do
+      add :current_momentum_id, references(:momentums), null: true
     end
-
-    create index(:current_momentums, [:user_id])
-    create unique_index(:current_momentums, [:user_id, :momentum_blueprint_id, :momentum_id])
   end
 end

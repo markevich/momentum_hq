@@ -4,6 +4,7 @@ defmodule MomentumHq.Blueprinting.MomentumBlueprint do
 
   alias MomentumHq.Users.User
   alias MomentumHq.Blueprinting.TaskBlueprint
+  alias MomentumHq.MissionControl.Momentum
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -16,20 +17,28 @@ defmodule MomentumHq.Blueprinting.MomentumBlueprint do
 
     belongs_to :user, User
 
-    has_many :task_blueprints, TaskBlueprint, on_replace: :delete
+    has_many :task_blueprints, TaskBlueprint
+    belongs_to :current_momentum, Momentum
 
     timestamps(type: :utc_datetime)
   end
 
   def changeset_for_edit(momentum_blueprint, attrs) do
     momentum_blueprint
-    |> cast(attrs, [:generator_type, :momentums_to_full, :current_value, :name])
-    |> cast_assoc(:task_blueprints,
-      sort_param: :task_blueprints_order,
-      drop_param: :task_blueprints_delete,
-      with: &TaskBlueprint.changeset/2
-    )
-    |> validate_required([:generator_type, :momentums_to_full, :current_value, :name])
+    |> cast(attrs, [
+      :generator_type,
+      :momentums_to_full,
+      :current_value,
+      :current_momentum_id,
+      :name
+    ])
+    |> validate_required([
+      :generator_type,
+      :momentums_to_full,
+      :current_value,
+      :current_momentum_id,
+      :name
+    ])
   end
 
   def changeset_for_create(momentum_blueprint, attrs) do

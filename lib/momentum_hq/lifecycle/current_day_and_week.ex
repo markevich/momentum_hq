@@ -3,12 +3,13 @@ defmodule MomentumHq.Lifecycle.CurrentDayAndWeek do
   @beginning_of_momentum_era ~D[2024-01-01]
 
   def absolute do
-    today = DateTime.to_date(DateTime.utc_now)
+    today = DateTime.to_date(DateTime.utc_now())
     today_day_of_week = Date.day_of_week(today)
 
-    week_number = today
-    |> Date.diff(@beginning_of_momentum_era)
-    |> div(7)
+    week_number =
+      today
+      |> Date.diff(@beginning_of_momentum_era)
+      |> div(7)
 
     %{
       day_of_week: today_day_of_week,
@@ -30,16 +31,19 @@ defmodule MomentumHq.Lifecycle.CurrentDayAndWeek do
   end
 
   defp p_relative_to(%Date{} = point_of_reference) do
-    today = DateTime.to_date(DateTime.utc_now)
+    today = DateTime.to_date(DateTime.utc_now())
     today_day_of_week = Date.day_of_week(today)
 
-    week_number = today
-    |> Date.diff(point_of_reference)
-    |> div(7)
+    week_number =
+      today
+      |> Date.diff(point_of_reference)
+      |> div(7)
 
     %{
       day_of_week: today_day_of_week,
-      week_number: week_number
+      week_number: week_number,
+      start_day_of_week: Date.beginning_of_week(today),
+      end_day_of_week: Date.end_of_week(today)
     }
   end
 end

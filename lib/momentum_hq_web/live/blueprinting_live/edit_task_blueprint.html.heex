@@ -25,12 +25,7 @@
       label="Schedules"
       options={[{"Пн", 1}, {"Вт", 2}, {"Ср", 3}, {"Чт", 4}, {"Пт", 5}, {"Сб", 6}, {"Вс", 7}]}
     />
-    <.input
-      field={@form[:notify_at_hour]}
-      type="select"
-      options={0..23}
-      label="Notify at"
-    />
+    <.input field={@form[:notify_at_hour]} type="select" options={0..23} label="Notify at" />
     <:actions>
       <.button phx-disable-with="Saving...">Save Task</.button>
       <.link
@@ -38,7 +33,7 @@
         phx-click="delete"
         phx-target={@myself}
         data-confirm="Are you sure?"
-        >
+      >
         Delete
       </.link>
     </:actions>

@@ -5,7 +5,6 @@ defmodule MomentumHqWeb.BlueprintingLive.EditTaskBlueprint do
 
   @impl true
   def update(%{task_blueprint: task_blueprint} = assigns, socket) do
-    IO.inspect(assigns)
     changeset = Blueprinting.task_blueprint_changeset(task_blueprint)
 
     {:ok,
@@ -30,9 +29,9 @@ defmodule MomentumHqWeb.BlueprintingLive.EditTaskBlueprint do
     notify_parent({:task_blueprint_saved})
 
     {:noreply,
-         socket
-         |> put_flash(:info, "Task blueprint deleted successfully")
-         |> push_patch(to: socket.assigns.patch)}
+     socket
+     |> put_flash(:info, "Task blueprint deleted successfully")
+     |> push_patch(to: socket.assigns.patch)}
   end
 
   def handle_event("save", %{"task_blueprint" => task_blueprint_params}, socket) do
@@ -55,7 +54,12 @@ defmodule MomentumHqWeb.BlueprintingLive.EditTaskBlueprint do
   end
 
   defp save_task_blueprint(socket, :new_task_blueprint, task_blueprint_params) do
-    params = Map.put(task_blueprint_params, "momentum_blueprint_id", socket.assigns.momentum_blueprint_id)
+    params =
+      Map.put(
+        task_blueprint_params,
+        "momentum_blueprint_id",
+        socket.assigns.momentum_blueprint_id
+      )
 
     case Blueprinting.create_task_blueprint(params) do
       {:ok, _task_blueprint} ->

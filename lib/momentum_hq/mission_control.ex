@@ -1,3 +1,2 @@
-defmodule MomentumHqMissionControl do
-
+defmodule MomentumHq.MissionControl do
 end

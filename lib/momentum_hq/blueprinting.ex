@@ -1,5 +1,6 @@
 defmodule MomentumHq.Blueprinting do
   import Ecto.Query, warn: false
+  alias MomentumHq.Lifecycle
   alias MomentumHq.Repo
 
   alias MomentumHq.Blueprinting.MomentumBlueprint
@@ -32,54 +33,27 @@ defmodule MomentumHq.Blueprinting do
     Repo.delete(task_blueprint)
   end
 
-  @doc """
-  Creates a momentum_blueprint.
-
-  ## Examples
-
-      iex> create_momentum_blueprint(%{field: value})
-      {:ok, %MomentumBlueprint{}}
-
-      iex> create_momentum_blueprint(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
   def create_momentum_blueprint(attrs \\ %{}) do
-    %MomentumBlueprint{}
-    |> MomentumBlueprint.changeset_for_create(attrs)
-    |> Repo.insert()
+    create_blueprint_result =
+      %MomentumBlueprint{}
+      |> MomentumBlueprint.changeset_for_create(attrs)
+      |> Repo.insert()
+
+    # FYI: create current momentum if blueprint succesfully created
+    # That will fail with 500 error if current momentum fails to create
+    with {:ok, momentum_blueprint} <- create_blueprint_result do
+      Lifecycle.create_new_current_momentum(momentum_blueprint)
+    end
+
+    create_blueprint_result
   end
 
-  @doc """
-  Updates a momentum_blueprint.
-
-  ## Examples
-
-      iex> update_momentum_blueprint(momentum_blueprint, %{field: new_value})
-      {:ok, %MomentumBlueprint{}}
-
-      iex> update_momentum_blueprint(momentum_blueprint, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
   def update_momentum_blueprint(%MomentumBlueprint{} = momentum_blueprint, attrs) do
     momentum_blueprint
     |> MomentumBlueprint.changeset_for_edit(attrs)
     |> Repo.update()
   end
 
-  @doc """
-  Deletes a momentum_blueprint.
-
-  ## Examples
-
-      iex> delete_momentum_blueprint(momentum_blueprint)
-      {:ok, %MomentumBlueprint{}}
-
-      iex> delete_momentum_blueprint(momentum_blueprint)
-      {:error, %Ecto.Changeset{}}
-
-  """
   def delete_momentum_blueprint(%MomentumBlueprint{} = momentum_blueprint) do
     Repo.delete(momentum_blueprint)
   end
@@ -91,7 +65,6 @@ defmodule MomentumHq.Blueprinting do
   def momentum_blueprint_changeset_for_create(momentum_blueprint, attrs \\ %{}) do
     MomentumBlueprint.changeset_for_create(momentum_blueprint, attrs)
   end
-
 
   def create_task_blueprint(attrs \\ %{}) do
     %TaskBlueprint{}

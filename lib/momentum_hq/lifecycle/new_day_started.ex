@@ -3,7 +3,6 @@ defmodule MomentumHq.Lifecycle.NewDayStarted do
 
   @impl Oban.Worker
   def perform(_job) do
-
     :ok
   end
 end

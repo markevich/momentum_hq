@@ -33,10 +33,19 @@ defmodule MomentumHqWeb.BlueprintingLive.EditMomentumBlueprint do
     |> assign(:task_blueprint, Blueprinting.get_task_blueprint!(id))
   end
 
-  defp apply_action(socket, :new_task_blueprint, %{"momentum_blueprint_id" => momentum_blueprint_id, "day" => day}) do
+  defp apply_action(
+         socket,
+         :new_task_blueprint,
+         %{
+           "momentum_blueprint_id" => momentum_blueprint_id
+         } = params
+       ) do
     socket
     |> assign(:page_title, "New Task")
-    |> assign(:task_blueprint, %Blueprinting.TaskBlueprint{momentum_blueprint_id: momentum_blueprint_id, schedules: [day]})
+    |> assign(:task_blueprint, %Blueprinting.TaskBlueprint{
+      momentum_blueprint_id: momentum_blueprint_id,
+      schedules: [String.to_integer(params["day"])]
+    })
   end
 
   @impl true
@@ -76,8 +85,12 @@ defmodule MomentumHqWeb.BlueprintingLive.EditMomentumBlueprint do
   end
 
   @impl true
-  def handle_info({MomentumHqWeb.BlueprintingLive.EditTaskBlueprint, {:task_blueprint_saved}}, socket) do
-    momentum_blueprint = Blueprinting.get_momentum_blueprint!(socket.assigns.momentum_blueprint.id)
+  def handle_info(
+        {MomentumHqWeb.BlueprintingLive.EditTaskBlueprint, {:task_blueprint_saved}},
+        socket
+      ) do
+    momentum_blueprint =
+      Blueprinting.get_momentum_blueprint!(socket.assigns.momentum_blueprint.id)
 
     changeset = Blueprinting.momentum_blueprint_changeset_for_edit(momentum_blueprint)
 

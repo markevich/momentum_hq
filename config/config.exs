@@ -69,7 +69,7 @@ config :momentum_hq, Oban,
     {Oban.Plugins.Cron,
      crontab: [
        {"0 8 * * *", MomentumHq.Lifecycle.NewDayStarted},
-       {"0 5 * * 1", MomentumHq.Lifecycle.NewWeekStarted},
+       {"0 5 * * 1", MomentumHq.Lifecycle.NewWeekStarted}
      ]},
     {Oban.Plugins.Pruner, max_age: 60 * 60 * 24 * 30},
     {Oban.Plugins.Lifeline, rescue_after: :timer.minutes(30)}

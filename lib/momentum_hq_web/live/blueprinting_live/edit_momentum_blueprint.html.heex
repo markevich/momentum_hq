@@ -53,12 +53,13 @@
                   <span class="text-gray-500">index + 1</span>
                 </div>
               -->
-
               <div class="bottom flex-grow h-30 py-1 w-full">
                 <.link
                   :for={task <- schedules_in_a_day}
-                  patch={~p"/blueprinting/#{@momentum_blueprint.id}/edit/task_blueprints/#{task.id}/edit"}
-                  >
+                  patch={
+                    ~p"/blueprinting/#{@momentum_blueprint.id}/edit/task_blueprints/#{task.id}/edit"
+                  }
+                >
                   <div class={"event bg-#{task.color}-100 text-#{task.color}-900 hover:bg-#{task.color}-300 border-#{task.color}-300 border rounded p-1 text-sm mb-1 transition cursor-pointer duration-500 ease"}>
                     <span :if={task.icon}>
                       <.material_icon
@@ -73,17 +74,14 @@
                   </div>
                 </.link>
 
-                <.link patch={~p"/blueprinting/#{@momentum_blueprint.id}/edit/task_blueprints/new?day=#{index + 1}"}>
+                <.link patch={
+                  ~p"/blueprinting/#{@momentum_blueprint.id}/edit/task_blueprints/new?day=#{index + 1}"
+                }>
                   <div class="hover:bg-gray-100 border-gray-500 event border rounded p-1 text-sm mb-1 transition cursor-pointer duration-500 ease">
                     <span>
-                      <.material_icon
-                        name={:add}
-                        size={20}
-                        class="inline-flex fill-gray-900"
-                      />
+                      <.material_icon name={:add} size={20} class="inline-flex fill-gray-900" />
                     </span>
-                    <span class="event-name font-semibold">
-                    </span>
+                    <span class="event-name font-semibold"></span>
                   </div>
                 </.link>
               </div>
@@ -99,7 +97,7 @@
     id="momentum_blueprint-form"
     phx-change="save"
     phx-submit="save_and_redirect"
-    >
+  >
     <.input field={@form[:name]} type="text" label="Name" phx-debounce="blur" />
     <.input
       field={@form[:momentums_to_full]}
@@ -110,11 +108,10 @@
     <.input field={@form[:current_value]} type="number" label="Current value" phx-debounce="blur" />
     <:actions>
       <.button phx-disable-with="Saving...">Save blueprint</.button>
-       <.link navigate={~p"/blueprinting"}>
+      <.link navigate={~p"/blueprinting"}>
         Back
-       </.link>
+      </.link>
     </:actions>
-
   </.simple_form>
 
   <div class="hidden bg-purple-100 text-purple-900 hover:bg-purple-300 border-purple-300"></div>
@@ -122,7 +119,12 @@
   <div class="hidden bg-green-100 text-green-900 hover:bg-green-300 border-green-300"></div>
 </div>
 
-<.modal :if={@live_action in [:edit_task_blueprint, :new_task_blueprint]} id="area-modal" show on_cancel={JS.patch(~p"/blueprinting/#{@momentum_blueprint.id}/edit")}>
+<.modal
+  :if={@live_action in [:edit_task_blueprint, :new_task_blueprint]}
+  id="area-modal"
+  show
+  on_cancel={JS.patch(~p"/blueprinting/#{@momentum_blueprint.id}/edit")}
+>
   <.live_component
     module={MomentumHqWeb.BlueprintingLive.EditTaskBlueprint}
     id={@task_blueprint.id || :new}

@@ -4,12 +4,11 @@ defmodule MomentumHq.MissionControl.Momentum do
 
   alias MomentumHq.Users.User
   alias MomentumHq.Blueprinting.MomentumBlueprint
-  alias MomentumHq.Blueprinting.TaskBlueprint
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
 
-  schema "momentum" do
+  schema "momentums" do
     field :from, :date
     field :to, :date
     field :cycle_number, :integer
@@ -22,22 +21,25 @@ defmodule MomentumHq.MissionControl.Momentum do
     timestamps(type: :utc_datetime)
   end
 
-  def changeset(MomentumHq.MissionControl.Momentum = momentum, attrs) do
+  def changeset(%MomentumHq.MissionControl.Momentum{} = momentum, attrs) do
     momentum
-    |> cast(attrs, [:generator_type, :momentums_to_full, :current_value, :name])
-    |> cast_assoc(:task_blueprints,
-      sort_param: :task_blueprints_order,
-      drop_param: :task_blueprints_delete,
-      with: &TaskBlueprint.changeset/2
-    )
-    |> validate_required([:generator_type, :momentums_to_full, :current_value, :name])
-  end
-
-  def changeset_for_create(momentum_blueprint, attrs) do
-    momentum_blueprint
-    |> cast(attrs, [:user_id, :name, :generator_type])
-    |> validate_required([:user_id, :name, :generator_type])
-    |> put_change(:current_value, 50)
-    |> put_change(:momentums_to_full, 2)
+    |> cast(attrs, [
+      :from,
+      :to,
+      :cycle_number,
+      :value_at_start,
+      :value_at_end,
+      :momentum_blueprint_id,
+      :user_id
+    ])
+    |> validate_required([
+      :from,
+      :to,
+      :cycle_number,
+      :value_at_start,
+      :value_at_end,
+      :momentum_blueprint_id,
+      :user_id
+    ])
   end
 end

@@ -3,7 +3,7 @@ defmodule MomentumHq.Repo.Migrations.CreateTasks do
 
   def change do
     create_query =
-      "CREATE TYPE task_status_type AS ENUM ('waiting_for_user', 'completed', 'failed')"
+      "CREATE TYPE task_status_type AS ENUM ('pending', 'completed', 'failed')"
 
     drop_query = "DROP TYPE task_status_type"
     execute(create_query, drop_query)
@@ -12,9 +12,10 @@ defmodule MomentumHq.Repo.Migrations.CreateTasks do
       add :task_blueprint_id, references(:task_blueprints, on_delete: :restrict), null: false
       add :momentum_id, references(:momentums, on_delete: :restrict), null: false
       add :name, :string
-      add :affect_type, :task_blueprint_affect_type, null: false
+
+      add :affect_type, :task_blueprint_affect_type, default: fragment("'medium'"), null: false
       add :affect_value, :decimal, null: false
-      add :status, :task_blueprint_affect_type, null: false
+      add :status, :task_status_type, default: fragment("'pending'"), null: false
 
       timestamps(type: :utc_datetime)
     end

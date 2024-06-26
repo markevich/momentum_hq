@@ -40,6 +40,7 @@ defmodule MomentumHq.Lifecycle.CurrentDayAndWeek do
       |> div(7)
 
     %{
+      today: today,
       day_of_week: today_day_of_week,
       week_number: week_number,
       start_day_of_week: Date.beginning_of_week(today),

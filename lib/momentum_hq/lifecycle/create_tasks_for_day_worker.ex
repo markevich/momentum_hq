@@ -2,8 +2,8 @@ defmodule MomentumHq.Lifecycle.CreateTasksForDayWorker do
   alias MomentumHq.Lifecycle
   use Oban.Worker, queue: :lifecycle, max_attempts: 1
 
-  alias MomentumHq.Blueprinting
   alias Lifecycle.CurrentDayAndWeek
+  alias MomentumHq.Blueprinting
 
   @impl Oban.Worker
   def perform(%Oban.Job{args: args}) do
@@ -27,7 +27,10 @@ defmodule MomentumHq.Lifecycle.CreateTasksForDayWorker do
         name: task_blueprint.name,
         affect_type: task_blueprint.affect_type,
         status: "pending",
-        affect_value: task_blueprint.affect_value
+        affect_value: task_blueprint.affect_value,
+        # TODO: That's probably wrong. I think we need to pass target date to worker itself
+        # and create everything related to that date.
+        target_date: current_period.today
       })
     end)
     |> Enum.with_index()

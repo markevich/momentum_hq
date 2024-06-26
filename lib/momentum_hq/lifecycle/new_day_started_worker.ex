@@ -2,8 +2,8 @@ defmodule MomentumHq.Lifecycle.NewDayStartedWorker do
   alias MomentumHq.Lifecycle
   use Oban.Worker, queue: :lifecycle, max_attempts: 1
 
-  alias MomentumHq.Lifecycle
   alias MomentumHq.Blueprinting
+  alias MomentumHq.Lifecycle
 
   @impl Oban.Worker
   def perform(_job) do

@@ -18,6 +18,8 @@ defmodule MomentumHq.MissionControl.Task do
     field :status, Ecto.Enum, values: [:pending, :completed, :failed]
     field :affect_value, :decimal
 
+    field :target_date, :date
+
     timestamps(type: :utc_datetime)
   end
 
@@ -29,7 +31,8 @@ defmodule MomentumHq.MissionControl.Task do
       :name,
       :affect_type,
       :status,
-      :affect_value
+      :affect_value,
+      :target_date
     ])
     |> validate_required([
       :task_blueprint_id,
@@ -37,7 +40,8 @@ defmodule MomentumHq.MissionControl.Task do
       :name,
       :affect_type,
       :status,
-      :affect_value
+      :affect_value,
+      :target_date
     ])
   end
 end

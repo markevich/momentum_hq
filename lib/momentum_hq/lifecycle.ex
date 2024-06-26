@@ -13,7 +13,8 @@ defmodule MomentumHq.Lifecycle do
   def schedule_today_tasks_creation(momentum_blueprint) do
     %{
       momentum_blueprint_id: momentum_blueprint.id,
-      momentum_id: momentum_blueprint.current_momentum_id
+      momentum_id: momentum_blueprint.current_momentum_id,
+      target_date: DateTime.to_date(DateTime.utc_now())
     }
     |> CreateTasksForDayWorker.new()
     |> Oban.insert()

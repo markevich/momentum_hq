@@ -2,7 +2,7 @@ defmodule MomentumHq.Blueprinting.TaskBlueprint do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias MomentumHq.Blueprinting.{TaskBlueprint, MomentumBlueprint}
+  alias MomentumHq.Blueprinting.{MomentumBlueprint, TaskBlueprint}
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -23,7 +23,7 @@ defmodule MomentumHq.Blueprinting.TaskBlueprint do
     timestamps(type: :utc_datetime)
   end
 
-  def changeset(task_blueprint = %TaskBlueprint{}, attrs) do
+  def changeset(%TaskBlueprint{} = task_blueprint, attrs) do
     task_blueprint
     |> cast(attrs, [:name, :schedules, :icon, :color, :momentum_blueprint_id])
     |> validate_required([:name, :schedules, :icon, :color, :momentum_blueprint_id])

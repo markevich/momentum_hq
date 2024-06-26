@@ -16,6 +16,7 @@ defmodule MomentumHq.Repo.Migrations.CreateTasks do
       add :affect_type, :task_blueprint_affect_type, default: fragment("'medium'"), null: false
       add :affect_value, :decimal, null: false
       add :status, :task_status_type, default: fragment("'pending'"), null: false
+      add :target_date, :date, null: false
 
       timestamps(type: :utc_datetime)
     end

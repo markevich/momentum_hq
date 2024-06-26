@@ -7,6 +7,7 @@ defmodule MomentumHqWeb.BlueprintingLive.EditMomentumBlueprint do
   def mount(params, _session, socket) do
     :fitness_center
     :local_drink
+    :plus
     momentum_blueprint = Blueprinting.get_momentum_blueprint!(params["momentum_blueprint_id"])
 
     changeset = Blueprinting.momentum_blueprint_changeset_for_edit(momentum_blueprint)

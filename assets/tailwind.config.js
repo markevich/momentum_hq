@@ -18,6 +18,19 @@ module.exports = {
       }
     },
   },
+  safelist: [
+    {
+      pattern: /^bg-/,
+      variants: ['checked', 'focus', 'hover'],
+    },
+    {
+      pattern: /^text-/,
+      variants: ['checked', 'focus', 'hover'],
+    },
+    {
+      pattern: /^border-/,
+    },
+  ],
   plugins: [
     require("@tailwindcss/forms"),
     // Allows prefixing tailwind classes with LiveView classes to add rules

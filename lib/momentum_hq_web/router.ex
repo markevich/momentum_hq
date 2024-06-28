@@ -42,6 +42,14 @@ defmodule MomentumHqWeb.Router do
          :new_task_blueprint
   end
 
+  scope "/api", MomentumHqWeb do
+    pipe_through :api
+
+    scope "/bot" do
+      post "/webhook", BotController, :webhook
+    end
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", MomentumHqWeb do
   #   pipe_through :api

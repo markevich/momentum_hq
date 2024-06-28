@@ -7,7 +7,21 @@
   <.simple_form for={@form} id="area-form" phx-target={@myself} phx-submit="save">
     <.input field={@form[:name]} type="text" label="Name" />
     <.input field={@form[:icon]} type="text" label="Icon" />
-    <.input field={@form[:color]} type="text" label="Color" />
+    <label class="block text-sm font-semibold leading-6 text-zinc-800">Color</label>
+
+    <div class="flex flex-wrap gap-5 mt-2">
+      <div :for={{color, idx} <- Enum.with_index([:purple, :red, :orange, :yellow, :green, :blue, :slate, :pink, :stone, :cyan])}>
+        <input
+          type="radio"
+          name={@form[:color].name}
+          id={"#{@form[:color].id}-#{idx}"}
+          value={color}
+          checked={to_string(@form[:color].value) == to_string(color)}
+          class={"rounded-full focus:ring-#{color}-400 focus:ring-1 bg-#{color}-400 checked:bg-#{color}-400 focus:bg-#{color}-400 text-#{color}-400 border-0 w-10 h-10"}
+        />
+      </div>
+    </div>
+
     <.input
       field={@form[:affect_type]}
       type="select"

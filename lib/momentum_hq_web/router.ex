@@ -1,6 +1,8 @@
 defmodule MomentumHqWeb.Router do
   use MomentumHqWeb, :router
 
+  import MomentumHqWeb.UserAuth
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -8,6 +10,7 @@ defmodule MomentumHqWeb.Router do
     plug :put_root_layout, html: {MomentumHqWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :fetch_current_user
   end
 
   pipeline :api do
@@ -15,16 +18,7 @@ defmodule MomentumHqWeb.Router do
   end
 
   scope "/", MomentumHqWeb do
-    pipe_through :browser
-
-    get "/", PageController, :home
-
-    live "/areas", AreaLive.Index, :index
-    live "/areas/new", AreaLive.Index, :new
-    live "/areas/:id/edit", AreaLive.Index, :edit
-
-    live "/areas/:id", AreaLive.Show, :show
-    live "/areas/:id/show/edit", AreaLive.Show, :edit
+    pipe_through [:browser, :require_authenticated_user]
 
     live "/blueprinting", BlueprintingLive.ListMomentumBlueprints, :index
     live "/blueprinting/new", BlueprintingLive.NewMomentumBlueprint, :new
@@ -50,17 +44,18 @@ defmodule MomentumHqWeb.Router do
     end
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", MomentumHqWeb do
-  #   pipe_through :api
-  # end
+  ## Authentication routes
 
-  # Enable Swoosh mailbox preview in development
-  if Application.compile_env(:momentum, :dev_routes) do
-    scope "/dev" do
-      pipe_through :browser
+  scope "/", MomentumHqWeb do
+    pipe_through [:browser, :redirect_if_user_is_authenticated]
 
-      forward "/mailbox", Plug.Swoosh.MailboxPreview
-    end
+    get "/", PageController, :home
+    get "/users/log_in", UserSessionController, :create
+  end
+
+  scope "/", MomentumHqWeb do
+    pipe_through [:browser]
+
+    delete "/users/log_out", UserSessionController, :delete
   end
 end

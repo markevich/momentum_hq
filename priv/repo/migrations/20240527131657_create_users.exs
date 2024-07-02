@@ -6,6 +6,9 @@ defmodule MomentumHq.Repo.Migrations.CreateUsers do
 
     create table(:users) do
       add :telegram_id, :bigint
+      add :first_name, :string
+      add :photo_url, :string
+      add :username, :string
 
       timestamps(type: :utc_datetime)
     end

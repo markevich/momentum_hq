@@ -80,7 +80,6 @@ defmodule MomentumHqWeb.BlueprintingLive.EditMomentumBlueprint do
          |> push_navigate(to: ~p(/blueprinting))}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        IO.inspect(changeset)
         {:noreply, assign_form(socket, changeset)}
     end
   end

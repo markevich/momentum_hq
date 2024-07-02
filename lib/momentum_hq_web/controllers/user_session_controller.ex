@@ -2,7 +2,7 @@ defmodule MomentumHqWeb.UserSessionController do
   use MomentumHqWeb, :controller
 
   alias MomentumHq.Accounts
-  alias MomentumHq.Telegram.SendMessage
+  alias MomentumHq.Telegram
   alias MomentumHqWeb.UserAuth
 
   def create(conn, params) do
@@ -19,13 +19,10 @@ defmodule MomentumHqWeb.UserSessionController do
     else
       {:ok, user} = Accounts.register_user(auth_data)
 
-      SendMessage.call(
-        %{
-          current_user: user,
-          output_message: "Привет, #{user.username}!"
-        },
-        []
-      )
+      Telegram.send_user_message_async(%{
+        chat_id: user.telegram_id,
+        text: "Привет, @#{user.username}! Поздравляю с успешной регистрацией в Momentum!"
+      })
 
       UserAuth.log_in_user(conn, user, params)
     end

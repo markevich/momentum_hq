@@ -4,13 +4,20 @@ defmodule MomentumHq.Lifecycle.NewDayStartedWorker do
 
   alias MomentumHq.Blueprinting
   alias MomentumHq.Lifecycle
+  alias MomentumHq.Telegram
 
   @impl Oban.Worker
   def perform(_job) do
-    Blueprinting.list_momentum_blueprints_by_generator_type("weekly")
+    blueprints = Blueprinting.list_momentum_blueprints_by_generator_type("weekly")
+
+    blueprints
     |> Enum.each(fn momentum_blueprint ->
       Lifecycle.schedule_today_tasks_creation(momentum_blueprint)
     end)
+
+    Telegram.send_admin_message_async(%{
+      text: "Заскедулил создание новых тасок\\. Количество блюпринтов: #{length(blueprints)}"
+    })
 
     :ok
   end

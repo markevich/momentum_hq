@@ -8,31 +8,31 @@
     <table class="w-full">
       <thead>
         <tr>
-          <th class="p-2 border-r h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">
+          <th class="p-2 border-r h-10 w-1/6 xl:text-sm text-xs">
             <span class="xl:block lg:block md:block sm:block hidden">Понедельник</span>
             <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Пн</span>
           </th>
-          <th class="p-2 border-r h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">
+          <th class="p-2 border-r h-10 w-1/6 xl:text-sm text-xs">
             <span class="xl:block lg:block md:block sm:block hidden">Вторник</span>
             <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Вт</span>
           </th>
-          <th class="p-2 border-r h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">
+          <th class="p-2 border-r h-10 w-1/6 xl:text-sm text-xs">
             <span class="xl:block lg:block md:block sm:block hidden">Среда</span>
             <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Ср</span>
           </th>
-          <th class="p-2 border-r h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">
+          <th class="p-2 border-r h-10 w-1/6 xl:text-sm text-xs">
             <span class="xl:block lg:block md:block sm:block hidden">Четверг</span>
             <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Чт</span>
           </th>
-          <th class="p-2 border-r h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">
+          <th class="p-2 border-r h-10 w-1/6 xl:text-sm text-xs">
             <span class="xl:block lg:block md:block sm:block hidden">Пятница</span>
             <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Пт</span>
           </th>
-          <th class="p-2 border-r h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">
+          <th class="p-2 border-r h-10 w-1/6 xl:text-sm text-xs">
             <span class="xl:block lg:block md:block sm:block hidden">Суббота</span>
             <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Сб</span>
           </th>
-          <th class="p-2 border-r h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs">
+          <th class="p-2 border-r h-10 w-1/6 xl:text-sm text-xs">
             <span class="xl:block lg:block md:block sm:block hidden">Воскресенье</span>
             <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Вс</span>
           </th>
@@ -42,7 +42,7 @@
         <tr class="text-center h-20">
           <td
             :for={{schedules_in_a_day, index} <- Enum.with_index(@task_days_schedules)}
-            class="border p-1 min-h-24 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 align-top overflow-auto"
+            class="border p-1 min-h-24 w-1/6 align-top"
           >
             <div class="flex flex-col min-h-24 w-auto mx-auto overflow-hidden">
               <!-- can be reasonable to use indexes in 2 weeks momentums
@@ -60,7 +60,7 @@
                     ~p"/blueprinting/#{@momentum_blueprint.id}/edit/task_blueprints/#{task.id}/edit"
                   }
                 >
-                  <div class={"event bg-#{task.color}-100 text-#{task.color}-900 hover:bg-#{task.color}-300 border-l-2 border-#{task.color}-400 p-1 text-sm mb-1 transition cursor-pointer duration-500 ease"}>
+                  <div class={"event sm:w-20 w-14 overflow-hidden bg-#{task.color}-100 text-#{task.color}-900 hover:bg-#{task.color}-300 border-l-2 border-#{task.color}-400 p-1 text-sm mb-1 transition cursor-pointer duration-500 ease"}>
                     <span :if={task.icon}>
                       <.material_icon
                         name={String.to_existing_atom(task.icon)}

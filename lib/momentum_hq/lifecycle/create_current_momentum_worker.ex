@@ -1,8 +1,8 @@
 defmodule MomentumHq.Lifecycle.CreateCurrentMomentumWorker do
   use Oban.Worker, queue: :lifecycle, max_attempts: 1
 
-  alias MomentumHq.Lifecycle.CurrentDayAndWeek
   alias MomentumHq.Blueprinting
+  alias MomentumHq.Lifecycle.CurrentDayAndWeek
   alias MomentumHq.MissionControl
   alias MomentumHq.MissionControl.Momentum
 

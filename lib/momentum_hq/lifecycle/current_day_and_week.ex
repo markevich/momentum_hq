@@ -17,34 +17,33 @@ defmodule MomentumHq.Lifecycle.CurrentDayAndWeek do
     }
   end
 
-  def relative_to(%DateTime{} = point_of_reference) do
-    point_of_reference
+  def relative_to(%DateTime{} = start_date, target_date) do
+    start_date
     |> DateTime.to_date()
     |> Date.beginning_of_week()
-    |> p_relative_to()
+    |> p_relative_to(target_date)
   end
 
-  def relative_to(%Date{} = point_of_reference) do
-    point_of_reference
+  def relative_to(%Date{} = start_date, target_date) do
+    start_date
     |> Date.beginning_of_week()
-    |> p_relative_to()
+    |> p_relative_to(target_date)
   end
 
-  defp p_relative_to(%Date{} = point_of_reference) do
-    today = DateTime.to_date(DateTime.utc_now())
-    today_day_of_week = Date.day_of_week(today)
+  defp p_relative_to(%Date{} = start_date, target_date) do
+    target_day_of_week = Date.day_of_week(target_date)
 
     week_number =
-      today
-      |> Date.diff(point_of_reference)
+      target_date
+      |> Date.diff(start_date)
       |> div(7)
 
     %{
-      today: today,
-      day_of_week: today_day_of_week,
+      target_date: target_date,
+      day_of_week: target_day_of_week,
       week_number: week_number,
-      start_day_of_week: Date.beginning_of_week(today),
-      end_day_of_week: Date.end_of_week(today)
+      start_day_of_week: Date.beginning_of_week(target_date),
+      end_day_of_week: Date.end_of_week(target_date)
     }
   end
 end

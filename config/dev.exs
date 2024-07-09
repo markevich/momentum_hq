@@ -54,6 +54,13 @@ config :momentum_hq, MomentumHqWeb.Endpoint,
 
 # Watch static and templates for browser reloading.
 config :momentum_hq, MomentumHqWeb.Endpoint,
+  http: [port: 4000],
+  https: [
+    port: 4001,
+    cipher_suite: :strong,
+    certfile: "priv/cert/selfsigned.pem",
+    keyfile: "priv/cert/selfsigned_key.pem"
+  ],
   live_reload: [
     patterns: [
       ~r"priv/static/(?!uploads/).*(js|css|png|jpeg|jpg|gif|svg)$",

@@ -5,7 +5,12 @@ defmodule MomentumHqWeb.BlueprintingLive.ListMomentumBlueprints do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :momentum_blueprints, Blueprinting.list_momentum_blueprints())}
+    {:ok,
+     stream(
+       socket,
+       :momentum_blueprints,
+       Blueprinting.list_momentum_blueprints_by_user(socket.assigns.current_user.id)
+     )}
   end
 
   @impl true

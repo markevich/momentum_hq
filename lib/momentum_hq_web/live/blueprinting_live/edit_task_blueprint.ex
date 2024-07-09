@@ -62,7 +62,7 @@ defmodule MomentumHqWeb.BlueprintingLive.EditTaskBlueprint do
         socket.assigns.momentum_blueprint_id
       )
 
-    case Blueprinting.create_task_blueprint(params) do
+    case Blueprinting.create_task_blueprint(params, socket.assigns.user_id) do
       {:ok, _task_blueprint} ->
         notify_parent({:task_blueprint_saved})
 

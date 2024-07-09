@@ -10,6 +10,8 @@ defmodule MomentumHq.Repo.Migrations.CreateTaskBlueprints do
       add :momentum_blueprint_id, references(:momentum_blueprints, on_delete: :restrict),
         null: false
 
+      add :user_id, references(:users, on_delete: :restrict), null: false
+
       add :name, :string
       add :icon, :string
       add :color, :string

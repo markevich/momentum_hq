@@ -1,6 +1,36 @@
 defmodule MomentumHq.Telegram do
   alias MomentumHq.Telegram.SendMessageWorker
 
+  @special_chars [
+    "\\",
+    "_",
+    "*",
+    "[",
+    "]",
+    "(",
+    ")",
+    "~",
+    "`",
+    ">",
+    "<",
+    "&",
+    "#",
+    "+",
+    "-",
+    "=",
+    "|",
+    "{",
+    "}",
+    ".",
+    "!"
+  ]
+  def escape_telegram_markdown(text) do
+    @special_chars
+    |> Enum.reduce(text, fn pattern, acc ->
+      String.replace(acc, pattern, "\\#{pattern}")
+    end)
+  end
+
   def send_user_message_async(args) when is_map(args) do
     args
     |> Map.put(:admin, false)

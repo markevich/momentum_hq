@@ -2,7 +2,9 @@ defmodule MomentumHq.Blueprinting.TaskBlueprint do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias MomentumHq.Accounts.User
   alias MomentumHq.Blueprinting.{MomentumBlueprint, TaskBlueprint}
+  alias MomentumHq.MissionControl.Task
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -18,15 +20,17 @@ defmodule MomentumHq.Blueprinting.TaskBlueprint do
     field :notify_at_hour, :integer
     field :affect_value, :decimal
 
+    belongs_to :user, User
     belongs_to :momentum_blueprint, MomentumBlueprint
+    has_many :tasks, Task
 
     timestamps(type: :utc_datetime)
   end
 
   def changeset(%TaskBlueprint{} = task_blueprint, attrs) do
     task_blueprint
-    |> cast(attrs, [:name, :schedules, :icon, :color, :momentum_blueprint_id])
-    |> validate_required([:name, :schedules, :icon, :color, :momentum_blueprint_id])
+    |> cast(attrs, [:name, :schedules, :icon, :color, :momentum_blueprint_id, :user_id])
+    |> validate_required([:name, :schedules, :icon, :color, :momentum_blueprint_id, :user_id])
     |> update_change(:schedules, &Enum.reject(&1, fn item -> !(item in 1..7) end))
     |> put_change(:affect_value, 5)
   end

@@ -3,8 +3,20 @@ defmodule MomentumHq.Blueprinting do
   alias MomentumHq.Lifecycle
   alias MomentumHq.Repo
 
+  alias MomentumHq.Accounts.User
   alias MomentumHq.Blueprinting.MomentumBlueprint
   alias MomentumHq.Blueprinting.TaskBlueprint
+
+  def list_momentum_blueprints_by_user(user_id) do
+    from(
+      momentum_blueprint in MomentumBlueprint,
+      join: user in assoc(momentum_blueprint, :user),
+      where: momentum_blueprint.user_id == ^user_id,
+      order_by: [asc: :inserted_at]
+    )
+    |> Repo.all()
+    |> Repo.preload(:task_blueprints)
+  end
 
   def list_momentum_blueprints do
     MomentumBlueprint
@@ -13,14 +25,32 @@ defmodule MomentumHq.Blueprinting do
     |> Repo.preload(:task_blueprints)
   end
 
-  def list_momentum_blueprints_by_generator_type(generator_type) do
-    from(blueprint in MomentumBlueprint,
-      where: blueprint.generator_type == ^generator_type
+  def list_users_with_today_task_blueprints do
+    # current_period = CurrentDayAndWeek.relative_to(momentum_blueprint.inserted_at)
+
+    from(
+      user in User,
+      join: task_blueprint in assoc(user, :task_blueprints),
+      # where: ^current_period.day_of_week in task_blueprint.schedules,
+      distinct: user.id
     )
-    |> Repo.all()
+    |> MomentumHq.Repo.all()
   end
 
-  def get_momentum_blueprint!(id) do
+  # def list_momentum_blueprints_by_generator_type(generator_type) do
+  #  from(blueprint in MomentumBlueprint,
+  #    where: blueprint.generator_type == ^generator_type
+  #  )
+  #  |> Repo.all()
+  # end
+
+  def get_momentum_blueprint!(id, user_id) do
+    from(
+      momentum_blueprint in MomentumBlueprint,
+      join: user in assoc(momentum_blueprint, :user),
+      where: user.id == ^user_id
+    )
+
     Repo.get!(MomentumBlueprint, id)
     |> Repo.preload(:task_blueprints)
     |> Repo.preload(:current_momentum)
@@ -65,9 +95,11 @@ defmodule MomentumHq.Blueprinting do
     MomentumBlueprint.changeset_for_create(momentum_blueprint, attrs)
   end
 
-  def create_task_blueprint(attrs \\ %{}) do
+  def create_task_blueprint(attrs \\ %{}, user_id) do
+    attrs_with_user = Map.put(attrs, "user_id", user_id)
+
     %TaskBlueprint{}
-    |> TaskBlueprint.changeset(attrs)
+    |> TaskBlueprint.changeset(attrs_with_user)
     |> Repo.insert()
   end
 

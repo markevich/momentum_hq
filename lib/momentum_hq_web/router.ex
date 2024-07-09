@@ -20,20 +20,22 @@ defmodule MomentumHqWeb.Router do
   scope "/", MomentumHqWeb do
     pipe_through [:browser, :require_authenticated_user]
 
-    live "/blueprinting", BlueprintingLive.ListMomentumBlueprints, :index
-    live "/blueprinting/new", BlueprintingLive.NewMomentumBlueprint, :new
+    live_session :authenticated, on_mount: [{MomentumHqWeb.UserAuth, :ensure_authenticated}] do
+      live "/blueprinting", BlueprintingLive.ListMomentumBlueprints, :index
+      live "/blueprinting/new", BlueprintingLive.NewMomentumBlueprint, :new
 
-    live "/blueprinting/:momentum_blueprint_id/edit",
-         BlueprintingLive.EditMomentumBlueprint,
-         :edit_momentum_blueprint
+      live "/blueprinting/:momentum_blueprint_id/edit",
+           BlueprintingLive.EditMomentumBlueprint,
+           :edit_momentum_blueprint
 
-    live "/blueprinting/:momentum_blueprint_id/edit/task_blueprints/:task_blueprint_id/edit",
-         BlueprintingLive.EditMomentumBlueprint,
-         :edit_task_blueprint
+      live "/blueprinting/:momentum_blueprint_id/edit/task_blueprints/:task_blueprint_id/edit",
+           BlueprintingLive.EditMomentumBlueprint,
+           :edit_task_blueprint
 
-    live "/blueprinting/:momentum_blueprint_id/edit/task_blueprints/new",
-         BlueprintingLive.EditMomentumBlueprint,
-         :new_task_blueprint
+      live "/blueprinting/:momentum_blueprint_id/edit/task_blueprints/new",
+           BlueprintingLive.EditMomentumBlueprint,
+           :new_task_blueprint
+    end
   end
 
   scope "/api", MomentumHqWeb do
@@ -51,6 +53,8 @@ defmodule MomentumHqWeb.Router do
 
     get "/", PageController, :home
     get "/users/log_in", UserSessionController, :create
+    get "/telegram_mini_app/login", UserSessionController, :init_mini_app
+    post "/telegram_mini_app/login", UserSessionController, :create_from_mini_app
   end
 
   scope "/", MomentumHqWeb do

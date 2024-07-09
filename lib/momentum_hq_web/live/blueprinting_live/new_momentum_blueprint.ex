@@ -14,7 +14,9 @@ defmodule MomentumHqWeb.BlueprintingLive.NewMomentumBlueprint do
 
   @impl true
   def handle_event("save", %{"momentum_blueprint" => momentum_blueprint_params}, socket) do
-    case Blueprinting.create_momentum_blueprint(momentum_blueprint_params) do
+    params = Map.put(momentum_blueprint_params, "user_id", socket.assigns.current_user.id)
+
+    case Blueprinting.create_momentum_blueprint(params) do
       {:ok, momentum_blueprint} ->
         {:noreply,
          socket

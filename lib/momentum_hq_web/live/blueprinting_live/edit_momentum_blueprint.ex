@@ -5,10 +5,11 @@ defmodule MomentumHqWeb.BlueprintingLive.EditMomentumBlueprint do
 
   @impl true
   def mount(params, _session, socket) do
-    :fitness_center
-    :local_drink
-    :plus
-    momentum_blueprint = Blueprinting.get_momentum_blueprint!(params["momentum_blueprint_id"])
+    momentum_blueprint =
+      Blueprinting.get_momentum_blueprint!(
+        params["momentum_blueprint_id"],
+        socket.assigns.current_user.id
+      )
 
     changeset = Blueprinting.momentum_blueprint_changeset_for_edit(momentum_blueprint)
 
@@ -31,6 +32,7 @@ defmodule MomentumHqWeb.BlueprintingLive.EditMomentumBlueprint do
   defp apply_action(socket, :edit_task_blueprint, %{"task_blueprint_id" => id}) do
     socket
     |> assign(:page_title, "Edit task")
+    |> assign(:user_id, socket.assigns.current_user.id)
     |> assign(:task_blueprint, Blueprinting.get_task_blueprint!(id))
   end
 
@@ -43,9 +45,11 @@ defmodule MomentumHqWeb.BlueprintingLive.EditMomentumBlueprint do
        ) do
     socket
     |> assign(:page_title, "New Task")
+    |> assign(:user_id, socket.assigns.current_user.id)
     |> assign(:task_blueprint, %Blueprinting.TaskBlueprint{
       momentum_blueprint_id: momentum_blueprint_id,
-      schedules: [String.to_integer(params["day"])]
+      schedules: [String.to_integer(params["day"])],
+      color: :green
     })
   end
 
@@ -80,6 +84,7 @@ defmodule MomentumHqWeb.BlueprintingLive.EditMomentumBlueprint do
          |> push_navigate(to: ~p(/blueprinting))}
 
       {:error, %Ecto.Changeset{} = changeset} ->
+        IO.inspect(changeset)
         {:noreply, assign_form(socket, changeset)}
     end
   end
@@ -90,7 +95,10 @@ defmodule MomentumHqWeb.BlueprintingLive.EditMomentumBlueprint do
         socket
       ) do
     momentum_blueprint =
-      Blueprinting.get_momentum_blueprint!(socket.assigns.momentum_blueprint.id)
+      Blueprinting.get_momentum_blueprint!(
+        socket.assigns.momentum_blueprint.id,
+        socket.assigns.current_user.id
+      )
 
     changeset = Blueprinting.momentum_blueprint_changeset_for_edit(momentum_blueprint)
 

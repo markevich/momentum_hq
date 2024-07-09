@@ -1,5 +1,6 @@
 defmodule MomentumHq.Telegram.SendMessageWorker do
   use Oban.Worker, queue: :telegram, max_attempts: 1
+  alias MomentumHq.Telegram
 
   @impl Oban.Worker
   def perform(%Oban.Job{args: args}) do

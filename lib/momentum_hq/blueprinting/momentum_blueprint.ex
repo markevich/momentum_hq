@@ -2,9 +2,9 @@ defmodule MomentumHq.Blueprinting.MomentumBlueprint do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias MomentumHq.Users.User
   alias MomentumHq.Blueprinting.TaskBlueprint
   alias MomentumHq.MissionControl.Momentum
+  alias MomentumHq.Accounts.User
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id

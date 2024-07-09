@@ -1,0 +1,13 @@
+<body>
+  <.form for={nil} class="form" action={~p(/telegram_mini_app/login)}>
+    <input type="hidden" name="json_init_data" value="" />
+  </.form>
+  <script defer src="https://telegram.org/js/telegram-web-app.js">
+  </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", (event) => {
+      document.querySelector('input[name="json_init_data"').value = window.Telegram.WebApp.initData;
+      document.querySelector('form.form').submit();
+    });
+  </script>
+</body>

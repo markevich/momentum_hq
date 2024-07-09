@@ -7,9 +7,12 @@ defmodule MomentumHq.Lifecycle.CreateCurrentMomentumWorker do
   alias MomentumHq.MissionControl.Momentum
 
   @impl Oban.Worker
-  def perform(%Oban.Job{args: %{"momentum_blueprint_id" => momentum_blueprint_id}}) do
+  def perform(%Oban.Job{
+        args: %{"momentum_blueprint_id" => momentum_blueprint_id, "date" => string_date}
+      }) do
+    date = Date.from_iso8601!(string_date)
     momentum_blueprint = Blueprinting.get_momentum_blueprint!(momentum_blueprint_id)
-    current_period = CurrentDayAndWeek.relative_to(momentum_blueprint.inserted_at)
+    current_period = CurrentDayAndWeek.relative_to(momentum_blueprint.inserted_at, date)
 
     # Fail and alert if we don't receive back {:ok, _result} tuple
     {:ok, _result} =
@@ -34,6 +37,7 @@ defmodule MomentumHq.Lifecycle.CreateCurrentMomentumWorker do
       to: current_day_and_week.end_day_of_week,
       cycle_number: current_day_and_week.week_number,
       momentum_blueprint_id: momentum_blueprint.id,
+      name: momentum_blueprint.name,
       value_at_start: momentum_blueprint.current_value,
       value_at_end: momentum_blueprint.current_value,
       user_id: momentum_blueprint.user_id

@@ -7,7 +7,7 @@ defmodule MomentumHq.Lifecycle.NewWeekStartedWorker do
 
   @impl Oban.Worker
   def perform(_job) do
-    blueprints = Blueprinting.list_momentum_blueprints_by_generator_type("weekly")
+    blueprints = Blueprinting.list_momentum_blueprints()
 
     blueprints
     |> Enum.each(fn momentum_blueprint ->
@@ -16,7 +16,9 @@ defmodule MomentumHq.Lifecycle.NewWeekStartedWorker do
 
     Telegram.send_admin_message_async(%{
       text:
-        "Заскедулил создание новых current momentum'ов\\. Количество блюпринтов: #{length(blueprints)}"
+        Telegram.escape_telegram_markdown(
+          "Заскедулил создание новых current momentum'ов\\. Количество блюпринтов: #{length(blueprints)}"
+        )
     })
 
     :ok

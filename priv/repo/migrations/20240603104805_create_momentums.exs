@@ -6,6 +6,7 @@ defmodule MomentumHq.Repo.Migrations.CreateMomentums do
       add :from, :date, null: false
       add :to, :date, null: false
       add :cycle_number, :integer, null: false
+      add :name, :string, null: false
       add :value_at_start, :decimal, null: false
       add :value_at_end, :decimal, null: false
       add :user_id, references(:users, on_delete: :restrict), null: false

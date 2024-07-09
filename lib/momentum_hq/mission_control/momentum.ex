@@ -12,6 +12,7 @@ defmodule MomentumHq.MissionControl.Momentum do
   schema "momentums" do
     field :from, :date
     field :to, :date
+    field :name, :string
     field :cycle_number, :integer
     field :value_at_start, :decimal
     field :value_at_end, :decimal
@@ -27,6 +28,7 @@ defmodule MomentumHq.MissionControl.Momentum do
     |> cast(attrs, [
       :from,
       :to,
+      :name,
       :cycle_number,
       :value_at_start,
       :value_at_end,
@@ -36,6 +38,7 @@ defmodule MomentumHq.MissionControl.Momentum do
     |> validate_required([
       :from,
       :to,
+      :name,
       :cycle_number,
       :value_at_start,
       :value_at_end,

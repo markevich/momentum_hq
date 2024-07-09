@@ -11,7 +11,10 @@ defmodule MomentumHq.Repo.Migrations.CreateTasks do
     create table(:tasks) do
       add :task_blueprint_id, references(:task_blueprints, on_delete: :restrict), null: false
       add :momentum_id, references(:momentums, on_delete: :restrict), null: false
+      add :user_id, references(:users, on_delete: :restrict), null: false
+
       add :name, :string
+      add :icon, :string
 
       add :affect_type, :task_blueprint_affect_type, default: fragment("'medium'"), null: false
       add :affect_value, :decimal, null: false

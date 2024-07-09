@@ -38,3 +38,4 @@ npm-debug.log
 /.elixir-tools/
 /.DS_Store
 /config/dev.secret.exs
+/priv/cert

@@ -5,7 +5,7 @@ defmodule MomentumHq.Repo.Migrations.CreateUsers do
     execute "CREATE EXTENSION IF NOT EXISTS pgcrypto"
 
     create table(:users) do
-      add :telegram_id, :bigint
+      add :telegram_id, :bigint, null: false
       add :first_name, :string
       add :photo_url, :string
       add :username, :string

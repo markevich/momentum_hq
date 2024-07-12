@@ -1,5 +1,7 @@
 defmodule MomentumHq.Telegram do
   alias MomentumHq.Telegram.SendMessageWorker
+  alias MomentumHq.Telegram.UpdateMessageWorker
+  alias Telegram.Api
 
   @special_chars [
     "\\",
@@ -35,6 +37,10 @@ defmodule MomentumHq.Telegram do
     args
     |> Map.put(:admin, false)
     |> send_message_async()
+  end
+
+  def update_user_message(args) when is_map(args) do
+    UpdateMessageWorker.call(args)
   end
 
   def send_admin_message_async(args) when is_map(args) do

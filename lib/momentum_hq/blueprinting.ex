@@ -25,32 +25,19 @@ defmodule MomentumHq.Blueprinting do
     |> Repo.preload(:task_blueprints)
   end
 
-  def list_users_with_today_task_blueprints do
-    # current_period = CurrentDayAndWeek.relative_to(momentum_blueprint.inserted_at)
-
-    from(
-      user in User,
-      join: task_blueprint in assoc(user, :task_blueprints),
-      # where: ^current_period.day_of_week in task_blueprint.schedules,
-      distinct: user.id
-    )
-    |> MomentumHq.Repo.all()
-  end
-
-  # def list_momentum_blueprints_by_generator_type(generator_type) do
-  #  from(blueprint in MomentumBlueprint,
-  #    where: blueprint.generator_type == ^generator_type
-  #  )
-  #  |> Repo.all()
-  # end
-
   def get_momentum_blueprint!(id, user_id) do
     from(
       momentum_blueprint in MomentumBlueprint,
       join: user in assoc(momentum_blueprint, :user),
-      where: user.id == ^user_id
+      where: user.id == ^user_id,
+      where: momentum_blueprint.id == ^id
     )
+    |> Repo.one!()
+    |> Repo.preload(:task_blueprints)
+    |> Repo.preload(:current_momentum)
+  end
 
+  def get_momentum_blueprint!(id) do
     Repo.get!(MomentumBlueprint, id)
     |> Repo.preload(:task_blueprints)
     |> Repo.preload(:current_momentum)

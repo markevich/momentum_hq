@@ -3,8 +3,9 @@ defmodule MomentumHq.MissionControl.Momentum do
   import Ecto.Changeset
 
   alias __MODULE__
-  alias MomentumHq.Users.User
   alias MomentumHq.Blueprinting.MomentumBlueprint
+  alias MomentumHq.MissionControl.Task
+  alias MomentumHq.Users.User
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -19,6 +20,7 @@ defmodule MomentumHq.MissionControl.Momentum do
 
     belongs_to :user, User
     belongs_to :momentum_blueprint, MomentumBlueprint
+    has_many :tasks, Task
 
     timestamps(type: :utc_datetime)
   end

@@ -1,9 +1,9 @@
 defmodule MomentumHq.Lifecycle.StartNewDayForUserWorker do
   use Oban.Worker, queue: :lifecycle, max_attempts: 1
+  use MomentumHq.Constants
 
   alias MomentumHq.Lifecycle.CurrentDayAndWeek
   alias MomentumHq.MissionControl
-  alias MomentumHq.Telegram
 
   @impl Oban.Worker
   def perform(%Job{args: args}) do
@@ -13,7 +13,8 @@ defmodule MomentumHq.Lifecycle.StartNewDayForUserWorker do
 
     user = MissionControl.get_user_for_tasks_creation!(user_id)
     create_tasks_for_date!(user, date)
-    send_tasks_to_telegram(user, date)
+
+    MissionControl.render_new_day(user, date)
   end
 
   defp create_tasks_for_date!(user, date) do
@@ -30,7 +31,13 @@ defmodule MomentumHq.Lifecycle.StartNewDayForUserWorker do
 
     momentum_blueprint.task_blueprints
     |> Enum.filter(fn task_blueprint ->
-      current_period.day_of_week in task_blueprint.schedules
+      # Task schedule is for target date
+      # Task is not already exists
+      current_period.day_of_week in task_blueprint.schedules &&
+        !Enum.any?(momentum_blueprint.current_momentum.tasks, fn existing_task ->
+          existing_task.task_blueprint_id == task_blueprint.id &&
+            existing_task.target_date == date
+        end)
     end)
     |> Enum.map(fn task_blueprint ->
       MomentumHq.MissionControl.task_changeset(%MomentumHq.MissionControl.Task{}, %{
@@ -49,38 +56,6 @@ defmodule MomentumHq.Lifecycle.StartNewDayForUserWorker do
     |> Enum.reduce(multi, fn {task_changeset, index}, multi ->
       multi
       |> Ecto.Multi.insert("task_#{momentum_blueprint.id}.#{index}", task_changeset)
-    end)
-  end
-
-  defp send_tasks_to_telegram(user, date) do
-    Telegram.send_user_message_async(%{
-      chat_id: user.telegram_id,
-      text: Telegram.escape_telegram_markdown("Доброе утро! Задачи на сегодня:"),
-      disable_notification: true
-    })
-
-    MissionControl.get_user_tasks_for_a_day(user.id, date)
-    |> Enum.group_by(fn task ->
-      task.momentum.name
-    end)
-    |> Enum.each(fn {momentum_name, tasks} ->
-      %{
-        chat_id: user.telegram_id,
-        text: "Моментум: `#{Telegram.escape_telegram_markdown(momentum_name)}`",
-        disable_notification: true
-      }
-      |> Telegram.send_user_message_async()
-
-      tasks
-      |> Enum.with_index()
-      |> Enum.each(fn {task, index} ->
-        %{
-          chat_id: user.telegram_id,
-          text: "#{task.icon} #{task.name}",
-          disable_notification: true
-        }
-        |> Telegram.send_user_message_async()
-      end)
     end)
   end
 end

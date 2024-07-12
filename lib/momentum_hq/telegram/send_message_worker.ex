@@ -1,6 +1,5 @@
 defmodule MomentumHq.Telegram.SendMessageWorker do
   use Oban.Worker, queue: :telegram, max_attempts: 1
-  alias MomentumHq.Telegram
 
   @impl Oban.Worker
   def perform(%Oban.Job{args: args}) do
@@ -28,7 +27,7 @@ defmodule MomentumHq.Telegram.SendMessageWorker do
     output_message = Map.fetch!(args, "text")
     # Telegram has a kimkt when sending message of 4096 chars
     if String.length(output_message) < @telegram_limit do
-      Telegram.Api.request(token, "sendMessage", args)
+      {:ok, _} = Telegram.Api.request(token, "sendMessage", args)
     else
       {left_part, right_part} = {
         String.slice(output_message, 0, @telegram_limit),
@@ -43,8 +42,8 @@ defmodule MomentumHq.Telegram.SendMessageWorker do
       left_part = String.reverse(left_part) <> "\n"
       right_part = String.reverse(part_to_move) <> right_part
 
-      Telegram.Api.request(token, "sendMessage", Keyword.merge(args, text: left_part))
-      Telegram.Api.request(token, "sendMessage", Keyword.merge(args, text: right_part))
+      {:ok, _} = Telegram.Api.request(token, "sendMessage", Keyword.merge(args, text: left_part))
+      {:ok, _} = Telegram.Api.request(token, "sendMessage", Keyword.merge(args, text: right_part))
     end
   end
 end

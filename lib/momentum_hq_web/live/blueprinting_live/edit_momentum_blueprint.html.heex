@@ -1,50 +1,115 @@
-<div class="container mx-auto mt-10">
-  <div class="wrapper bg-white rounded shadow w-full sticky z-10 top-0">
+<div class="container mx-auto">
+  <div class="even:bg-teal-50 odd:bg-lime-50 border hidden w-1/7 w-fit border-b-4 max-w-full whitespace-nowrap content-center">
+  </div>
+  <div class="wrapper rounded w-full">
     <div class="header flex justify-between border-b p-2">
       <span class="text-lg font-bold">
-        Еженедельные задачи
+        Каждая неделя
       </span>
     </div>
-    <table class="w-full">
+    <table class="table border-spacing-y-4 w-full border-separate space-y-4 text-sm rounded">
+      <tbody>
+        <tr
+          :for={{schedules_in_a_day, index} <- Enum.with_index(@task_days_schedules)}
+          class="bg-slate-200 border"
+        >
+          <td class="w-12 font-bold">
+            <div class="w-full text-center">
+              <%= case index + 1 do
+                1 -> "Пн"
+                2 -> "Вт"
+                3 -> "Ср"
+                4 -> "Чт"
+                5 -> "Пт"
+                6 -> "Сб"
+                7 -> "Вс"
+              end %>
+            </div>
+          </td>
+          <td>
+            <table class="w-full">
+              <tbody>
+                <tr :for={task <- schedules_in_a_day}>
+                  <td>
+                    <.link patch={
+                      ~p"/blueprinting/#{@momentum_blueprint.id}/edit/task_blueprints/#{task.id}/edit"
+                    }>
+                      <div class={"bg-#{task.color}-100 text-#{task.color}-900 hover:bg-#{task.color}-300 border-l-2 border-#{task.color}-400 text-sm transition cursor-pointer duration-500 ease"}>
+                        <span :if={task.icon} class="font-semibold">
+                          <.material_icon
+                            name={String.to_existing_atom(task.icon)}
+                            size={20}
+                            class={"fill-#{task.color}-900 inline-flex"}
+                          />
+                          <%= task.name %>
+                        </span>
+                      </div>
+                    </.link>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <.link patch={
+                      ~p"/blueprinting/#{@momentum_blueprint.id}/edit/task_blueprints/new?day=#{index + 1}"
+                    }>
+                      <div class="hover:bg-gray-100 border-orange-300 border rounded text-center event text-sm transition cursor-pointer duration-500 ease">
+                        <span>
+                          <.material_icon name={:add} size={20} class="inline-flex fill-gray-900" />
+                          Добавить задачу
+                        </span>
+                        <span class="event-name font-semibold"></span>
+                      </div>
+                    </.link>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <.link patch={~p"/blueprinting/#{@momentum_blueprint.id}/edit/task_blueprints/new"}>
+      <div class="hover:bg-green-100 border-green-500 text-center font-semibold event border rounded p-1 text-sm mb-1 transition cursor-pointer duration-500 ease">
+        <span>
+          <.material_icon name={:add} size={20} class="inline-flex fill-gray-900" />
+          Добавить новую задачу
+        </span>
+        <span class="event-name font-semibold"></span>
+      </div>
+    </.link>
+    <table class="min-w-full w-80 text-sm table-fixed">
       <thead>
         <tr>
-          <th class="p-2 border-r h-10 w-1/6 xl:text-sm text-xs">
-            <span class="xl:block lg:block md:block sm:block hidden">Понедельник</span>
+          <th class="p-2 border-r h-10">
             <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Пн</span>
           </th>
-          <th class="p-2 border-r h-10 w-1/6 xl:text-sm text-xs">
-            <span class="xl:block lg:block md:block sm:block hidden">Вторник</span>
+          <th class="p-2 border-r h-10">
             <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Вт</span>
           </th>
-          <th class="p-2 border-r h-10 w-1/6 xl:text-sm text-xs">
-            <span class="xl:block lg:block md:block sm:block hidden">Среда</span>
+          <th class="p-2 border-r h-10">
             <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Ср</span>
           </th>
-          <th class="p-2 border-r h-10 w-1/6 xl:text-sm text-xs">
-            <span class="xl:block lg:block md:block sm:block hidden">Четверг</span>
+          <th class="p-2 border-r h-10">
             <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Чт</span>
           </th>
-          <th class="p-2 border-r h-10 w-1/6 xl:text-sm text-xs">
-            <span class="xl:block lg:block md:block sm:block hidden">Пятница</span>
+          <th class="p-2 border-r h-10">
             <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Пт</span>
           </th>
-          <th class="p-2 border-r h-10 w-1/6 xl:text-sm text-xs">
-            <span class="xl:block lg:block md:block sm:block hidden">Суббота</span>
+          <th class="p-2 border-r h-10">
             <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Сб</span>
           </th>
-          <th class="p-2 border-r h-10 w-1/6 xl:text-sm text-xs">
-            <span class="xl:block lg:block md:block sm:block hidden">Воскресенье</span>
+          <th class="p-2 border-r h-10">
             <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Вс</span>
           </th>
         </tr>
       </thead>
       <tbody>
-        <tr class="text-center h-20">
+        <tr class="text-center">
           <td
             :for={{schedules_in_a_day, index} <- Enum.with_index(@task_days_schedules)}
-            class="border p-1 min-h-24 w-1/6 align-top"
+            class="border p-1 min-h-24 align-top"
           >
-            <div class="flex flex-col min-h-24 w-auto mx-auto overflow-hidden">
+            <div class="min-h-24 mx-auto overflow-hidden">
               <!-- can be reasonable to use indexes in 2 weeks momentums
                 <div :if={MomentumHq.Lifecycle.CurrentDayAndWeek.absolute().day_of_week == index + 1} class="top h-5 w-full">
                   Today
@@ -53,24 +118,24 @@
                   <span class="text-gray-500">index + 1</span>
                 </div>
               -->
-              <div class="bottom flex-grow h-30 py-1 w-full">
+              <div class="bottom h-30 py-1">
                 <.link
                   :for={task <- schedules_in_a_day}
                   patch={
                     ~p"/blueprinting/#{@momentum_blueprint.id}/edit/task_blueprints/#{task.id}/edit"
                   }
                 >
-                  <div class={"event sm:w-20 w-14 overflow-hidden bg-#{task.color}-100 text-#{task.color}-900 hover:bg-#{task.color}-300 border-l-2 border-#{task.color}-400 p-1 text-sm mb-1 transition cursor-pointer duration-500 ease"}>
-                    <span :if={task.icon}>
+                  <div class={"whitespace-nowrap event text-xs overflow-hidden bg-#{task.color}-100 text-#{task.color}-900 hover:bg-#{task.color}-300 border-l-2 border-#{task.color}-400 p-1 text-sm mb-1 transition cursor-pointer duration-500 ease"}>
+                    <div :if={task.icon}>
                       <.material_icon
                         name={String.to_existing_atom(task.icon)}
-                        size={20}
+                        size={12}
                         class={"inline-flex fill-#{task.color}-900"}
                       />
-                    </span>
-                    <span class="event-name font-semibold">
+                    </div>
+                    <div class="event-name font-semibold">
                       <%= task.name %>
-                    </span>
+                    </div>
                   </div>
                 </.link>
 

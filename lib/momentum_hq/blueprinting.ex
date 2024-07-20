@@ -3,7 +3,6 @@ defmodule MomentumHq.Blueprinting do
   alias MomentumHq.Lifecycle
   alias MomentumHq.Repo
 
-  alias MomentumHq.Accounts.User
   alias MomentumHq.Blueprinting.MomentumBlueprint
   alias MomentumHq.Blueprinting.TaskBlueprint
 

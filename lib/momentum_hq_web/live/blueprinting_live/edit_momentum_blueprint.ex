@@ -5,6 +5,9 @@ defmodule MomentumHqWeb.BlueprintingLive.EditMomentumBlueprint do
 
   @impl true
   def mount(params, _session, socket) do
+    :sports_bar
+    :fitness_center
+
     momentum_blueprint =
       Blueprinting.get_momentum_blueprint!(
         params["momentum_blueprint_id"],

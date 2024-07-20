@@ -1,7 +1,6 @@
 defmodule MomentumHq.Telegram do
   alias MomentumHq.Telegram.SendMessageWorker
   alias MomentumHq.Telegram.UpdateMessageWorker
-  alias Telegram.Api
 
   @special_chars [
     "\\",

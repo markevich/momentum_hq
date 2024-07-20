@@ -31,6 +31,12 @@ module.exports = {
     {
       pattern: /^border-/,
     },
+    {
+      pattern: /^from-/,
+    },
+    {
+      pattern: /^to-/,
+    },
   ],
   plugins: [
     require("@tailwindcss/forms"),

@@ -24,15 +24,25 @@
             :stone,
             :cyan
           ])
-      }>
+      } class="relative">
         <input
           type="radio"
           name={@form[:color].name}
           id={"#{@form[:color].id}-#{idx}"}
           value={color}
           checked={to_string(@form[:color].value) == to_string(color)}
-          class={"rounded-full focus:ring-#{color}-400 focus:ring-1 bg-#{color}-400 checked:bg-#{color}-400 focus:bg-#{color}-400 text-#{color}-400 border-0 w-10 h-10"}
+          class={"rounded-full 
+            focus:ring-#{color}-500 
+            focus:ring-1 bg-#{color}-500 
+            checked:bg-#{color}-500 
+            focus:bg-#{color}-500 
+            text-#{color}-500 
+            border-0
+            w-10
+            h-10
+            "}
         />
+        <label for={@form[:color].name} class="color_checkbox_label"></label>
       </div>
     </div>
 

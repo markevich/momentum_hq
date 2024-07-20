@@ -2,7 +2,7 @@
   <div class="even:bg-teal-50 odd:bg-lime-50 border hidden w-1/7 w-fit border-b-4 max-w-full whitespace-nowrap content-center">
   </div>
   <div class="wrapper rounded w-full">
-    <div class="header flex justify-between border-b p-2">
+    <div class="header flex justify-between p-2">
       <span class="text-lg font-bold">
         Каждая неделя
       </span>
@@ -11,10 +11,10 @@
       <tbody>
         <tr
           :for={{schedules_in_a_day, index} <- Enum.with_index(@task_days_schedules)}
-          class="bg-slate-200 border"
+          class=""
         >
-          <td class="w-12 font-bold">
-            <div class="w-full text-center">
+          <td class="w-8 font-bold align-top">
+            <div class="w-full text-start">
               <%= case index + 1 do
                 1 -> "Пн"
                 2 -> "Вт"
@@ -34,13 +34,27 @@
                     <.link patch={
                       ~p"/blueprinting/#{@momentum_blueprint.id}/edit/task_blueprints/#{task.id}/edit"
                     }>
-                      <div class={"bg-#{task.color}-100 text-#{task.color}-900 hover:bg-#{task.color}-300 border-l-2 border-#{task.color}-400 text-sm transition cursor-pointer duration-500 ease"}>
-                        <span :if={task.icon} class="font-semibold">
-                          <.material_icon
-                            name={String.to_existing_atom(task.icon)}
-                            size={20}
-                            class={"fill-#{task.color}-900 inline-flex"}
-                          />
+                      <div class={"
+                        flex 
+                        bg-#{task.color}-500
+                        border 
+                        border-#{task.color}-600 
+                        text-white 
+                        hover:bg-#{task.color}-600 
+                        rounded-md 
+                        text-sm 
+                        p-2 
+                        pl-2 
+                        justify-start 
+                        transition 
+                        cursor-pointer 
+                        duration-500 
+                        ease"}>
+                        
+                        <div :if={task.icon} class="mr-2">
+                          <%= task.icon %>
+                        </div>
+                        <span class="font-semibold">
                           <%= task.name %>
                         </span>
                       </div>
@@ -52,9 +66,9 @@
                     <.link patch={
                       ~p"/blueprinting/#{@momentum_blueprint.id}/edit/task_blueprints/new?day=#{index + 1}"
                     }>
-                      <div class="hover:bg-gray-100 border-orange-300 border rounded text-center event text-sm transition cursor-pointer duration-500 ease">
+                      <div class="hover:bg-gray-50 border-gray-300 border rounded text-center event text-sm p-1 transition cursor-pointer duration-500 ease">
                         <span>
-                          <.material_icon name={:add} size={20} class="inline-flex fill-gray-900" />
+                          <span class="">+</span>
                           Добавить задачу
                         </span>
                         <span class="event-name font-semibold"></span>
@@ -127,11 +141,7 @@
                 >
                   <div class={"whitespace-nowrap event text-xs overflow-hidden bg-#{task.color}-100 text-#{task.color}-900 hover:bg-#{task.color}-300 border-l-2 border-#{task.color}-400 p-1 text-sm mb-1 transition cursor-pointer duration-500 ease"}>
                     <div :if={task.icon}>
-                      <.material_icon
-                        name={String.to_existing_atom(task.icon)}
-                        size={12}
-                        class={"inline-flex fill-#{task.color}-900"}
-                      />
+                      <%= task.icon %>
                     </div>
                     <div class="event-name font-semibold">
                       <%= task.name %>

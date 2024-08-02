@@ -12,5 +12,5 @@
 
 MomentumHq.Repo.insert!(%MomentumHq.Accounts.User{
   id: "20f0782c-78b5-4904-9b4d-069d60221a7f",
-  telegram_id: 123
+  telegram_id: 117_137_841
 })

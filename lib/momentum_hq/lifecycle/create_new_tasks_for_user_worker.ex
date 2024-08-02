@@ -1,4 +1,4 @@
-defmodule MomentumHq.Lifecycle.StartNewDayForUserWorker do
+defmodule MomentumHq.Lifecycle.CreateNewTasksForUserWorker do
   use Oban.Worker, queue: :lifecycle, max_attempts: 1
   use MomentumHq.Constants
 
@@ -15,6 +15,8 @@ defmodule MomentumHq.Lifecycle.StartNewDayForUserWorker do
     create_tasks_for_date!(user, date)
 
     MissionControl.render_new_day(user, date)
+
+    :ok
   end
 
   defp create_tasks_for_date!(user, date) do

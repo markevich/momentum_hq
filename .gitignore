@@ -39,3 +39,4 @@ npm-debug.log
 /.DS_Store
 /config/dev.secret.exs
 /priv/cert
+/assets/meta.json

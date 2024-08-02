@@ -32,6 +32,18 @@ defmodule MomentumHq.Telegram do
     end)
   end
 
+  def send_user_message_async_and_save_reference(args) when is_map(args) do
+    {:ok, _reference_args} = Map.fetch(args, :reference_args)
+
+    send_user_message_async(args)
+  end
+
+  def send_user_message_sync(args) when is_map(args) do
+    args
+    |> Map.put(:admin, false)
+    |> send_message_sync()
+  end
+
   def send_user_message_async(args) when is_map(args) do
     args
     |> Map.put(:admin, false)
@@ -40,6 +52,12 @@ defmodule MomentumHq.Telegram do
 
   def update_user_message(args) when is_map(args) do
     UpdateMessageWorker.call(args)
+  end
+
+  def delete_user_message(chat_id, message_id) do
+    token = Application.fetch_env!(:telegram, :client_bot_token)
+
+    Telegram.Api.request(token, "deleteMessage", %{chat_id: chat_id, message_id: message_id})
   end
 
   def send_admin_message_async(args) when is_map(args) do
@@ -58,5 +76,12 @@ defmodule MomentumHq.Telegram do
     args
     |> SendMessageWorker.new()
     |> Oban.insert()
+  end
+
+  defp send_message_sync(args) do
+    {:ok, _text} = Map.fetch(args, :text)
+    {:ok, _chat_id} = Map.fetch(args, :chat_id)
+
+    SendMessageWorker.perform(%Oban.Job{args: args})
   end
 end

@@ -8,6 +8,9 @@ defmodule MomentumHq.Constants do
 
       # messages
       @start_message "/start"
+
+      @message_type_welcome_to_new_day "render_welcome_to_new_day"
+      @message_type_momentum "render_momentum"
     end
   end
 end

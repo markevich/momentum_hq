@@ -1,7 +1,11 @@
 defmodule MomentumHqWeb.BlueprintingLive.EditMomentumBlueprint do
+  alias MomentumHq.Lifecycle.CreateNewTasksForUserWorker
   use MomentumHqWeb, :live_view
 
   alias MomentumHq.Blueprinting
+  alias MomentumHq.MissionControl
+  alias MomentumHq.MissionControl.RenderTasksForDay
+  alias MomentumHqWeb.BlueprintingLive.EditTaskBlueprint
 
   @impl true
   def mount(params, _session, socket) do
@@ -87,16 +91,26 @@ defmodule MomentumHqWeb.BlueprintingLive.EditMomentumBlueprint do
          |> push_navigate(to: ~p(/blueprinting))}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        IO.inspect(changeset)
         {:noreply, assign_form(socket, changeset)}
     end
   end
 
   @impl true
-  def handle_info(
-        {MomentumHqWeb.BlueprintingLive.EditTaskBlueprint, {:task_blueprint_saved}},
-        socket
-      ) do
+  def handle_info({EditTaskBlueprint, {:task_blueprint_changed, event, task_blueprint}}, socket) do
+    date = Date.to_iso8601(DateTime.to_date(DateTime.utc_now()))
+
+    case event do
+      :create ->
+        recreate_current_day_for_user(socket.assigns.current_user.id, date)
+
+      :edit ->
+        MissionControl.refresh_today_tasks_name(task_blueprint)
+        |> RenderTasksForDay.rerender_existing_messages()
+
+      :delete ->
+        recreate_current_day_for_user(socket.assigns.current_user.id, date)
+    end
+
     momentum_blueprint =
       Blueprinting.get_momentum_blueprint!(
         socket.assigns.momentum_blueprint.id,
@@ -114,6 +128,14 @@ defmodule MomentumHqWeb.BlueprintingLive.EditMomentumBlueprint do
     assign(socket, :form, to_form(changeset))
     |> assign(:momentum_blueprint, changeset.data)
     |> assign(:task_days_schedules, task_days_schedules(updated_momentum.task_blueprints))
+  end
+
+  defp recreate_current_day_for_user(user_id, date) do
+    CreateNewTasksForUserWorker.new(%{
+      user_id: user_id,
+      date: date
+    })
+    |> Oban.insert()
   end
 
   def task_days_schedules(task_blueprints) do

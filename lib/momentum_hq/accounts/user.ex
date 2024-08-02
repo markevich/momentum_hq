@@ -5,6 +5,7 @@ defmodule MomentumHq.Accounts.User do
   alias MomentumHq.Blueprinting.MomentumBlueprint
   alias MomentumHq.Blueprinting.TaskBlueprint
   alias MomentumHq.MissionControl.Task
+  alias MomentumHq.MissionControl.TelegramDayReference
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -13,6 +14,7 @@ defmodule MomentumHq.Accounts.User do
     has_many :tasks, Task
     has_many :task_blueprints, TaskBlueprint
     has_many :momentum_blueprints, MomentumBlueprint
+    has_many :telegram_day_references, TelegramDayReference
 
     field :telegram_id, :integer
     field :first_name, :string

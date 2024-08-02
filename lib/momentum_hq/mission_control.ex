@@ -6,11 +6,57 @@ defmodule MomentumHq.MissionControl do
   alias MomentumHq.MissionControl.MomentumChange
   alias MomentumHq.MissionControl.RenderTasksForDay
   alias MomentumHq.MissionControl.Task
+  alias MomentumHq.MissionControl.TelegramDayReference
 
   alias MomentumHq.Repo
 
   def render_new_day(user, date) do
-    RenderTasksForDay.render_and_send_new(user, date)
+    RenderTasksForDay.delete_old_messages_and_render_new_day(user, date)
+  end
+
+  def fail_expired_user_tasks(user_id, date) do
+    {_cnt, ids} =
+      from(
+        task in Task,
+        where: task.user_id == ^user_id,
+        where: task.status != :completed,
+        where: task.target_date < ^date,
+        select: task.id
+      )
+      |> Repo.update_all(set: [status: :failed, updated_at: DateTime.utc_now()])
+
+    ids
+  end
+
+  def list_telegram_references(user_id, date, message_types) do
+    from(
+      reference in TelegramDayReference,
+      where: reference.user_id == ^user_id,
+      where: reference.date == ^date,
+      where: reference.message_type in ^message_types
+    )
+    |> Repo.all()
+  end
+
+  def delete_telegram_references(ids) do
+    from(
+      reference in TelegramDayReference,
+      where: reference.id in ^ids
+    )
+    |> Repo.delete_all()
+  end
+
+  def get_momentum!(id) do
+    Repo.get!(Momentum, id)
+  end
+
+  def list_tasks(ids) do
+    from(
+      task in Task,
+      where: task.id in ^ids
+    )
+    |> Repo.all()
+    |> Repo.preload(:momentum)
   end
 
   def get_task!(task_id) do
@@ -18,9 +64,34 @@ defmodule MomentumHq.MissionControl do
     |> Repo.preload([:user, :momentum])
   end
 
+  def refresh_today_tasks_name(task_blueprint) do
+    {_cnt, ids} =
+      from(
+        task in Task,
+        where: task.task_blueprint_id == ^task_blueprint.id,
+        where: task.target_date == ^Date.utc_today(),
+        select: task.id
+      )
+      |> Repo.update_all(set: [name: task_blueprint.name, updated_at: DateTime.utc_now()])
+
+    ids
+  end
+
   def get_user_for_tasks_creation!(id) do
     Repo.get!(User, id)
     |> Repo.preload(momentum_blueprints: [[current_momentum: [:tasks]], :task_blueprints])
+  end
+
+  def get_telegram_day_reference(user_id, date, message_type, reference_id) do
+    from(
+      tg_reference in TelegramDayReference,
+      where: tg_reference.user_id == ^user_id,
+      where: tg_reference.date == ^date,
+      where: tg_reference.message_type == ^message_type,
+      where: tg_reference.reference_id == ^reference_id
+    )
+    |> Repo.one()
+    |> Repo.preload(:user)
   end
 
   def get_user_tasks_for_a_day(user_id, day) do
@@ -53,6 +124,20 @@ defmodule MomentumHq.MissionControl do
       distinct: user.id
     )
     |> Repo.all()
+  end
+
+  def create_telegram_reference!(user_id, date, message_type, reference_id, telegram_message_id) do
+    attrs = %{
+      user_id: user_id,
+      date: date,
+      message_type: message_type,
+      reference_id: reference_id,
+      telegram_message_id: telegram_message_id
+    }
+
+    %TelegramDayReference{}
+    |> TelegramDayReference.changeset(attrs)
+    |> Repo.insert!()
   end
 
   def momentum_changeset(momentum, attrs) do

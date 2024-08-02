@@ -27,7 +27,7 @@ defmodule MomentumHqWeb.BlueprintingLive.EditTaskBlueprint do
   def handle_event("delete", _params, socket) do
     {:ok, _} = Blueprinting.delete_task_blueprint(socket.assigns.task_blueprint)
 
-    notify_parent({:task_blueprint_saved})
+    notify_parent({:task_blueprint_changed, :delete, nil})
 
     {:noreply,
      socket
@@ -41,8 +41,8 @@ defmodule MomentumHqWeb.BlueprintingLive.EditTaskBlueprint do
 
   defp save_task_blueprint(socket, :edit_task_blueprint, task_blueprint_params) do
     case Blueprinting.update_task_blueprint(socket.assigns.task_blueprint, task_blueprint_params) do
-      {:ok, _task_blueprint} ->
-        notify_parent({:task_blueprint_saved})
+      {:ok, task_blueprint} ->
+        notify_parent({:task_blueprint_changed, :edit, task_blueprint})
 
         {:noreply,
          socket
@@ -63,8 +63,8 @@ defmodule MomentumHqWeb.BlueprintingLive.EditTaskBlueprint do
       )
 
     case Blueprinting.create_task_blueprint(params, socket.assigns.user_id) do
-      {:ok, _task_blueprint} ->
-        notify_parent({:task_blueprint_saved})
+      {:ok, task_blueprint} ->
+        notify_parent({:task_blueprint_changed, :create, task_blueprint})
 
         {:noreply,
          socket

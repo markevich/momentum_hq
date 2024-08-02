@@ -1,6 +1,8 @@
 defmodule MomentumHq.Telegram.SendMessageWorker do
   use Oban.Worker, queue: :telegram, max_attempts: 1
 
+  alias MomentumHq.MissionControl
+
   @impl Oban.Worker
   def perform(%Oban.Job{args: args}) do
     {:ok, _text} = Map.fetch(args, "text")
@@ -14,7 +16,30 @@ defmodule MomentumHq.Telegram.SendMessageWorker do
         Application.fetch_env!(:telegram, :client_bot_token)
       end
 
-    call(token, args)
+    {:ok, %{"message_id" => message_id}} = call(token, args)
+
+    maybe_insert_reference(args["reference_args"], message_id)
+  end
+
+  defp maybe_insert_reference(reference_args, _message_id) when reference_args == nil do
+    :ok
+  end
+
+  defp maybe_insert_reference(args, telegram_message_id) do
+    {:ok, user_id} = Map.fetch(args, "user_id")
+    {:ok, date} = Map.fetch(args, "date")
+    {:ok, message_type} = Map.fetch(args, "message_type")
+    {:ok, reference_id} = Map.fetch(args, "reference_id")
+
+    MissionControl.create_telegram_reference!(
+      user_id,
+      date,
+      message_type,
+      reference_id,
+      telegram_message_id
+    )
+
+    :ok
   end
 
   @telegram_limit 4096
@@ -25,25 +50,27 @@ defmodule MomentumHq.Telegram.SendMessageWorker do
     args = Map.put(args, :parse_mode, "MarkdownV2")
 
     output_message = Map.fetch!(args, "text")
-    # Telegram has a kimkt when sending message of 4096 chars
+    # Telegram has a limit when sending message of 4096 chars
     if String.length(output_message) < @telegram_limit do
-      {:ok, _} = Telegram.Api.request(token, "sendMessage", args)
+      {:ok, _result} = Telegram.Api.request(token, "sendMessage", args)
     else
-      {left_part, right_part} = {
-        String.slice(output_message, 0, @telegram_limit),
-        String.slice(output_message, @telegram_limit..String.length(output_message))
-      }
+      raise "Message Too long for telegram"
 
-      [part_to_move, left_part] =
-        left_part
-        |> String.reverse()
-        |> String.split("\n", parts: 2)
+      # {left_part, right_part} = {
+      #  String.slice(output_message, 0, @telegram_limit),
+      #  String.slice(output_message, @telegram_limit..String.length(output_message))
+      # }
 
-      left_part = String.reverse(left_part) <> "\n"
-      right_part = String.reverse(part_to_move) <> right_part
+      # [part_to_move, left_part] =
+      #  left_part
+      #  |> String.reverse()
+      #  |> String.split("\n", parts: 2)
 
-      {:ok, _} = Telegram.Api.request(token, "sendMessage", Keyword.merge(args, text: left_part))
-      {:ok, _} = Telegram.Api.request(token, "sendMessage", Keyword.merge(args, text: right_part))
+      # left_part = String.reverse(left_part) <> "\n"
+      # right_part = String.reverse(part_to_move) <> right_part
+
+      # {:ok, _} = Telegram.Api.request(token, "sendMessage", Keyword.merge(args, text: left_part))
+      # {:ok, _} = Telegram.Api.request(token, "sendMessage", Keyword.merge(args, text: right_part))
     end
   end
 end

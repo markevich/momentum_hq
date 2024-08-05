@@ -12,8 +12,8 @@ defmodule MomentumHq.Lifecycle.CreateNewTasksForUserWorker do
     date = Date.from_iso8601!(date)
 
     user = MissionControl.get_user_for_tasks_creation!(user_id)
-    create_tasks_for_date!(user, date)
 
+    create_tasks_for_date!(user, date)
     MissionControl.render_new_day(user, date)
 
     :ok
@@ -33,9 +33,12 @@ defmodule MomentumHq.Lifecycle.CreateNewTasksForUserWorker do
 
     momentum_blueprint.task_blueprints
     |> Enum.filter(fn task_blueprint ->
+      # Task is not deleted
       # Task schedule is for target date
       # Task is not already exists
-      current_period.day_of_week in task_blueprint.schedules &&
+
+      !task_blueprint.deleted_at &&
+        current_period.day_of_week in task_blueprint.schedules &&
         !Enum.any?(momentum_blueprint.current_momentum.tasks, fn existing_task ->
           existing_task.task_blueprint_id == task_blueprint.id &&
             existing_task.target_date == date
@@ -48,7 +51,6 @@ defmodule MomentumHq.Lifecycle.CreateNewTasksForUserWorker do
         momentum_id: momentum_blueprint.current_momentum_id,
         name: task_blueprint.name,
         icon: task_blueprint.icon,
-        affect_type: task_blueprint.affect_type,
         status: "pending",
         affect_value: task_blueprint.affect_value,
         target_date: date

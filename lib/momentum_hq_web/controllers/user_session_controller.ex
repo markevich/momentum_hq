@@ -39,6 +39,7 @@ defmodule MomentumHqWeb.UserSessionController do
       auth_data
       |> Map.put("telegram_id", auth_data["id"])
       |> Map.delete("id")
+      |> Map.put("timezone", params["timezone"])
 
     if user = Accounts.get_user_by_telegram_id(auth_data["telegram_id"]) do
       # TODO: minor

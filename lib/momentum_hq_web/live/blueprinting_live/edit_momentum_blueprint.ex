@@ -9,9 +9,6 @@ defmodule MomentumHqWeb.BlueprintingLive.EditMomentumBlueprint do
 
   @impl true
   def mount(params, _session, socket) do
-    :sports_bar
-    :fitness_center
-
     momentum_blueprint =
       Blueprinting.get_momentum_blueprint!(
         params["momentum_blueprint_id"],
@@ -141,8 +138,9 @@ defmodule MomentumHqWeb.BlueprintingLive.EditMomentumBlueprint do
   def task_days_schedules(task_blueprints) do
     Enum.map(1..7, fn index ->
       matched_items =
-        Enum.filter(task_blueprints, fn item ->
-          index in item.schedules
+        Enum.filter(task_blueprints, fn task_blueprint ->
+          !task_blueprint.deleted_at &&
+            index in task_blueprint.schedules
         end)
 
       matched_items

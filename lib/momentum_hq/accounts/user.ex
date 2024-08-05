@@ -20,13 +20,14 @@ defmodule MomentumHq.Accounts.User do
     field :first_name, :string
     field :photo_url, :string
     field :username, :string
+    field :timezone, :string
 
     timestamps(type: :utc_datetime)
   end
 
   def changeset(%__MODULE__{} = task_blueprint, attrs) do
     task_blueprint
-    |> cast(attrs, [:telegram_id, :first_name, :photo_url, :username])
+    |> cast(attrs, [:telegram_id, :first_name, :photo_url, :username, :timezone])
     |> validate_required([:telegram_id, :username])
   end
 end

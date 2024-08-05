@@ -5,6 +5,7 @@ defmodule MomentumHq.Blueprinting do
 
   alias MomentumHq.Blueprinting.MomentumBlueprint
   alias MomentumHq.Blueprinting.TaskBlueprint
+  alias MomentumHq.MissionControl.Task
 
   def list_momentum_blueprints_by_user(user_id) do
     from(
@@ -47,7 +48,18 @@ defmodule MomentumHq.Blueprinting do
   end
 
   def delete_task_blueprint(%TaskBlueprint{} = task_blueprint) do
-    Repo.delete(task_blueprint)
+    {:ok, _blueprint} =
+      task_blueprint
+      |> update_task_blueprint(%{deleted_at: DateTime.utc_now()})
+
+    from(
+      task in Task,
+      where: task.target_date == ^Date.utc_today(),
+      where: task.task_blueprint_id == ^task_blueprint.id
+    )
+    |> Repo.delete_all()
+
+    :ok
   end
 
   def create_momentum_blueprint(attrs \\ %{}) do

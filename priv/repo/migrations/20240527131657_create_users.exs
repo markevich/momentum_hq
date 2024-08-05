@@ -9,6 +9,7 @@ defmodule MomentumHq.Repo.Migrations.CreateUsers do
       add :first_name, :string
       add :photo_url, :string
       add :username, :string
+      add :timezone, :string
 
       timestamps(type: :utc_datetime)
     end

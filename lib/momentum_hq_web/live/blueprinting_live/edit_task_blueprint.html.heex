@@ -10,21 +10,24 @@
     <label class="block text-sm font-semibold leading-6 text-zinc-800">Color</label>
 
     <div class="flex flex-wrap gap-5 mt-2">
-      <div :for={
-        {color, idx} <-
-          Enum.with_index([
-            :purple,
-            :red,
-            :orange,
-            :yellow,
-            :green,
-            :blue,
-            :slate,
-            :pink,
-            :stone,
-            :cyan
-          ])
-      } class="relative">
+      <div
+        :for={
+          {color, idx} <-
+            Enum.with_index([
+              :purple,
+              :red,
+              :orange,
+              :yellow,
+              :green,
+              :blue,
+              :slate,
+              :pink,
+              :stone,
+              :cyan
+            ])
+        }
+        class="relative"
+      >
         <input
           type="radio"
           name={@form[:color].name}
@@ -46,18 +49,11 @@
       </div>
     </div>
 
-    <.input
-      field={@form[:affect_type]}
-      type="select"
-      options={Ecto.Enum.mappings(MomentumHq.Blueprinting.TaskBlueprint, :affect_type)}
-      label="Affect type"
-    />
     <.checkgroup
       field={@form[:schedules]}
       label="Schedules"
       options={[{"Пн", 1}, {"Вт", 2}, {"Ср", 3}, {"Чт", 4}, {"Пт", 5}, {"Сб", 6}, {"Вс", 7}]}
     />
-    <.input field={@form[:notify_at_hour]} type="select" options={0..23} label="Notify at" />
     <:actions>
       <.button phx-disable-with="Saving...">Save Task</.button>
       <.link

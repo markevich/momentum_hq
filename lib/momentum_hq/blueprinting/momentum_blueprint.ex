@@ -12,7 +12,6 @@ defmodule MomentumHq.Blueprinting.MomentumBlueprint do
   schema "momentum_blueprints" do
     field :name, :string
     field :generator_type, Ecto.Enum, values: [:weekly, :biweekly, :monthly]
-    field :momentums_to_full, :integer
     field :current_value, :decimal
 
     belongs_to :user, User
@@ -27,14 +26,12 @@ defmodule MomentumHq.Blueprinting.MomentumBlueprint do
     momentum_blueprint
     |> cast(attrs, [
       :generator_type,
-      :momentums_to_full,
       :current_value,
       :current_momentum_id,
       :name
     ])
     |> validate_required([
       :generator_type,
-      :momentums_to_full,
       :current_value,
       :current_momentum_id,
       :name
@@ -45,7 +42,6 @@ defmodule MomentumHq.Blueprinting.MomentumBlueprint do
     momentum_blueprint
     |> cast(attrs, [:user_id, :name, :generator_type])
     |> validate_required([:user_id, :name, :generator_type])
-    |> put_change(:current_value, 50)
-    |> put_change(:momentums_to_full, 2)
+    |> put_change(:current_value, 0)
   end
 end

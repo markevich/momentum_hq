@@ -9,10 +9,7 @@
     </div>
     <table class="table border-spacing-y-4 w-full border-separate space-y-4 text-sm rounded">
       <tbody>
-        <tr
-          :for={{schedules_in_a_day, index} <- Enum.with_index(@task_days_schedules)}
-          class=""
-        >
+        <tr :for={{schedules_in_a_day, index} <- Enum.with_index(@task_days_schedules)} class="">
           <td class="w-8 font-bold align-top">
             <div class="w-full text-start">
               <%= case index + 1 do
@@ -50,7 +47,6 @@
                         cursor-pointer 
                         duration-500 
                         ease"}>
-                        
                         <div :if={task.icon} class="mr-2">
                           <%= task.icon %>
                         </div>
@@ -68,8 +64,7 @@
                     }>
                       <div class="hover:bg-gray-50 border-gray-300 border rounded text-center event text-sm p-1 transition cursor-pointer duration-500 ease">
                         <span>
-                          <span class="">+</span>
-                          Добавить задачу
+                          <span class="">+</span> Добавить задачу
                         </span>
                         <span class="event-name font-semibold"></span>
                       </div>
@@ -174,12 +169,6 @@
     phx-submit="save_and_redirect"
   >
     <.input field={@form[:name]} type="text" label="Name" phx-debounce="blur" />
-    <.input
-      field={@form[:momentums_to_full]}
-      type="number"
-      label="Momentums to full"
-      phx-debounce="blur"
-    />
     <.input field={@form[:current_value]} type="number" label="Current value" phx-debounce="blur" />
     <:actions>
       <.button phx-disable-with="Saving...">Save blueprint</.button>

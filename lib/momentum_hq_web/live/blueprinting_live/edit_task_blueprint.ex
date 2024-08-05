@@ -25,7 +25,7 @@ defmodule MomentumHqWeb.BlueprintingLive.EditTaskBlueprint do
 
   @impl true
   def handle_event("delete", _params, socket) do
-    {:ok, _} = Blueprinting.delete_task_blueprint(socket.assigns.task_blueprint)
+    :ok = Blueprinting.delete_task_blueprint(socket.assigns.task_blueprint)
 
     notify_parent({:task_blueprint_changed, :delete, nil})
 

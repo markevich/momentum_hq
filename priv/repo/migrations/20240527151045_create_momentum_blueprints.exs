@@ -14,7 +14,6 @@ defmodule MomentumHq.Repo.Migrations.CreateMomentumBlueprints do
         default: fragment("'weekly'")
 
       add :name, :string, required: true
-      add :momentums_to_full, :integer, null: false
       add :current_value, :decimal, null: false, default: 0
 
       add :user_id, references(:users, on_delete: :restrict), null: false

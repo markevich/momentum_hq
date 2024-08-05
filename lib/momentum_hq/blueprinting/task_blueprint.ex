@@ -13,12 +13,11 @@ defmodule MomentumHq.Blueprinting.TaskBlueprint do
     field :name, :string
     field :icon, :string
     field :color, :string
-    field :affect_type, Ecto.Enum, values: [:low, :medium, :high]
 
     field :schedules, {:array, :integer}, default: []
 
-    field :notify_at_hour, :integer
     field :affect_value, :decimal
+    field :deleted_at, :utc_datetime
 
     belongs_to :user, User
     belongs_to :momentum_blueprint, MomentumBlueprint
@@ -29,7 +28,15 @@ defmodule MomentumHq.Blueprinting.TaskBlueprint do
 
   def changeset(%TaskBlueprint{} = task_blueprint, attrs) do
     task_blueprint
-    |> cast(attrs, [:name, :schedules, :icon, :color, :momentum_blueprint_id, :user_id])
+    |> cast(attrs, [
+      :name,
+      :schedules,
+      :icon,
+      :color,
+      :momentum_blueprint_id,
+      :user_id,
+      :deleted_at
+    ])
     |> validate_required([:name, :schedules, :icon, :color, :momentum_blueprint_id, :user_id])
     |> update_change(:schedules, &Enum.reject(&1, fn item -> !(item in 1..7) end))
     |> put_change(:affect_value, 5)

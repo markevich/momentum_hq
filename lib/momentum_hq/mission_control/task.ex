@@ -21,7 +21,6 @@ defmodule MomentumHq.MissionControl.Task do
 
     field :name, :string
     field :icon, :string
-    field :affect_type, Ecto.Enum, values: [:low, :medium, :high]
     field :status, Ecto.Enum, values: [:pending, :completed, :failed]
     field :affect_value, :decimal
 
@@ -38,7 +37,6 @@ defmodule MomentumHq.MissionControl.Task do
       :momentum_id,
       :name,
       :icon,
-      :affect_type,
       :status,
       :affect_value,
       :target_date
@@ -49,7 +47,6 @@ defmodule MomentumHq.MissionControl.Task do
       :momentum_id,
       :name,
       :icon,
-      :affect_type,
       :status,
       :affect_value,
       :target_date

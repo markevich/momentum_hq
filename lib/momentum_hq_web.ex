@@ -54,6 +54,8 @@ defmodule MomentumHqWeb do
       use Phoenix.LiveView,
         layout: {MomentumHqWeb.Layouts, :app}
 
+      on_mount MomentumHqWeb.SetLocale
+
       unquote(html_helpers())
     end
   end

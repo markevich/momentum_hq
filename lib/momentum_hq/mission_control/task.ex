@@ -23,6 +23,7 @@ defmodule MomentumHq.MissionControl.Task do
     field :icon, :string
     field :status, Ecto.Enum, values: [:pending, :completed, :failed]
     field :affect_value, :decimal
+    field :day_number, :integer
 
     field :target_date, :date
 
@@ -39,7 +40,8 @@ defmodule MomentumHq.MissionControl.Task do
       :icon,
       :status,
       :affect_value,
-      :target_date
+      :target_date,
+      :day_number
     ])
     |> validate_required([
       :user_id,
@@ -49,7 +51,8 @@ defmodule MomentumHq.MissionControl.Task do
       :icon,
       :status,
       :affect_value,
-      :target_date
+      :target_date,
+      :day_number
     ])
   end
 end

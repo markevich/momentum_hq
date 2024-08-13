@@ -24,6 +24,8 @@ defmodule MomentumHqWeb.Router do
       live "/blueprinting", BlueprintingLive.ListMomentumBlueprints, :index
       live "/blueprinting/new", BlueprintingLive.NewMomentumBlueprint, :new
 
+      live "/momentums", MomentumLive.ListMomentums, :index
+
       live "/blueprinting/:momentum_blueprint_id/edit",
            BlueprintingLive.EditMomentumBlueprint,
            :edit_momentum_blueprint

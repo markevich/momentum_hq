@@ -1,10 +1,12 @@
 <div class="container mx-auto">
+  <div class="tg-back-button" data-navigate={JS.navigate(~p"/blueprinting")}></div>
   <div class="even:bg-teal-50 odd:bg-lime-50 border hidden w-1/7 w-fit border-b-4 max-w-full whitespace-nowrap content-center">
   </div>
   <div class="wrapper rounded w-full">
-    <div class="header flex justify-between p-2">
-      <span class="text-lg font-bold">
-        Каждая неделя
+    <div class="text-center text-3xl"><%= @momentum_blueprint.name %></div>
+    <div class="text-center text-sm">
+      <span :if={@momentum_blueprint.generator_type == :weekly} class="text-gray-500">
+        Еженедельный моментум
       </span>
     </div>
     <table class="table border-spacing-y-4 w-full border-separate space-y-4 text-sm rounded">
@@ -28,9 +30,12 @@
               <tbody>
                 <tr :for={task <- schedules_in_a_day}>
                   <td>
-                    <.link patch={
-                      ~p"/blueprinting/#{@momentum_blueprint.id}/edit/task_blueprints/#{task.id}/edit"
-                    }>
+                    <.link
+                      phx-click={JS.push_focus()}
+                      patch={
+                        ~p"/blueprinting/#{@momentum_blueprint.id}/edit/task_blueprints/#{task.id}/edit"
+                      }
+                    >
                       <div class={"
                         flex 
                         bg-#{task.color}-500
@@ -59,9 +64,12 @@
                 </tr>
                 <tr>
                   <td>
-                    <.link patch={
-                      ~p"/blueprinting/#{@momentum_blueprint.id}/edit/task_blueprints/new?day=#{index + 1}"
-                    }>
+                    <.link
+                      phx-click={JS.push_focus()}
+                      patch={
+                        ~p"/blueprinting/#{@momentum_blueprint.id}/edit/task_blueprints/new?day=#{index + 1}"
+                      }
+                    >
                       <div class="hover:bg-gray-50 border-gray-300 border rounded text-center event text-sm p-1 transition cursor-pointer duration-500 ease">
                         <span>
                           <span class="">+</span> Добавить задачу
@@ -77,89 +85,6 @@
         </tr>
       </tbody>
     </table>
-    <.link patch={~p"/blueprinting/#{@momentum_blueprint.id}/edit/task_blueprints/new"}>
-      <div class="hover:bg-green-100 border-green-500 text-center font-semibold event border rounded p-1 text-sm mb-1 transition cursor-pointer duration-500 ease">
-        <span>
-          <.material_icon name={:add} size={20} class="inline-flex fill-gray-900" />
-          Добавить новую задачу
-        </span>
-        <span class="event-name font-semibold"></span>
-      </div>
-    </.link>
-    <table class="min-w-full w-80 text-sm table-fixed">
-      <thead>
-        <tr>
-          <th class="p-2 border-r h-10">
-            <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Пн</span>
-          </th>
-          <th class="p-2 border-r h-10">
-            <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Вт</span>
-          </th>
-          <th class="p-2 border-r h-10">
-            <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Ср</span>
-          </th>
-          <th class="p-2 border-r h-10">
-            <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Чт</span>
-          </th>
-          <th class="p-2 border-r h-10">
-            <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Пт</span>
-          </th>
-          <th class="p-2 border-r h-10">
-            <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Сб</span>
-          </th>
-          <th class="p-2 border-r h-10">
-            <span class="xl:hidden lg:hidden md:hidden sm:hidden block">Вс</span>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="text-center">
-          <td
-            :for={{schedules_in_a_day, index} <- Enum.with_index(@task_days_schedules)}
-            class="border p-1 min-h-24 align-top"
-          >
-            <div class="min-h-24 mx-auto overflow-hidden">
-              <!-- can be reasonable to use indexes in 2 weeks momentums
-                <div :if={MomentumHq.Lifecycle.CurrentDayAndWeek.absolute().day_of_week == index + 1} class="top h-5 w-full">
-                  Today
-                </div>
-                <div class="top h-5 w-full">
-                  <span class="text-gray-500">index + 1</span>
-                </div>
-              -->
-              <div class="bottom h-30 py-1">
-                <.link
-                  :for={task <- schedules_in_a_day}
-                  patch={
-                    ~p"/blueprinting/#{@momentum_blueprint.id}/edit/task_blueprints/#{task.id}/edit"
-                  }
-                >
-                  <div class={"whitespace-nowrap event text-xs overflow-hidden bg-#{task.color}-100 text-#{task.color}-900 hover:bg-#{task.color}-300 border-l-2 border-#{task.color}-400 p-1 text-sm mb-1 transition cursor-pointer duration-500 ease"}>
-                    <div :if={task.icon}>
-                      <%= task.icon %>
-                    </div>
-                    <div class="event-name font-semibold">
-                      <%= task.name %>
-                    </div>
-                  </div>
-                </.link>
-
-                <.link patch={
-                  ~p"/blueprinting/#{@momentum_blueprint.id}/edit/task_blueprints/new?day=#{index + 1}"
-                }>
-                  <div class="hover:bg-gray-100 border-gray-500 event border rounded p-1 text-sm mb-1 transition cursor-pointer duration-500 ease">
-                    <span>
-                      <.material_icon name={:add} size={20} class="inline-flex fill-gray-900" />
-                    </span>
-                    <span class="event-name font-semibold"></span>
-                  </div>
-                </.link>
-              </div>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
   </div>
 
   <.simple_form
@@ -168,13 +93,14 @@
     phx-change="save"
     phx-submit="save_and_redirect"
   >
-    <.input field={@form[:name]} type="text" label="Name" phx-debounce="blur" />
-    <.input field={@form[:current_value]} type="number" label="Current value" phx-debounce="blur" />
+    <.input
+      field={@form[:name]}
+      type="text"
+      label="Название моментума"
+      phx-debounce="blur"
+    />
     <:actions>
-      <.button phx-disable-with="Saving...">Save blueprint</.button>
-      <.link navigate={~p"/blueprinting"}>
-        Back
-      </.link>
+      <.button phx-disable-with="Сохранение...">Сохранить</.button>
     </:actions>
   </.simple_form>
 

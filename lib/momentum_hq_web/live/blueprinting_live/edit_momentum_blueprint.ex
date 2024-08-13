@@ -101,8 +101,7 @@ defmodule MomentumHqWeb.BlueprintingLive.EditMomentumBlueprint do
         recreate_current_day_for_user(socket.assigns.current_user.id, date)
 
       :edit ->
-        MissionControl.refresh_today_tasks_name(task_blueprint)
-        |> RenderTasksForDay.rerender_existing_messages()
+        recreate_current_day_for_user(socket.assigns.current_user.id, date)
 
       :delete ->
         recreate_current_day_for_user(socket.assigns.current_user.id, date)

@@ -1,13 +1,15 @@
 <div>
-  <.header>
-    <%= @title %>
-    <:subtitle>Use this form to manage area records in your database.</:subtitle>
-  </.header>
+  <div class="tg-back-button" data-navigate={JS.exec("data-cancel", to: "#area-modal")}></div>
+
+  <div :if={@action == :new_task_blueprint} class="text-center text-3xl">Новая задача</div>
+  <div :if={@action == :edit_task_blueprint} class="text-center text-3xl">
+    Редактирование задачи
+  </div>
 
   <.simple_form for={@form} id="area-form" phx-target={@myself} phx-submit="save">
-    <.input field={@form[:name]} type="text" label="Name" />
-    <.input field={@form[:icon]} type="text" label="Icon" />
-    <label class="block text-sm font-semibold leading-6 text-zinc-800">Color</label>
+    <.input field={@form[:name]} type="text" label="Название" />
+    <.input field={@form[:icon]} type="text" label="Эмоджи" />
+    <label class="block text-sm font-semibold leading-6 text-zinc-800">Цвет</label>
 
     <div class="flex flex-wrap gap-5 mt-2">
       <div
@@ -51,18 +53,18 @@
 
     <.checkgroup
       field={@form[:schedules]}
-      label="Schedules"
+      label="Расписание"
       options={[{"Пн", 1}, {"Вт", 2}, {"Ср", 3}, {"Чт", 4}, {"Пт", 5}, {"Сб", 6}, {"Вс", 7}]}
     />
     <:actions>
-      <.button phx-disable-with="Saving...">Save Task</.button>
+      <.button phx-disable-with="Сохраняю...">Сохранить</.button>
       <.link
         class="text-red-700"
         phx-click="delete"
         phx-target={@myself}
         data-confirm="Are you sure?"
       >
-        Delete
+        Удалить
       </.link>
     </:actions>
   </.simple_form>

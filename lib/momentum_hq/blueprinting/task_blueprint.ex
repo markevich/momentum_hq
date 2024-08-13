@@ -14,7 +14,7 @@ defmodule MomentumHq.Blueprinting.TaskBlueprint do
     field :icon, :string
     field :color, :string
 
-    field :schedules, {:array, :integer}, default: []
+    field :schedules, {:array, :integer}
 
     field :affect_value, :decimal
     field :deleted_at, :utc_datetime
@@ -38,6 +38,7 @@ defmodule MomentumHq.Blueprinting.TaskBlueprint do
       :deleted_at
     ])
     |> validate_required([:name, :schedules, :icon, :color, :momentum_blueprint_id, :user_id])
+    |> validate_length(:schedules, min: 1)
     |> update_change(:schedules, &Enum.reject(&1, fn item -> !(item in 1..7) end))
     |> put_change(:affect_value, 5)
   end

@@ -1,0 +1,36 @@
+<div class="h-screen">
+  <div class="text-center text-3xl">Мои моментумы</div>
+  <div :if={Enum.count(@current_momentums) == 0} class="h-full relative">
+    <div class="text-center text-l">
+      <span class="text-gray-500">
+        Ой, моментумов нету..
+      </span>
+    </div>
+
+    <div class="text-center text-sm mt-10 absolute top-1/3">
+      <span class="text-gray-500">
+        Нажми "···" -> "Настройки" справа сверху чтобы создать первый моментум.
+      </span>
+    </div>
+  </div>
+  <div
+    :for={current_momentum <- @current_momentums}
+    class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-10"
+  >
+    <div class="row-span-1">
+      <div class="text-center text-4xl"><%= current_momentum.name %></div>
+      <div class="text-center text-xl">
+        Цикл # <%= current_momentum.cycle_number + 5 %>
+      </div>
+      <div class="text-center text-slate-500 text-sm">
+        <%= current_momentum.from %> - <%= current_momentum.to %>
+      </div>
+      <div class="m-auto mt-10 mb-10" id={"momentum_#{current_momentum.id}"} phx-hook="Momentum">
+        <svg class="m-auto mt-20 overflow-visible" width="202px"></svg>
+      </div>
+      <div>
+        <div class="text-center"></div>
+      </div>
+    </div>
+  </div>
+</div>

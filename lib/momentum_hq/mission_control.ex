@@ -2,6 +2,7 @@ defmodule MomentumHq.MissionControl do
   import Ecto.Query
 
   alias MomentumHq.Accounts.User
+  alias MomentumHq.Blueprinting.MomentumBlueprint
   alias MomentumHq.MissionControl.Momentum
   alias MomentumHq.MissionControl.MomentumChange
   alias MomentumHq.MissionControl.RenderTasksForDay
@@ -36,6 +37,18 @@ defmodule MomentumHq.MissionControl do
       where: reference.message_type in ^message_types
     )
     |> Repo.all()
+  end
+
+  def list_current_momentums(user_id) do
+    from(
+      momentum in Momentum,
+      join: momentum_blueprint in MomentumBlueprint,
+      on: momentum.id == momentum_blueprint.current_momentum_id,
+      join: user in assoc(momentum, :user),
+      where: user.id == ^user_id
+    )
+    |> Repo.all()
+    |> Repo.preload(momentum_changes: [:task])
   end
 
   def delete_telegram_references(ids) do
@@ -77,6 +90,26 @@ defmodule MomentumHq.MissionControl do
     ids
   end
 
+  def maybe_delete_obsolete_today_tasks(task_blueprint) do
+    from(
+      task in Task,
+      join: blueprint in assoc(task, :task_blueprint),
+      where: blueprint.id == ^task_blueprint.id,
+      where: task.day_number not in blueprint.schedules,
+      where: task.target_date == ^Date.utc_today()
+    )
+    |> Repo.delete_all()
+    |> case do
+      {cnt_of_deleted, _deleted_tasks} when cnt_of_deleted > 0 ->
+        :ok
+
+      # recalculate_momentum_value!(task_blueprint.current_momentum)
+
+      _ ->
+        :ok
+    end
+  end
+
   def get_user_for_tasks_creation!(id) do
     Repo.get!(User, id)
     |> Repo.preload(momentum_blueprints: [[current_momentum: [:tasks]], :task_blueprints])
@@ -92,6 +125,9 @@ defmodule MomentumHq.MissionControl do
     )
     |> Repo.one()
     |> Repo.preload(:user)
+  end
+
+  def recalculate_momentum_value!(momentum) do
   end
 
   def get_user_tasks_for_a_day(user_id, day) do
@@ -189,6 +225,7 @@ defmodule MomentumHq.MissionControl do
         end
       )
       |> Ecto.Multi.one(:sum_of_changes, fn _changes ->
+        # TODO: EXTRACT AND REUSE!
         from(
           c in MomentumChange,
           where: c.momentum_id == ^task.momentum_id,

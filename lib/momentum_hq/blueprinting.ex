@@ -105,6 +105,10 @@ defmodule MomentumHq.Blueprinting do
     task_blueprint
     |> TaskBlueprint.changeset(attrs)
     |> Repo.update()
+    |> case do
+      {:ok, task_blueprint} -> {:ok, Repo.preload(task_blueprint, :tasks)}
+      error -> error
+    end
   end
 
   def task_blueprint_changeset(task_blueprint, attrs \\ %{}) do

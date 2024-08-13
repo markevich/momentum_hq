@@ -1,15 +1,50 @@
-<.header>
-  Listing MomentumBlueprints
-  <:actions></:actions>
-</.header>
+<div class="text-center text-lg font-semibold text-zinc-800">
+  Настройка моментумов
+</div>
+
+<div class="tg-back-button" data-navigate={JS.navigate(~p"/momentums")}></div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-10">
   <div
-    :for={{id, momentum_blueprint} <- @streams.momentum_blueprints}
-    id={id}
+    :for={momentum_blueprint <- @momentum_blueprints}
     class="row-span-1 border-2 rounded-lg shadow-md hover:shadow-xl"
   >
-    <.link patch={~p"/blueprinting/#{momentum_blueprint}/edit"}>
+    <.link patch={~p"/blueprinting/#{momentum_blueprint.id}/edit"}>
+      <div class="h-auto text-center p-3">
+        <div class="text-2xl font-light">
+          <%= momentum_blueprint.name %>
+        </div>
+        <div class="text-xs font-extralight text-gray-700">
+          <%= momentum_blueprint.stats %>
+        </div>
+        <div class="flex justify-center items-center mt-3">
+          <.icon class="mr-1 h-10 w-10 text-violet-500 opacity-60" name="hero-calendar-days" />
+          <div :if={momentum_blueprint.generator_type == :weekly}>
+            <div class="-mx-0.5 grid grid-cols-7">
+              <span
+                :for={{day, count} <- momentum_blueprint.schedules}
+                class={[
+                  "flex items-center justify-center",
+                  "mx-2 mb-1 h-8 w-8 rounded-full",
+                  "text-gray-200 text-center align-middle",
+                  "#{if count > 0, do: "bg-violet-500", else: "bg-gray-400"}"
+                ]}
+              >
+                <span><%= count %></span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </.link>
+  </div>
+  <%!--
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-10">
+  <div
+    :for={momentum_blueprint <- @momentum_blueprints}
+    class="row-span-1 border-2 rounded-lg shadow-md hover:shadow-xl"
+  >
+    <.link patch={~p"/blueprinting/#{momentum_blueprint.id}/edit"}>
       <div class="h-auto text-center p-3">
         <div class="text-2xl font-light">
           <%= momentum_blueprint.name %>
@@ -43,14 +78,14 @@
       </div>
     </.link>
   </div>
-
+!--%>
   <.link
     class="row-span-1 border-2 rounded-lg shadow-md hover:shadow-xl"
     navigate={~p"/blueprinting/new"}
   >
     <div class="h-32 flex justify-center items-center select-none">
       <label class="cursor-pointer">
-        <.icon name="hero-plus-circle" /> Add more
+        <.icon name="hero-plus-circle" /> Новый моментум
       </label>
     </div>
   </.link>

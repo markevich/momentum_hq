@@ -1,13 +1,16 @@
 <div>
+  <div class="tg-back-button" data-navigate={JS.navigate(~p"/blueprinting")}></div>
+  <div class="text-center text-3xl">
+    Новый моментум
+  </div>
   <.simple_form for={@form} id="momentum_blueprint-new-form" phx-submit="save">
-    <.input field={@form[:name]} type="text" label="Name" />
+    <.input field={@form[:name]} type="text" label="Имя моментума" />
 
     <.radio_group field={@form[:generator_type]}>
       <!-- TODO: make explicit mapping -->
-      <:radio value="weekly">Weekly</:radio>
-      <:radio value="biweekly">Biweekly</:radio>
+      <:radio value="weekly">Еженедельный</:radio>
     </.radio_group>
 
-    <.button phx-disable-with="Saving...">Save blueprint</.button>
+    <.button phx-disable-with="Сохраняем...">Продолжить</.button>
   </.simple_form>
 </div>

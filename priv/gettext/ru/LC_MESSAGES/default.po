@@ -1,0 +1,61 @@
+msgid ""
+msgstr ""
+"Language: ru\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100 != 11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10||n%100>=20) ? 1 : 2);\n"
+
+#: lib/momentum_hq_web/components/core_components.ex:583
+#, elixir-autogen, elixir-format
+msgid "Actions"
+msgstr ""
+
+#: lib/momentum_hq_web/components/core_components.ex:160
+#, elixir-autogen, elixir-format
+msgid "Attempting to reconnect"
+msgstr ""
+
+#: lib/momentum_hq_web/components/core_components.ex:151
+#, elixir-autogen, elixir-format
+msgid "Error!"
+msgstr ""
+
+#: lib/momentum_hq_web/components/core_components.ex:172
+#, elixir-autogen, elixir-format
+msgid "Hang in there while we get back on track"
+msgstr ""
+
+#: lib/momentum_hq_web/live/blueprinting_live/list_momentum_blueprints.ex:58
+#, elixir-autogen, elixir-format
+msgid "One day"
+msgid_plural "%{count} days"
+msgstr[0] "Один день"
+msgstr[1] "%{count} дня"
+msgstr[2] "%{count} дней"
+
+#: lib/momentum_hq_web/live/blueprinting_live/list_momentum_blueprints.ex:59
+#, elixir-autogen, elixir-format
+msgid "One task"
+msgid_plural "%{count} tasks"
+msgstr[0] "Одна задача"
+msgstr[1] "%{count} задачи"
+msgstr[2] "%{count} задач"
+
+#: lib/momentum_hq_web/components/core_components.ex:167
+#, elixir-autogen, elixir-format
+msgid "Something went wrong!"
+msgstr ""
+
+#: lib/momentum_hq_web/components/core_components.ex:150
+#, elixir-autogen, elixir-format
+msgid "Success!"
+msgstr ""
+
+#: lib/momentum_hq_web/components/core_components.ex:155
+#, elixir-autogen, elixir-format
+msgid "We can't find the internet"
+msgstr ""
+
+#: lib/momentum_hq_web/components/core_components.ex:76
+#: lib/momentum_hq_web/components/core_components.ex:130
+#, elixir-autogen, elixir-format
+msgid "close"
+msgstr ""

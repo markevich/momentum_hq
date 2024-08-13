@@ -51,6 +51,8 @@ defmodule MomentumHq.MissionControl.RenderTasksForDay do
   end
 
   def rerender_existing_messages(tasks_ids) do
+    IO.inspect(tasks_ids)
+
     MissionControl.list_tasks(tasks_ids)
     |> Enum.group_by(fn task ->
       {task.user_id, task.target_date, task.momentum_id, task.momentum.name}

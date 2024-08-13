@@ -53,7 +53,8 @@ defmodule MomentumHq.Lifecycle.CreateNewTasksForUserWorker do
         icon: task_blueprint.icon,
         status: "pending",
         affect_value: task_blueprint.affect_value,
-        target_date: date
+        target_date: date,
+        day_number: current_period.day_of_week
       })
     end)
     |> Enum.with_index()

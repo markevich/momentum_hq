@@ -2,6 +2,7 @@ defmodule MomentumHqWeb.BlueprintingLive.EditTaskBlueprint do
   use MomentumHqWeb, :live_component
 
   alias MomentumHq.Blueprinting
+  alias MomentumHq.MissionControl
 
   @impl true
   def update(%{task_blueprint: task_blueprint} = assigns, socket) do
@@ -12,16 +13,6 @@ defmodule MomentumHqWeb.BlueprintingLive.EditTaskBlueprint do
      |> assign(assigns)
      |> assign_form(changeset)}
   end
-
-  #  @impl true
-  #  def handle_event("validate", %{"task_blueprint" => task_blueprint_params}, socket) do
-  #    changeset =
-  #      socket.assigns.task_blueprint
-  #      |> Blueprinting.task_blueprint_changeset(task_blueprint_params)
-  #      |> Map.put(:action, :validate)
-  #
-  #    {:noreply, assign_form(socket, changeset)}
-  #  end
 
   @impl true
   def handle_event("delete", _params, socket) do
@@ -42,6 +33,9 @@ defmodule MomentumHqWeb.BlueprintingLive.EditTaskBlueprint do
   defp save_task_blueprint(socket, :edit_task_blueprint, task_blueprint_params) do
     case Blueprinting.update_task_blueprint(socket.assigns.task_blueprint, task_blueprint_params) do
       {:ok, task_blueprint} ->
+        MissionControl.refresh_today_tasks_name(task_blueprint)
+        MissionControl.maybe_delete_obsolete_today_tasks(task_blueprint)
+
         notify_parent({:task_blueprint_changed, :edit, task_blueprint})
 
         {:noreply,

@@ -54,7 +54,6 @@ if config_env() == :prod do
       port: 8443,
       cipher_suite: :strong,
       keyfile: Helpers.get_env("MOMENTUM_SSL_KEY_PATH"),
-      cacertfile: Helpers.get_env("MOMENTUM_SSL_CACERT_PATH"),
       certfile: Helpers.get_env("MOMENTUM_SSL_CERT_PATH")
     ],
     secret_key_base: secret_key_base

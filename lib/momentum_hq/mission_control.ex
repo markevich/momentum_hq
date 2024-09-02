@@ -71,7 +71,7 @@ defmodule MomentumHq.MissionControl do
       where: task.id in ^ids
     )
     |> Repo.all()
-    |> Repo.preload(:momentum)
+    |> Repo.preload(momentum: :momentum_blueprint)
   end
 
   def get_task!(task_id) do

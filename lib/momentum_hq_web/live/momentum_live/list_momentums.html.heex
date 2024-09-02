@@ -1,36 +1,60 @@
-<div class="h-screen">
-  <div class="text-center text-3xl">Мои моментумы</div>
-  <div :if={Enum.count(@current_momentums) == 0} class="h-full relative">
+<div class="bg-gray-200 pt-5 min-h-screen h-full">
+  <div class="text-center text-5xl font-light">Мои моментумы</div>
+  <div :if={Enum.count(@current_momentums) == 0} class="h-full min-h-screen relative p-3">
     <div class="text-center text-l">
       <span class="text-gray-500">
         Ой, моментумов нету..
       </span>
     </div>
 
-    <div class="text-center text-sm mt-10 absolute top-1/3">
+    <div class="text-center absolute top-1/3">
       <span class="text-gray-500">
         Нажми "···" -> "Настройки" справа сверху чтобы создать первый моментум.
       </span>
     </div>
   </div>
   <div
-    :for={current_momentum <- @current_momentums}
-    class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-10"
+    :if={Enum.count(@current_momentums) > 0}
+    class="bg-blue-200 text-center text-blue-900 p-2 mt-5"
   >
-    <div class="row-span-1">
-      <div class="text-center text-4xl"><%= current_momentum.name %></div>
-      <div class="text-center text-xl">
-        Цикл # <%= current_momentum.cycle_number + 5 %>
+    100% стабильность = 2 идеально выполненных цикла подряд
+  </div>
+  <div
+    :for={%{attrs: current_momentum, meta: meta} <- @current_momentums}
+    class="bg-white m-5 rounded-2xl"
+  >
+    <div class="grid grid-cols-1 gap-5">
+      <div class="row-span-1 mt-5">
+        <div class="text-center text-4xl"><%= current_momentum.name %></div>
+        <div class="text-center text-xl mt-4">
+          Цикл <%= current_momentum.cycle_number + 1 %>
+        </div>
+        <div class="text-center text-slate-500 text-sm">
+          <%= current_momentum.from %> - <%= current_momentum.to %>
+        </div>
+        <div class="m-auto mt-10 mb-10" id={"momentum_#{current_momentum.id}"} phx-hook="Momentum">
+          <svg class="m-auto mt-20 overflow-visible -mb-12" width="200px"></svg>
+        </div>
       </div>
-      <div class="text-center text-slate-500 text-sm">
-        <%= current_momentum.from %> - <%= current_momentum.to %>
-      </div>
-      <div class="m-auto mt-10 mb-10" id={"momentum_#{current_momentum.id}"} phx-hook="Momentum">
-        <svg class="m-auto mt-20 overflow-visible" width="202px"></svg>
-      </div>
-      <div>
-        <div class="text-center"></div>
-      </div>
+    </div>
+    <div class="flex items-center justify-evenly mb-2 text-sm font-medium ml-2">
+      <span class="flex items-center text-gray-700 dark:text-white me-3">
+        <span class="flex w-2.5 h-2.5 bg-green-500 rounded-full me-1.5 flex-shrink-0"></span>
+        <span class="font-bold"><%= meta.counters.completed %>&nbsp;</span>
+        <%= ngettext("One completed", "%{count} completed", meta.counters.completed) %>
+      </span>
+      <span class="flex items-center text-gray-700 dark:text-white me-3">
+        <span class="flex w-2.5 h-2.5 bg-red-500 rounded-full me-1.5 flex-shrink-0"></span>
+        <span class="font-bold"><%= meta.counters.failed %>&nbsp;</span>
+        <%= ngettext("One failed", "%{count} failed", meta.counters.failed) %>
+      </span>
+    </div>
+    <div class="flex items-center justify-evenly pb-4 text-sm font-medium ml-1">
+      <span class="flex items-center text-gray-700 dark:text-white me-3">
+        <span class="flex w-2.5 h-2.5 bg-yellow-300 rounded-full me-1.5 flex-shrink-0"></span>
+        <span class="font-bold"><%= meta.counters.pending %>&nbsp;</span>
+        <%= ngettext("One pending", "%{count} pending", meta.counters.pending) %>
+      </span>
     </div>
   </div>
 </div>

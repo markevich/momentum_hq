@@ -13,10 +13,10 @@ defmodule MomentumHq.Repo.Migrations.CreateTasks do
       add :momentum_id, references(:momentums, on_delete: :restrict), null: false
       add :user_id, references(:users, on_delete: :restrict), null: false
 
-      add :name, :string
+      add :name, :string, null: false
       add :icon, :string
-
       add :affect_value, :decimal, null: false
+
       add :status, :task_status_type, default: fragment("'pending'"), null: false
       add :target_date, :date, null: false
       add :day_number, :integer, null: false

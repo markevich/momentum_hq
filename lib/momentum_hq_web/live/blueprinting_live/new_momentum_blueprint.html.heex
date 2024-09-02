@@ -1,10 +1,16 @@
-<div>
-  <div class="tg-back-button" data-navigate={JS.navigate(~p"/blueprinting")}></div>
-  <div class="text-center text-3xl">
-    Новый моментум
-  </div>
+<div class="tg-back-button" data-navigate={JS.navigate(~p"/blueprinting")}></div>
+<div class="bg-white pt-5">
+  <div class="text-center text-5xl font-light">Новый моментум</div>
+</div>
+
+<div class="bg-white p-4">
   <.simple_form for={@form} id="momentum_blueprint-new-form" phx-submit="save">
-    <.input field={@form[:name]} type="text" label="Имя моментума" />
+    <.input
+      field={@form[:name]}
+      type="text"
+      label="Название группы задач"
+      placeholder="Физ. Активность"
+    />
 
     <.radio_group field={@form[:generator_type]}>
       <!-- TODO: make explicit mapping -->

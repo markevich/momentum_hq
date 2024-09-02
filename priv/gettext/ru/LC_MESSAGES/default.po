@@ -59,3 +59,27 @@ msgstr ""
 #, elixir-autogen, elixir-format
 msgid "close"
 msgstr ""
+
+#: lib/momentum_hq_web/live/momentum_live/list_momentums.html.heex:44
+#, elixir-autogen, elixir-format
+msgid "One completed"
+msgid_plural "%{count} completed"
+msgstr[0] "выполнена"
+msgstr[1] "выполнены"
+msgstr[2] "выполнено"
+
+#: lib/momentum_hq_web/live/momentum_live/list_momentums.html.heex:49
+#, elixir-autogen, elixir-format
+msgid "One failed"
+msgid_plural "%{count} failed"
+msgstr[0] "провалена"
+msgstr[1] "провалены"
+msgstr[2] "провалено"
+
+#: lib/momentum_hq_web/live/momentum_live/list_momentums.html.heex:56
+#, elixir-autogen, elixir-format
+msgid "One pending"
+msgid_plural "%{count} pending"
+msgstr[0] "запланирована"
+msgstr[1] "запланированы"
+msgstr[2] "запланировано"

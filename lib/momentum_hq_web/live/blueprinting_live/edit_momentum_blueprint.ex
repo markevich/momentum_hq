@@ -3,8 +3,7 @@ defmodule MomentumHqWeb.BlueprintingLive.EditMomentumBlueprint do
   use MomentumHqWeb, :live_view
 
   alias MomentumHq.Blueprinting
-  alias MomentumHq.MissionControl
-  alias MomentumHq.MissionControl.RenderTasksForDay
+  alias MomentumHq.Blueprinting.RecalculateTasksWeights
   alias MomentumHqWeb.BlueprintingLive.EditTaskBlueprint
 
   @impl true
@@ -93,19 +92,10 @@ defmodule MomentumHqWeb.BlueprintingLive.EditMomentumBlueprint do
   end
 
   @impl true
-  def handle_info({EditTaskBlueprint, {:task_blueprint_changed, event, task_blueprint}}, socket) do
+  def handle_info({EditTaskBlueprint, {:task_blueprint_changed, _event, task_blueprint}}, socket) do
     date = Date.to_iso8601(DateTime.to_date(DateTime.utc_now()))
 
-    case event do
-      :create ->
-        recreate_current_day_for_user(socket.assigns.current_user.id, date)
-
-      :edit ->
-        recreate_current_day_for_user(socket.assigns.current_user.id, date)
-
-      :delete ->
-        recreate_current_day_for_user(socket.assigns.current_user.id, date)
-    end
+    recreate_current_day_for_user(socket.assigns.current_user.id, date)
 
     momentum_blueprint =
       Blueprinting.get_momentum_blueprint!(
@@ -113,6 +103,7 @@ defmodule MomentumHqWeb.BlueprintingLive.EditMomentumBlueprint do
         socket.assigns.current_user.id
       )
 
+    recalculate_tasks_weights(momentum_blueprint)
     changeset = Blueprinting.momentum_blueprint_changeset_for_edit(momentum_blueprint)
 
     {:noreply, assign_form(socket, changeset)}
@@ -130,6 +121,13 @@ defmodule MomentumHqWeb.BlueprintingLive.EditMomentumBlueprint do
     CreateNewTasksForUserWorker.new(%{
       user_id: user_id,
       date: date
+    })
+    |> Oban.insert()
+  end
+
+  defp recalculate_tasks_weights(momentum_blueprint) do
+    RecalculateTasksWeights.new(%{
+      momentum_blueprint_id: momentum_blueprint.id
     })
     |> Oban.insert()
   end

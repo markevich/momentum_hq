@@ -36,23 +36,21 @@ defmodule MomentumHq.MissionControl.Task do
       :user_id,
       :task_blueprint_id,
       :momentum_id,
-      :name,
-      :icon,
       :status,
-      :affect_value,
       :target_date,
-      :day_number
+      :day_number,
+      :affect_value,
+      :name
     ])
     |> validate_required([
       :user_id,
       :task_blueprint_id,
       :momentum_id,
-      :name,
-      :icon,
       :status,
-      :affect_value,
       :target_date,
-      :day_number
+      :day_number,
+      :affect_value,
+      :name
     ])
   end
 end

@@ -2,6 +2,7 @@ defmodule MomentumHq.MissionControl do
   import Ecto.Query
 
   alias MomentumHq.Accounts.User
+  alias MomentumHq.Blueprinting
   alias MomentumHq.Blueprinting.MomentumBlueprint
   alias MomentumHq.MissionControl.Momentum
   alias MomentumHq.MissionControl.MomentumChange
@@ -45,10 +46,11 @@ defmodule MomentumHq.MissionControl do
       join: momentum_blueprint in MomentumBlueprint,
       on: momentum.id == momentum_blueprint.current_momentum_id,
       join: user in assoc(momentum, :user),
-      where: user.id == ^user_id
+      where: user.id == ^user_id,
+      order_by: momentum_blueprint.inserted_at
     )
     |> Repo.all()
-    |> Repo.preload(momentum_changes: [:task])
+    |> Repo.preload(tasks: [:momentum_change], momentum_blueprint: [:task_blueprints])
   end
 
   def delete_telegram_references(ids) do
@@ -93,17 +95,21 @@ defmodule MomentumHq.MissionControl do
   def maybe_delete_obsolete_today_tasks(task_blueprint) do
     from(
       task in Task,
-      join: blueprint in assoc(task, :task_blueprint),
-      where: blueprint.id == ^task_blueprint.id,
-      where: task.day_number not in blueprint.schedules,
+      join: task_blueprint in assoc(task, :task_blueprint),
+      where: task_blueprint.id == ^task_blueprint.id,
+      where: task.day_number not in task_blueprint.schedules,
       where: task.target_date == ^Date.utc_today()
     )
     |> Repo.delete_all()
     |> case do
       {cnt_of_deleted, _deleted_tasks} when cnt_of_deleted > 0 ->
-        :ok
+        current_momentum = task_blueprint.momentum_blueprint.current_momentum
 
-      # recalculate_momentum_value!(task_blueprint.current_momentum)
+        Ecto.Multi.new()
+        |> recalculate_momentum_value_multi(current_momentum, task_blueprint.momentum_blueprint)
+        |> Repo.transaction()
+
+        :ok
 
       _ ->
         :ok
@@ -125,9 +131,6 @@ defmodule MomentumHq.MissionControl do
     )
     |> Repo.one()
     |> Repo.preload(:user)
-  end
-
-  def recalculate_momentum_value!(momentum) do
   end
 
   def get_user_tasks_for_a_day(user_id, day) do
@@ -191,13 +194,13 @@ defmodule MomentumHq.MissionControl do
   def cycle_task_status!(task_id) do
     task =
       get_task!(task_id)
-      |> Repo.preload([:momentum_change, momentum: [:tasks]])
+      |> Repo.preload([:momentum_change, :task_blueprint, momentum: [:tasks, :momentum_blueprint]])
 
     {new_status, change_amount} =
       case task.status do
-        :pending -> {:completed, task.affect_value}
-        :completed -> {:failed, Decimal.negate(task.affect_value)}
-        :failed -> {:completed, task.affect_value}
+        :pending -> {:completed, task.task_blueprint.affect_value}
+        :completed -> {:failed, Decimal.negate(task.task_blueprint.affect_value)}
+        :failed -> {:completed, task.task_blueprint.affect_value}
       end
 
     {:ok, %{task: updated_task}} =
@@ -224,20 +227,39 @@ defmodule MomentumHq.MissionControl do
           momentum_change_changeset(momentum_change, %{change_amount: change_amount})
         end
       )
-      |> Ecto.Multi.one(:sum_of_changes, fn _changes ->
-        # TODO: EXTRACT AND REUSE!
-        from(
-          c in MomentumChange,
-          where: c.momentum_id == ^task.momentum_id,
-          select: sum(c.change_amount)
-        )
-      end)
-      |> Ecto.Multi.update(:momentum, fn %{sum_of_changes: sum_of_changes} ->
-        final_value = Decimal.add(task.momentum.value_at_start, sum_of_changes)
-        momentum_changeset(task.momentum, %{value_at_end: final_value})
-      end)
+      |> recalculate_momentum_value_multi(task.momentum, task.momentum.momentum_blueprint)
       |> Repo.transaction()
 
     updated_task
+  end
+
+  def recalculate_momentum_value_multi(multi, momentum, momentum_blueprint) do
+    multi
+    |> Ecto.Multi.one(:sum_of_changes, fn _changes ->
+      from(
+        change in MomentumChange,
+        where: change.momentum_id == ^momentum.id,
+        select: %{
+          pos_sum: sum(fragment("CASE WHEN change_amount < 0 THEN 0 ELSE change_amount END")),
+          neg_sum: sum(fragment("CASE WHEN change_amount > 0 THEN 0 ELSE change_amount END"))
+        }
+      )
+    end)
+    |> Ecto.Multi.run(:updated_value, fn _repo, %{sum_of_changes: sum_of_changes} ->
+      {:ok,
+       momentum.value_at_start
+       |> Decimal.add(sum_of_changes.neg_sum || 0)
+       |> Decimal.max(0)
+       |> Decimal.add(sum_of_changes.pos_sum || 0)
+       |> Decimal.min(100)}
+    end)
+    |> Ecto.Multi.update(:momentum, fn %{updated_value: updated_value} ->
+      momentum_changeset(momentum, %{value_at_end: updated_value})
+    end)
+    |> Ecto.Multi.update(:momentum_blueprint, fn %{updated_value: updated_value} ->
+      Blueprinting.momentum_blueprint_changeset_for_edit(momentum_blueprint, %{
+        current_value: updated_value
+      })
+    end)
   end
 end

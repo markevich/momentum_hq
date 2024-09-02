@@ -55,7 +55,7 @@ defmodule MomentumHq.MissionControl.RenderTasksForDay do
 
     MissionControl.list_tasks(tasks_ids)
     |> Enum.group_by(fn task ->
-      {task.user_id, task.target_date, task.momentum_id, task.momentum.name}
+      {task.user_id, task.target_date, task.momentum_id, task.momentum.momentum_blueprint.name}
     end)
     |> Enum.each(fn {{user_id, date, momentum_id, momentum_name}, _tasks} ->
       reference =
@@ -87,7 +87,7 @@ defmodule MomentumHq.MissionControl.RenderTasksForDay do
     user_tasks_by_momentums =
       user_tasks
       |> Enum.group_by(fn task ->
-        {task.momentum.id, task.momentum.name}
+        {task.momentum.id, task.momentum.momentum_blueprint.name}
       end)
 
     {user_tasks, user_tasks_by_momentums}

@@ -101,7 +101,7 @@ defmodule MomentumHqWeb.MomentumLive.ListMomentums do
     # https://github.com/elixir-cldr/cldr_dates_times
     %{
       id: momentum.id,
-      name: momentum.name,
+      name: momentum.momentum_blueprint.name,
       value_at_start: Decimal.round(momentum.value_at_start, 0, :up),
       value_at_end: Decimal.round(momentum.value_at_end, 0, :up),
       maximum_tasks_in_a_day: maximum_tasks_in_a_day,

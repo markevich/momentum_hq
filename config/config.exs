@@ -14,7 +14,6 @@ config :momentum_hq,
 # Configures the endpoint
 config :momentum_hq, MomentumHqWeb.Endpoint,
   url: [host: "localhost"],
-  adapter: Bandit.PhoenixAdapter,
   render_errors: [
     formats: [html: MomentumHqWeb.ErrorHTML, json: MomentumHqWeb.ErrorJSON],
     layout: false

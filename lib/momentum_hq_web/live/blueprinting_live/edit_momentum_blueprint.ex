@@ -81,6 +81,9 @@ defmodule MomentumHqWeb.BlueprintingLive.EditMomentumBlueprint do
            momentum_blueprint_params
          ) do
       {:ok, _momentum_blueprint} ->
+        date = Date.utc_today()
+        recreate_current_day_for_user(socket.assigns.current_user.id, date)
+
         {:noreply,
          socket
          |> put_flash(:info, "Momentum blueprint updated successfully")
@@ -91,9 +94,22 @@ defmodule MomentumHqWeb.BlueprintingLive.EditMomentumBlueprint do
     end
   end
 
+  def handle_event("delete", _params, socket) do
+    {:ok, _momentum_blueprint} =
+      Blueprinting.delete_momentum_blueprint(socket.assigns.momentum_blueprint)
+
+    date = Date.utc_today()
+    recreate_current_day_for_user(socket.assigns.current_user.id, date)
+
+    {:noreply,
+     socket
+     |> put_flash(:info, "Momentum blueprint deleted successfully")
+     |> push_navigate(to: ~p(/blueprinting))}
+  end
+
   @impl true
-  def handle_info({EditTaskBlueprint, {:task_blueprint_changed, _event, task_blueprint}}, socket) do
-    date = Date.to_iso8601(DateTime.to_date(DateTime.utc_now()))
+  def handle_info({EditTaskBlueprint, {:task_blueprint_changed, _event, _task_blueprint}}, socket) do
+    date = Date.utc_today()
 
     recreate_current_day_for_user(socket.assigns.current_user.id, date)
 

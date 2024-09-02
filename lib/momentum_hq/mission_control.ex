@@ -141,7 +141,7 @@ defmodule MomentumHq.MissionControl do
       order_by: task.name
     )
     |> Repo.all()
-    |> Repo.preload(:momentum)
+    |> Repo.preload(momentum: :momentum_blueprint)
   end
 
   def get_user_tasks_for_a_day(user_id, day, momentum_id) do

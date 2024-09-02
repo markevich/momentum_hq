@@ -57,8 +57,8 @@ defmodule MomentumHqMixProject do
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
-      {:bandit, "~> 1.2"},
       {:oban, "~> 2.17"},
+      {:plug_cowboy, "~> 2.0"},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:telegram, github: "visciang/telegram"}
     ]

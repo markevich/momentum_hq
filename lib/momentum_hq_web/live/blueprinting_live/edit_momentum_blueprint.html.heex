@@ -101,6 +101,9 @@
     />
     <:actions>
       <.button phx-disable-with="Сохранение...">Сохранить</.button>
+      <.link class="text-red-700" phx-click="delete" data-confirm="Are you sure?">
+        Удалить
+      </.link>
     </:actions>
   </.simple_form>
 

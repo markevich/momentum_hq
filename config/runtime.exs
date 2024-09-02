@@ -24,8 +24,6 @@ if config_env() == :prod do
       For example: ecto://USER:PASS@HOST/DATABASE
       """
 
-  maybe_ipv6 = if System.get_env("ECTO_IPV6") in ~w(true 1), do: [:inet6], else: []
-
   config :momentum_hq, MomentumHq.Repo,
     # ssl: true,
     url: database_url,
@@ -54,10 +52,8 @@ if config_env() == :prod do
     url: [host: host, port: 8443, scheme: "https"],
     https: [
       port: 8443,
-      compress: true,
       cipher_suite: :strong,
       keyfile: Helpers.get_env("MOMENTUM_SSL_KEY_PATH"),
-      cacertfile: Helpers.get_env("MOMENTUM_SSL_CACERT_PATH"),
       certfile: Helpers.get_env("MOMENTUM_SSL_CERT_PATH")
     ],
     secret_key_base: secret_key_base

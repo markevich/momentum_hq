@@ -7,7 +7,13 @@
 
   <.simple_form for={@form} id="area-form" phx-target={@myself} phx-submit="save">
     <.input field={@form[:name]} type="text" label="Название" />
-    <.input field={@form[:icon]} type="text" label="Эмоджи" />
+
+    <.input field={@form[:icon]} type="text" label="Эмоджи">
+      <:after_label>
+        <div class="text text-xs text-gray-500">Mac OS: ctrl + command + space</div>
+        <div class="text text-xs text-gray-500">Windows: Win + ;</div>
+      </:after_label>
+    </.input>
     <label class="block text-sm font-semibold leading-6 text-zinc-800">Цвет</label>
 
     <div class="flex flex-wrap gap-5 mt-2">

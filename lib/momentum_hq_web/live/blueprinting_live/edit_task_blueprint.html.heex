@@ -63,14 +63,25 @@
     />
     <:actions>
       <.button phx-disable-with="Сохраняю...">Сохранить</.button>
+
       <.link
+        :if={@action != :new_task_blueprint}
         class="text-red-700"
         phx-click="delete"
         phx-target={@myself}
-        data-confirm="Are you sure?"
+        data-confirm="Точно удаляем?"
       >
         Удалить
       </.link>
+      <button
+        :if={@action == :new_task_blueprint}
+        phx-click={JS.exec("data-cancel", to: "#area-modal")}
+        type="button"
+        class="-m-3 flex-none p-3 opacity-80"
+        aria-label={gettext("close")}
+      >
+        Отмена
+      </button>
     </:actions>
   </.simple_form>
 </div>

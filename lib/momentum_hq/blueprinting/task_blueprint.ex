@@ -37,7 +37,7 @@ defmodule MomentumHq.Blueprinting.TaskBlueprint do
       :user_id,
       :deleted_at
     ])
-    |> validate_required([:name, :schedules, :icon, :color, :momentum_blueprint_id, :user_id])
+    |> validate_required([:name, :schedules, :color, :momentum_blueprint_id, :user_id])
     |> validate_length(:schedules, min: 1)
     |> update_change(:schedules, &Enum.reject(&1, fn item -> !(item in 1..7) end))
     # TODO: Fix that default affect value

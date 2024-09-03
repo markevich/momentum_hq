@@ -40,7 +40,8 @@ defmodule MomentumHq.MissionControl.Task do
       :target_date,
       :day_number,
       :affect_value,
-      :name
+      :name,
+      :icon
     ])
     |> validate_required([
       :user_id,

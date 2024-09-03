@@ -231,7 +231,7 @@ Hooks.Momentum = {
           `#weekdays-${momentum.id}`,
           `0px`,
           `${offsetInc * i + angleDiff / 5 + 2}%`,
-          "fill-gray-400 text-sm",
+          "fill-gray-400 text-sm weekdays",
         ),
       );
     }
@@ -332,6 +332,7 @@ Hooks.Momentum = {
         scale: 0,
         transformOrigin: "50% 50%",
         stagger: { each: 0.06, from: "random" },
+        ease: "power1.inOut",
       });
 
       tl.from(
@@ -339,13 +340,17 @@ Hooks.Momentum = {
         {
           text: "",
           duration: 1,
+          ease: "power1.inOut",
         },
         "<",
       );
+
       tl.from(
-        `.momentum-${momentum.id} .counters`,
+        `.momentum-${momentum.id} .weekdays`,
         {
-          text: "",
+          scale: 0,
+          ease: "power1.inOut",
+          duration: 0.5,
         },
         ">",
       );
@@ -355,16 +360,28 @@ Hooks.Momentum = {
         {
           scaleX: "0.02",
           transformOrigin: "50% 50%",
+          ease: "power1.inOut",
           duration: 0.5,
         },
         ">",
       );
+
       tl.from(
         `.momentum-${momentum.id} .diff-text`,
         {
           text: "",
+          ease: "power1.inOut",
         },
         "<",
+      );
+
+      tl.from(
+        `.momentum-${momentum.id} .counters`,
+        {
+          text: "",
+          ease: "power1.inOut",
+        },
+        ">",
       );
     });
   },

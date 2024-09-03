@@ -21,7 +21,7 @@ defmodule MomentumHq.MissionControl do
       from(
         task in Task,
         where: task.user_id == ^user_id,
-        where: task.status != :completed,
+        where: task.status == :pending,
         where: task.target_date < ^date,
         select: task.id
       )
@@ -200,7 +200,7 @@ defmodule MomentumHq.MissionControl do
       case task.status do
         :pending -> {:completed, task.task_blueprint.affect_value}
         :completed -> {:failed, Decimal.negate(task.task_blueprint.affect_value)}
-        :failed -> {:completed, task.task_blueprint.affect_value}
+        :failed -> {:pending, Decimal.new(0)}
       end
 
     {:ok, %{task: updated_task}} =

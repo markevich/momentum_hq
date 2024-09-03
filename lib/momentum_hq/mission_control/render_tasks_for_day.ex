@@ -7,7 +7,8 @@ defmodule MomentumHq.MissionControl.RenderTasksForDay do
   def delete_old_messages_and_render_new_day(user, date) do
     MissionControl.list_telegram_references(user.id, date, [
       @message_type_welcome_to_new_day,
-      @message_type_momentum
+      @message_type_momentum,
+      @message_type_status
     ])
     |> Enum.map(fn reference ->
       Telegram.delete_user_message(user.telegram_id, reference.telegram_message_id)
@@ -48,12 +49,36 @@ defmodule MomentumHq.MissionControl.RenderTasksForDay do
       })
       |> Telegram.send_user_message_async_and_save_reference()
     end)
+
+    status = render_status(user_tasks)
+
+    %{
+      chat_id: user.telegram_id,
+      text: status,
+      disable_notification: true,
+      reference_args: %{
+        user_id: user.id,
+        date: date,
+        message_type: @message_type_status,
+        reference_id: user.id
+      }
+    }
+    |> Telegram.send_user_message_async_and_save_reference()
+  end
+
+  defp render_status(tasks) do
+    tasks
+    |> Enum.group_by(fn task -> tg_task_status(task) end)
+    |> Enum.map(fn {status, tasks} -> {status, Enum.count(tasks)} end)
+    |> Enum.sort_by(fn {status, _counts} -> status end)
+    |> Enum.reverse()
+    |> Enum.map_join("     ", fn {status, count} -> "#{status} #{count}" end)
   end
 
   def rerender_existing_messages(tasks_ids) do
-    IO.inspect(tasks_ids)
+    tasks = MissionControl.list_tasks(tasks_ids)
 
-    MissionControl.list_tasks(tasks_ids)
+    tasks
     |> Enum.group_by(fn task ->
       {task.user_id, task.target_date, task.momentum_id, task.momentum.momentum_blueprint.name}
     end)
@@ -76,6 +101,33 @@ defmodule MomentumHq.MissionControl.RenderTasksForDay do
       |> render_momentum_with_tasks(reference.user, momentum_name)
       |> Map.put(:message_id, reference.telegram_message_id)
       |> Telegram.update_user_message()
+    end)
+
+    tasks
+    |> Enum.group_by(fn task -> {task.user_id, task.target_date} end)
+    |> Enum.each(fn {{user_id, date}, _tasks} ->
+      IO.inspect({user_id, date})
+
+      reference =
+        MissionControl.get_telegram_day_reference(
+          user_id,
+          date,
+          @message_type_status,
+          user_id
+        )
+
+      # TODO: Migration purpose. Safe to delete later
+      if reference do
+        {user_tasks, _user_tasks_by_momentums} = user_tasks_grouped_by_momentums(user_id, date)
+        status = render_status(user_tasks)
+
+        %{
+          chat_id: reference.user.telegram_id,
+          text: status,
+          message_id: reference.telegram_message_id
+        }
+        |> Telegram.update_user_message()
+      end
     end)
 
     :ok
@@ -129,12 +181,7 @@ defmodule MomentumHq.MissionControl.RenderTasksForDay do
     tasks_keyboard =
       tasks
       |> Enum.map(fn task ->
-        status =
-          case task.status do
-            :pending -> "🟡"
-            :completed -> "✅"
-            :failed -> "❌"
-          end
+        status = tg_task_status(task)
 
         [
           %{
@@ -156,5 +203,13 @@ defmodule MomentumHq.MissionControl.RenderTasksForDay do
       },
       disable_notification: true
     }
+  end
+
+  defp tg_task_status(task) do
+    case task.status do
+      :pending -> "🟡"
+      :completed -> "✅"
+      :failed -> "❌"
+    end
   end
 end

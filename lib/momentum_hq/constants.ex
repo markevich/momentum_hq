@@ -11,6 +11,7 @@ defmodule MomentumHq.Constants do
 
       @message_type_welcome_to_new_day "render_welcome_to_new_day"
       @message_type_momentum "render_momentum"
+      @message_type_status "momentum_status"
     end
   end
 end

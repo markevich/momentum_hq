@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "flowbite": "^2.4.1"
+    "flowbite": "^2.4.1",
+    "gsap": "^3.12.5"
   }
 }

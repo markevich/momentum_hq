@@ -21,7 +21,7 @@
   </div>
   <div
     :for={%{attrs: current_momentum, meta: meta} <- @current_momentums}
-    class="bg-white m-5 rounded-2xl"
+    class={"momentum-#{current_momentum.id} bg-white m-5 rounded-2xl"}
   >
     <div class="grid grid-cols-1 gap-5">
       <div class="row-span-1 mt-5">
@@ -38,19 +38,19 @@
       </div>
     </div>
     <div class="flex items-center justify-evenly mb-2 text-sm font-medium ml-2">
-      <span class="flex items-center text-gray-700 dark:text-white me-3">
+      <span class="counters flex items-center text-gray-700 dark:text-white me-3">
         <span class="flex w-2.5 h-2.5 bg-green-500 rounded-full me-1.5 flex-shrink-0"></span>
         <span class="font-bold"><%= meta.counters.completed %>&nbsp;</span>
         <%= ngettext("One completed", "%{count} completed", meta.counters.completed) %>
       </span>
-      <span class="flex items-center text-gray-700 dark:text-white me-3">
+      <span class="counters flex items-center text-gray-700 dark:text-white me-3">
         <span class="flex w-2.5 h-2.5 bg-red-500 rounded-full me-1.5 flex-shrink-0"></span>
         <span class="font-bold"><%= meta.counters.failed %>&nbsp;</span>
         <%= ngettext("One failed", "%{count} failed", meta.counters.failed) %>
       </span>
     </div>
     <div class="flex items-center justify-evenly pb-4 text-sm font-medium ml-1">
-      <span class="flex items-center text-gray-700 dark:text-white me-3">
+      <span class="counters flex items-center text-gray-700 dark:text-white me-3">
         <span class="flex w-2.5 h-2.5 bg-yellow-300 rounded-full me-1.5 flex-shrink-0"></span>
         <span class="font-bold"><%= meta.counters.pending %>&nbsp;</span>
         <%= ngettext("One pending", "%{count} pending", meta.counters.pending) %>

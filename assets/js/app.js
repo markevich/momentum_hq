@@ -15,6 +15,9 @@
 //     import "some-package"
 //
 import "flowbite/dist/flowbite.phoenix.js";
+import { gsap } from "gsap";
+import { TextPlugin } from "gsap/TextPlugin";
+gsap.registerPlugin(TextPlugin);
 
 // Include phoenix_html to handle method=PUT/DELETE in forms and buttons.
 import "phoenix_html";
@@ -101,7 +104,7 @@ Hooks.Momentum = {
     return text;
   },
 
-  generateText(x, y, txt, fontSize) {
+  generateText(x, y, txt, fontSize, klass) {
     var text = document.createElementNS("http://www.w3.org/2000/svg", "text");
     text.textContent = txt;
     text.setAttributeNS(null, "x", x);
@@ -109,6 +112,7 @@ Hooks.Momentum = {
     text.setAttributeNS(null, "font-size", fontSize);
     text.setAttributeNS(null, "dominant-baseline", "middle");
     text.setAttributeNS(null, "text-anchor", "middle");
+    text.setAttributeNS(null, "class", klass);
 
     return text;
   },
@@ -175,6 +179,12 @@ Hooks.Momentum = {
 
     return g;
   },
+  generateGroup(klass) {
+    var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    g.setAttributeNS(null, "class", klass);
+    return g;
+  },
+
   radiusModifier(maximumTasks) {
     switch (true) {
       case maximumTasks < 5:
@@ -188,9 +198,8 @@ Hooks.Momentum = {
     }
   },
   generateMomentum(momentum) {
+    let momentumGroup = this.generateGroup();
     radiusModifier = this.radiusModifier(momentum.maximum_tasks_in_a_day);
-
-    allElements = [];
 
     startAngle = 180;
     angleDiff = 180 / 7;
@@ -208,13 +217,13 @@ Hooks.Momentum = {
       "",
       `weekdays-${momentum.id}`,
     );
-    allElements.push(path01);
+    momentumGroup.appendChild(path01);
 
     offsetInc = 100 / 7;
     weekdays = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 
     for (let i = 0; i < 7; i++) {
-      allElements.push(
+      momentumGroup.appendChild(
         this.generateTextPath(
           0,
           0,
@@ -244,7 +253,7 @@ Hooks.Momentum = {
             }
           })(task.status);
 
-          allElements.push(
+          momentumGroup.appendChild(
             this.generatePath(
               101,
               101,
@@ -253,13 +262,13 @@ Hooks.Momentum = {
               180 + 2 + angleDiff * i,
               blockWidth - 4,
               0,
-              `${color} fill-none stroke-[4px]`,
+              `task-svg ${color} fill-none stroke-[4px]`,
               "stroke-linecap: round",
             ),
           );
         });
       } else {
-        allElements.push(
+        momentumGroup.appendChild(
           this.generatePath(
             101,
             101,
@@ -268,7 +277,7 @@ Hooks.Momentum = {
             180 + 1 + angleDiff * i,
             blockWidth - 2,
             0,
-            `stroke-gray-300 fill-none stroke-[2px]`,
+            `task-svg stroke-gray-300 fill-none stroke-[2px]`,
           ),
         );
       }
@@ -279,17 +288,24 @@ Hooks.Momentum = {
       "25%",
       `${momentum.value_at_end}%`,
       "30px",
+      "text-main",
     );
-    textMomentum = this.generateText("50%", "40%", "Стабильность", "20px");
-    allElements.push(textMainPercentage);
-    allElements.push(textMomentum);
+    textMomentum = this.generateText(
+      "50%",
+      "40%",
+      "Стабильность",
+      "20px",
+      "text-main",
+    );
+    momentumGroup.appendChild(textMainPercentage);
+    momentumGroup.appendChild(textMomentum);
 
     valueDiff = momentum.value_at_end - momentum.value_at_start;
     diffSign = valueDiff < 0 ? "-" : "+";
     diffText = `${diffSign} ${Math.abs(valueDiff)}% в этом цикле`;
     diffColor = valueDiff < 0 ? "fill-purple-200" : "fill-cyan-200";
 
-    allElements.push(
+    momentumGroup.appendChild(
       this.generateRectangleWithText(
         200 / 2 - 140 / 2,
         "50%",
@@ -298,17 +314,58 @@ Hooks.Momentum = {
         "50%",
         "65%",
         diffText,
-        diffColor,
-        "text-sm",
+        `diff-rect ${diffColor}`,
+        "diff-text text-sm",
       ),
     );
 
-    this.el.querySelector("svg").replaceChildren(...allElements);
+    this.el.querySelector("svg").replaceChildren(momentumGroup);
+    window.gsap = gsap;
   },
 
   mounted() {
     this.handleEvent(`init_${this.el.id}`, (momentum) => {
       this.generateMomentum(momentum);
+      var tl = gsap.timeline();
+
+      tl.from(`.momentum-${momentum.id} .task-svg`, {
+        scale: 0,
+        transformOrigin: "50% 50%",
+        stagger: { each: 0.06, from: "random" },
+      });
+
+      tl.from(
+        `.momentum-${momentum.id} .text-main`,
+        {
+          text: "",
+          duration: 1,
+        },
+        "<",
+      );
+      tl.from(
+        `.momentum-${momentum.id} .counters`,
+        {
+          text: "",
+        },
+        ">",
+      );
+
+      tl.from(
+        `.momentum-${momentum.id} .diff-rect`,
+        {
+          scaleX: "0.02",
+          transformOrigin: "50% 50%",
+          duration: 0.5,
+        },
+        ">",
+      );
+      tl.from(
+        `.momentum-${momentum.id} .diff-text`,
+        {
+          text: "",
+        },
+        "<",
+      );
     });
   },
 };

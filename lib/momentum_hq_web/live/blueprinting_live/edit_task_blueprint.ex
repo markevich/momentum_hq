@@ -23,7 +23,7 @@ defmodule MomentumHqWeb.BlueprintingLive.EditTaskBlueprint do
     {:noreply,
      socket
      |> put_flash(:info, "Task blueprint deleted successfully")
-     |> push_patch(to: socket.assigns.patch)}
+     |> push_navigate(to: socket.assigns.patch)}
   end
 
   def handle_event("save", %{"task_blueprint" => task_blueprint_params}, socket) do

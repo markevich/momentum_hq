@@ -198,9 +198,18 @@ defmodule MomentumHq.MissionControl do
 
     {new_status, change_amount} =
       case task.status do
-        :pending -> {:completed, task.task_blueprint.affect_value}
-        :completed -> {:failed, Decimal.negate(task.task_blueprint.affect_value)}
-        :failed -> {:pending, Decimal.new(0)}
+        :pending ->
+          {:completed, task.task_blueprint.affect_value}
+
+        :completed ->
+          {:failed, Decimal.negate(task.task_blueprint.affect_value)}
+
+        :failed ->
+          if task.target_date == Date.utc_today() do
+            {:pending, Decimal.new(0)}
+          else
+            {:completed, task.task_blueprint.affect_value}
+          end
       end
 
     {:ok, %{task: updated_task}} =

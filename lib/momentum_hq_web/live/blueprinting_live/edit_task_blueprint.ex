@@ -2,6 +2,7 @@ defmodule MomentumHqWeb.BlueprintingLive.EditTaskBlueprint do
   use MomentumHqWeb, :live_component
 
   alias MomentumHq.Blueprinting
+  alias MomentumHq.Lifecycle.CreateNewTasksForUserWorker
   alias MomentumHq.MissionControl
 
   @impl true
@@ -18,12 +19,21 @@ defmodule MomentumHqWeb.BlueprintingLive.EditTaskBlueprint do
   def handle_event("delete", _params, socket) do
     :ok = Blueprinting.delete_task_blueprint(socket.assigns.task_blueprint)
 
-    notify_parent({:task_blueprint_changed, :delete, nil})
+    date = Date.utc_today()
+    recreate_current_day_for_user(socket.assigns.user_id, date)
 
     {:noreply,
      socket
      |> put_flash(:info, "Task blueprint deleted successfully")
      |> push_navigate(to: socket.assigns.patch)}
+  end
+
+  defp recreate_current_day_for_user(user_id, date) do
+    CreateNewTasksForUserWorker.new(%{
+      user_id: user_id,
+      date: date
+    })
+    |> Oban.insert()
   end
 
   def handle_event("save", %{"task_blueprint" => task_blueprint_params}, socket) do

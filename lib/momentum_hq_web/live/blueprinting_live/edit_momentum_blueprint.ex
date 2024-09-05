@@ -1,10 +1,10 @@
 defmodule MomentumHqWeb.BlueprintingLive.EditMomentumBlueprint do
-  alias MomentumHq.Lifecycle.CreateNewTasksForUserWorker
   use MomentumHqWeb, :live_view
 
   alias MomentumHq.Blueprinting
   alias MomentumHq.Blueprinting.RecalculateTasksWeights
   alias MomentumHqWeb.BlueprintingLive.EditTaskBlueprint
+  alias MomentumHq.Lifecycle.CreateNewTasksForUserWorker
 
   @impl true
   def mount(params, _session, socket) do

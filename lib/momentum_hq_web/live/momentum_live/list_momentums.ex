@@ -48,9 +48,15 @@ defmodule MomentumHqWeb.MomentumLive.ListMomentums do
 
         task_blueprints = momentum.momentum_blueprint.task_blueprints
 
-        Enum.reduce(task_blueprints, empty_set, fn task_blueprint, acc ->
+        task_blueprints
+        |> Enum.filter(fn task_blueprint ->
+          task_blueprint.deleted_at == nil
+        end)
+        |> Enum.reduce(empty_set, fn task_blueprint, acc ->
           task_blueprint.schedules
-          |> Enum.filter(fn day_number -> day_number > today_day_of_week end)
+          |> Enum.filter(fn day_number ->
+            day_number > today_day_of_week
+          end)
           |> Enum.reduce(acc, fn day_number, inner_acc ->
             inner_acc
             |> Map.update!(day_number, fn existing_tasks ->

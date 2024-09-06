@@ -9,6 +9,7 @@ defmodule MomentumHq.MissionControl do
   alias MomentumHq.MissionControl.RenderTasksForDay
   alias MomentumHq.MissionControl.Task
   alias MomentumHq.MissionControl.TelegramDayReference
+  alias MomentumHq.Telegram.DeleteObsoleteMessagesWorker
 
   alias MomentumHq.Repo
 
@@ -30,12 +31,42 @@ defmodule MomentumHq.MissionControl do
     ids
   end
 
+  def schedule_deletion_of_obsolete_messages(user_id, date) do
+    DeleteObsoleteMessagesWorker.new(%{user_id: user_id, date: date})
+    |> Oban.insert()
+  end
+
   def list_telegram_references(user_id, date, message_types) do
     from(
       reference in TelegramDayReference,
       where: reference.user_id == ^user_id,
       where: reference.date == ^date,
       where: reference.message_type in ^message_types
+    )
+    |> Repo.all()
+  end
+
+  def list_obsolete_references(user_id, date) do
+    from(
+      duplicates in subquery(
+        from reference in TelegramDayReference,
+          where: reference.date == ^date,
+          where: reference.user_id == ^user_id,
+          select: %{
+            row:
+              row_number()
+              |> over(
+                partition_by: [reference.date, reference.reference_id, reference.message_type],
+                order_by: [desc: reference.inserted_at]
+              ),
+            id: reference.id,
+            message_type: reference.message_type,
+            date: reference.date,
+            reference_id: reference.reference_id,
+            telegram_message_id: reference.telegram_message_id
+          }
+      ),
+      where: duplicates.row > 1
     )
     |> Repo.all()
   end

@@ -5,22 +5,11 @@ defmodule MomentumHq.MissionControl.RenderTasksForDay do
   use MomentumHq.Constants
 
   def delete_old_messages_and_render_new_day(user, date) do
-    MissionControl.list_telegram_references(user.id, date, [
-      @message_type_welcome_to_new_day,
-      @message_type_momentum,
-      @message_type_status
-    ])
-    |> Enum.map(fn reference ->
-      Telegram.delete_user_message(user.telegram_id, reference.telegram_message_id)
-
-      reference.id
-    end)
-    |> MissionControl.delete_telegram_references()
-
-    render_and_send_new(user, date)
+    schedule_render_and_send(user, date)
+    MissionControl.schedule_deletion_of_obsolete_messages(user.id, date)
   end
 
-  defp render_and_send_new(user, date) do
+  defp schedule_render_and_send(user, date) do
     # MissionControl.delete_telegram_references
     {user_tasks, user_tasks_by_momentums} = user_tasks_grouped_by_momentums(user.id, date)
 

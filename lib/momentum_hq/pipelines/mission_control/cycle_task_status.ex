@@ -6,7 +6,6 @@ defmodule MomentumHq.Pipelines.MissionControl.CycleTaskStatus do
   alias MomentumHq.Telegram.CallbackData
 
   def call(%CallbackData{} = callback_data) do
-    {:ok, message_id} = Map.fetch(callback_data, :message_id)
     {:ok, task_id} = Map.fetch(callback_data.callback_data, "id")
 
     MissionControl.cycle_task_status!(task_id)

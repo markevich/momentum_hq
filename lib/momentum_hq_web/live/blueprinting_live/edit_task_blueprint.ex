@@ -28,14 +28,6 @@ defmodule MomentumHqWeb.BlueprintingLive.EditTaskBlueprint do
      |> push_navigate(to: socket.assigns.patch)}
   end
 
-  defp recreate_current_day_for_user(user_id, date) do
-    CreateNewTasksForUserWorker.new(%{
-      user_id: user_id,
-      date: date
-    })
-    |> Oban.insert()
-  end
-
   def handle_event("save", %{"task_blueprint" => task_blueprint_params}, socket) do
     save_task_blueprint(socket, socket.assigns.action, task_blueprint_params)
   end
@@ -78,6 +70,14 @@ defmodule MomentumHqWeb.BlueprintingLive.EditTaskBlueprint do
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign_form(socket, changeset)}
     end
+  end
+
+  defp recreate_current_day_for_user(user_id, date) do
+    CreateNewTasksForUserWorker.new(%{
+      user_id: user_id,
+      date: date
+    })
+    |> Oban.insert()
   end
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do

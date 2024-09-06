@@ -1,5 +1,5 @@
 defmodule MomentumHq.Lifecycle.CreateNewTasksForUserWorker do
-  use Oban.Worker, queue: :lifecycle, max_attempts: 1
+  use Oban.Worker, queue: :telegram, max_attempts: 1
   use MomentumHq.Constants
 
   alias MomentumHq.Lifecycle.CurrentDayAndWeek

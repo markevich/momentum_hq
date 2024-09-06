@@ -751,7 +751,7 @@ defmodule MomentumHqWeb.CoreComponents do
     |> JS.focus_first(to: "##{id}-content")
   end
 
-  def hide_modal(js \\ %JS{}, id) do
+  def hide_modal(js \\ %JS{}, _id) do
     js
     |> JS.remove_class("overflow-hidden", to: "body")
     |> JS.pop_focus()

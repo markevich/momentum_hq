@@ -11,10 +11,158 @@
       label="Название группы задач"
       placeholder="Физ. Активность"
     />
+    
+    <!-- TODO: make explicit mapping -->
+    <div class="relative h-[250px]">
+      <input
+        type="radio"
+        name="generator_type"
+        id="radio_weekly"
+        value="weekly"
+        class="radio_weekly"
+      />
+      <label for="radio_weekly">
+        <div class="container p-4 pt-2 rounded-3xl border h-[250px] cursor-pointer">
+          <p class="text-2xl text-center">Однонедельный</p>
+          <p class="text-sm text-center text-slate-400">Пример "Заниматься спортом"</p>
+          <div class="grid grid-cols-7 gap-1 mt-3">
+            <div class="flex flex-col justify-center items-center">
+              <p>пн</p>
+              <div class="rounded-full h-9 w-9 border text-center pt-1.5">
+                🏋️
+              </div>
+            </div>
+            <div class="flex flex-col justify-center items-center">
+              <p>вт</p>
+              <div class="rounded-full h-9 w-9 border text-center pt-1.5">
+                🏃
+              </div>
+            </div>
+            <div class="flex flex-col justify-center items-center">
+              <p>ср</p>
+              <div class="rounded-full h-9 w-9 border text-center pt-1.5">
+                🏋️
+              </div>
+            </div>
+            <div class="flex flex-col justify-center items-center">
+              <p>чт</p>
+              <div class="rounded-full h-9 w-9 border text-center pt-1.5">
+                🏃
+              </div>
+            </div>
+            <div class="flex flex-col justify-center items-center">
+              <p>пт</p>
+              <div class="rounded-full h-9 w-9 border text-center pt-1.5">
+                🏋️
+              </div>
+            </div>
+            <div class="flex flex-col justify-center items-center">
+              <p>сб</p>
+              <div class="rounded-full h-9 w-9 border text-center pt-1.5"></div>
+            </div>
+            <div class="flex flex-col justify-center items-center">
+              <p>вс</p>
+              <div class="rounded-full h-9 w-9 border text-center pt-1.5">
+                ⚖️
+              </div>
+            </div>
+          </div>
+    
+          <div class="mt-10 px-1">
+            <p class="text-sm">🏋️ Ходить в зал в <span class="font-bold">пн, ср, пт</span></p>
+            <p class="text-sm">🏃 Бегать в <span class="font-bold">вт, чт</span></p>
+            <p class="text-sm">⚖️ Взвешиваться в <span class="font-bold">вс</span></p>
+          </div>
+        </div>
+      </label>
+    </div>
+
+    <div class="relative h-[270px]">
+      <input
+        type="radio"
+        name="generator_type"
+        id="radio_biweekly"
+        value="biweekly"
+        class="radio_weekly"
+      />
+      <label for="radio_biweekly">
+        <div class="container p-4 pt-2 rounded-3xl border h-[270px] cursor-pointer">
+          <p class="text-2xl text-center">Двухнедельный</p>
+          <p class="text-sm text-center text-slate-400">Пример "Чистый дом"</p>
+          <div class="grid grid-cols-7 gap-1 mt-3">
+            <div class="flex flex-col justify-center items-center">
+              <p>пн</p>
+              <div class="rounded-full h-9 w-9 border text-center pt-1.5">
+                🛏️
+              </div>
+            </div>
+            <div class="flex flex-col justify-center items-center">
+              <p>вт</p>
+              <div class="rounded-full h-9 w-9 border text-center pt-1.5"></div>
+            </div>
+            <div class="flex flex-col justify-center items-center">
+              <p>ср</p>
+              <div class="rounded-full h-9 w-9 border text-center pt-1.5"></div>
+            </div>
+            <div class="flex flex-col justify-center items-center">
+              <p>чт</p>
+              <div class="rounded-full h-9 w-9 border text-center pt-1.5">
+                🧹
+              </div>
+            </div>
+            <div class="flex flex-col justify-center items-center">
+              <p>пт</p>
+              <div class="rounded-full h-9 w-9 border text-center pt-1.5"></div>
+            </div>
+            <div class="flex flex-col justify-center items-center">
+              <p>сб</p>
+              <div class="rounded-full h-9 w-9 border text-center pt-1.5"></div>
+            </div>
+            <div class="flex flex-col justify-center items-center">
+              <p>вс</p>
+              <div class="rounded-full h-9 w-9 border text-center pt-1.5"></div>
+            </div>
+            
+            <div class="flex flex-col justify-center items-center">
+              <div class="rounded-full h-9 w-9 border text-center pt-1.5">
+                🛏️
+              </div>
+            </div>
+            <div class="flex flex-col justify-center items-center">
+              <div class="rounded-full h-9 w-9 border text-center pt-1.5"></div>
+            </div>
+            <div class="flex flex-col justify-center items-center">
+              <div class="rounded-full h-9 w-9 border text-center pt-1.5"></div>
+            </div>
+            <div class="flex flex-col justify-center items-center">
+              <div class="rounded-full h-9 w-9 border text-center pt-1.5"></div>
+            </div>
+            <div class="flex flex-col justify-center items-center">
+              <div class="rounded-full h-9 w-9 border text-center pt-1.5"></div>
+            </div>
+            <div class="flex flex-col justify-center items-center">
+              <div class="rounded-full h-9 w-9 border text-center pt-1.5"></div>
+            </div>
+            <div class="flex flex-col justify-center items-center">
+              <div class="rounded-full h-9 w-9 border text-center pt-1.5">
+                🫧
+              </div>
+            </div>
+          </div>
+          
+    
+          <div class="mt-7 px-1">
+            <p class="text-sm">🛏️ Менять постель каждый <span class="font-bold">пн</span></p>
+            <p class="text-sm">🧹 Пылесосить каждый <span class="font-bold">нечетный четверг</span></p>
+            <p class="text-sm">🫧 Мыть полы каждое <span class="font-bold">четное воскресенье</span></p>
+          </div>
+        </div>
+      </label>
+    </div>
 
     <.radio_group field={@form[:generator_type]}>
-      <!-- TODO: make explicit mapping -->
-      <:radio value="weekly">Еженедельный</:radio>
+      <:radio value="weekly" name="radio_weekly">Еженедельный</:radio>
+      <:radio value="biweekly">Двухнедельный</:radio>
     </.radio_group>
 
     <.button phx-disable-with="Сохраняем...">Продолжить</.button>

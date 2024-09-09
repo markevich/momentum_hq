@@ -328,12 +328,42 @@ Hooks.Momentum = {
       this.generateMomentum(momentum);
       var tl = gsap.timeline();
 
-      tl.from(`.momentum-${momentum.id} .task-svg`, {
-        scale: 0,
-        transformOrigin: "50% 50%",
-        stagger: { each: 0.06, from: "random" },
-        ease: "power1.inOut",
+      tl.from(`.momentum-${momentum.id} .momentum-name`, {
+        opacity: 0,
+        y: -50,
+        ease: "power2.inOut",
+        delay: 0.1,
       });
+
+      tl.from(
+        `.momentum-${momentum.id} .cycle-number`,
+        {
+          opacity: 0,
+          x: -50,
+          ease: "power2.inOut",
+        },
+        "<",
+      );
+      tl.from(
+        `.momentum-${momentum.id} .cycle-dates`,
+        {
+          opacity: 0,
+          x: 50,
+          ease: "power2.inOut",
+        },
+        "<",
+      );
+
+      tl.from(
+        `.momentum-${momentum.id} .task-svg`,
+        {
+          scale: 0,
+          transformOrigin: "50% 50%",
+          stagger: { each: 0.06, from: "random" },
+          ease: "power1.inOut",
+        },
+        ">",
+      );
 
       tl.from(
         `.momentum-${momentum.id} .text-main`,

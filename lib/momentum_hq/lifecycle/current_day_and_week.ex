@@ -74,7 +74,7 @@ defmodule MomentumHq.Lifecycle.CurrentDayAndWeek do
     cycle_week_number = rem(week_number, 2)
 
     target_day_of_cycle =
-      if cycle_week_number == 1 do
+      if cycle_week_number == 0 do
         Date.day_of_week(target_date)
       else
         7 + Date.day_of_week(target_date)

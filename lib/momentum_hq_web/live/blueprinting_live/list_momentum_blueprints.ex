@@ -18,7 +18,7 @@ defmodule MomentumHqWeb.BlueprintingLive.ListMomentumBlueprints do
     |> Enum.map(fn momentum_blueprint ->
       mapped_schedules =
         momentum_blueprint.task_blueprints
-        |> schedules()
+        |> schedules(momentum_blueprint)
 
       %{
         id: momentum_blueprint.id,
@@ -30,18 +30,30 @@ defmodule MomentumHqWeb.BlueprintingLive.ListMomentumBlueprints do
     end)
   end
 
-  defp schedules(task_blueprints) do
-    Enum.reduce(1..7, %{}, fn index, acc ->
-      count =
-        task_blueprints
-        |> Enum.count(fn task_blueprint ->
-          !task_blueprint.deleted_at &&
-            index in task_blueprint.schedules
+  defp schedules(task_blueprints, momentum_blueprint) do
+    case momentum_blueprint.generator_type do
+      :weekly ->
+        Enum.reduce(1..7, %{}, fn index, acc ->
+          schedules_count_reducer(task_blueprints, index, acc)
         end)
 
-      acc
-      |> Map.put(index, count)
-    end)
+      :biweekly ->
+        Enum.reduce(1..14, %{}, fn index, acc ->
+          schedules_count_reducer(task_blueprints, index, acc)
+        end)
+    end
+  end
+
+  defp schedules_count_reducer(task_blueprints, index, acc) do
+    count =
+      task_blueprints
+      |> Enum.count(fn task_blueprint ->
+        !task_blueprint.deleted_at &&
+          index in task_blueprint.schedules
+      end)
+
+    acc
+    |> Map.put(index, count)
   end
 
   defp calculate_stats(mapped_schedules) do

@@ -130,7 +130,7 @@ defmodule MomentumHqWeb.BlueprintingLive.EditMomentumBlueprint do
 
     assign(socket, :form, to_form(changeset))
     |> assign(:momentum_blueprint, changeset.data)
-    |> assign(:task_days_schedules, task_days_schedules(updated_momentum.task_blueprints))
+    |> assign(:task_days_schedules, task_days_schedules(updated_momentum))
   end
 
   defp recreate_current_day_for_user(user_id, date) do
@@ -148,8 +148,16 @@ defmodule MomentumHqWeb.BlueprintingLive.EditMomentumBlueprint do
     |> Oban.insert()
   end
 
-  def task_days_schedules(task_blueprints) do
-    Enum.map(1..7, fn index ->
+  def task_days_schedules(momentum_blueprint) do
+    task_blueprints = momentum_blueprint.task_blueprints
+
+    number_of_days =
+      case momentum_blueprint.generator_type do
+        :weekly -> 7
+        :biweekly -> 14
+      end
+
+    Enum.map(1..number_of_days, fn index ->
       matched_items =
         Enum.filter(task_blueprints, fn task_blueprint ->
           !task_blueprint.deleted_at &&

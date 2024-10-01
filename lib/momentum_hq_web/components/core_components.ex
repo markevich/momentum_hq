@@ -330,23 +330,27 @@ defmodule MomentumHqWeb.CoreComponents do
   end
 
   def input(%{type: "checkgroup"} = assigns) do
+    options = assigns.options
+
+    IO.inspect(Enum.chunk_every(options, 7))
+
     ~H"""
     <div phx-feedback-for={@name} class="text-sm">
       <.label for={@id}><%= @label %></.label>
       <input type="hidden" name={@name} value="" />
 
       <div class="mt-1 w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-        <table class="text-sm items-baseline">
+        <table :for={week <- Enum.chunk_every(@options, 7)} class="text-sm items-baseline">
           <thead class="text-sm text-left leading-6 text-zinc-500">
             <tr>
-              <th :for={{header, _value} <- @options} class="p-0 pb-4 pr-6 font-normal">
-                <%= header %>
+              <th :for={{header, _value} <- week} class="p-0 pb-4 pr-6 font-normal">
+                <%= Phoenix.HTML.raw(header) %>
               </th>
             </tr>
           </thead>
           <tbody class="relative divide-y divide-zinc-100 border-t border-zinc-200 text-sm leading-6 text-zinc-700">
             <tr>
-              <td :for={{_header, value} <- @options}>
+              <td :for={{_header, value} <- week}>
                 <input
                   type="checkbox"
                   id={"#{@name}-#{value}"}

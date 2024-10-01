@@ -197,7 +197,7 @@ Hooks.Momentum = {
         return 1;
     }
   },
-  generateMomentum(momentum) {
+  generateWeeklyMomentum(momentum) {
     let momentumGroup = this.generateGroup();
     radiusModifier = this.radiusModifier(momentum.maximum_tasks_in_a_day);
 
@@ -320,12 +320,214 @@ Hooks.Momentum = {
     );
 
     this.el.querySelector("svg").replaceChildren(momentumGroup);
-    window.gsap = gsap;
+  },
+  generateBiweeklyMomentum(momentum) {
+    let momentumGroup = this.generateGroup();
+    radiusModifier = this.radiusModifier(momentum.maximum_tasks_in_a_day);
+
+    startAngle = 180;
+    angleDiff = 180 / 7;
+    blockWidth = angleDiff;
+
+    path01 = this.generatePath(
+      101,
+      101,
+      95 * radiusModifier,
+      95 * radiusModifier,
+      180,
+      180,
+      0,
+      "stroke-green-200 fill-none stroke-[5px] hidden",
+      "",
+      `weekdays-firstweek-${momentum.id}`,
+    );
+    momentumGroup.appendChild(path01);
+
+    path001 = this.generatePath(
+      101,
+      101,
+      95 * radiusModifier,
+      95 * radiusModifier,
+      0,
+      180,
+      0,
+      "stroke-green-200 fill-none stroke-[5px] hidden",
+      "",
+      `weekdays-secondweek-${momentum.id}`,
+    );
+    momentumGroup.appendChild(path001);
+
+    offsetInc = 100 / 7;
+    weekdays = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+
+    for (let i = 0; i < 7; i++) {
+      momentumGroup.appendChild(
+        this.generateTextPath(
+          0,
+          0,
+          weekdays[i],
+          `#weekdays-firstweek-${momentum.id}`,
+          `0px`,
+          `${offsetInc * i + angleDiff / 5 + 2}%`,
+          "fill-gray-400 text-sm weekdays",
+        ),
+      );
+    }
+
+    for (let i = 0; i < 7; i++) {
+      momentumGroup.appendChild(
+        this.generateTextPath(
+          0,
+          0,
+          weekdays[i],
+          `#weekdays-secondweek-${momentum.id}`,
+          `0px`,
+          `${offsetInc * i + angleDiff / 5 + 2}%`,
+          "fill-gray-400 text-sm weekdays",
+        ),
+      );
+    }
+
+    for (let i = 0; i < 7; i++) {
+      window.tasks = momentum.tasks_by_days;
+      tasks = momentum.tasks_by_days[i + 1];
+
+      if (tasks.length) {
+        tasks.forEach((task, index) => {
+          let color = ((status) => {
+            switch (status) {
+              case "pending":
+                return "stroke-yellow-300";
+              case "completed":
+                return "stroke-green-500";
+              case "failed":
+                return "stroke-red-500";
+            }
+          })(task.status);
+
+          momentumGroup.appendChild(
+            this.generatePath(
+              101,
+              101,
+              (115 + 7 * index) * radiusModifier,
+              (115 + 7 * index) * radiusModifier,
+              180 + 2 + angleDiff * i,
+              blockWidth - 4,
+              0,
+              `task-svg ${color} fill-none stroke-[4px]`,
+              "stroke-linecap: round",
+            ),
+          );
+        });
+      } else {
+        momentumGroup.appendChild(
+          this.generatePath(
+            101,
+            101,
+            115 * radiusModifier,
+            115 * radiusModifier,
+            180 + 1 + angleDiff * i,
+            blockWidth - 2,
+            0,
+            `task-svg stroke-gray-300 fill-none stroke-[2px]`,
+          ),
+        );
+      }
+    }
+
+    for (let i = 0; i < 7; i++) {
+      window.tasks = momentum.tasks_by_days;
+      tasks = momentum.tasks_by_days[i + 1 + 7];
+
+      if (tasks.length) {
+        tasks.forEach((task, index) => {
+          let color = ((status) => {
+            switch (status) {
+              case "pending":
+                return "stroke-yellow-300";
+              case "completed":
+                return "stroke-green-500";
+              case "failed":
+                return "stroke-red-500";
+            }
+          })(task.status);
+
+          momentumGroup.appendChild(
+            this.generatePath(
+              101,
+              101,
+              (115 + 7 * index) * radiusModifier,
+              (115 + 7 * index) * radiusModifier,
+              0 + 2 + angleDiff * i,
+              blockWidth - 4,
+              0,
+              `task-svg ${color} fill-none stroke-[4px]`,
+              "stroke-linecap: round",
+            ),
+          );
+        });
+      } else {
+        momentumGroup.appendChild(
+          this.generatePath(
+            101,
+            101,
+            115 * radiusModifier,
+            115 * radiusModifier,
+            0 + 1 + angleDiff * i,
+            blockWidth - 2,
+            0,
+            `task-svg stroke-gray-300 fill-none stroke-[2px]`,
+          ),
+        );
+      }
+    }
+
+    textMainPercentage = this.generateText(
+      "50%",
+      "20%",
+      `${momentum.value_at_end}%`,
+      "30px",
+      "text-main",
+    );
+    textMomentum = this.generateText(
+      "50%",
+      "30%",
+      "Стабильность",
+      "20px",
+      "text-main",
+    );
+    momentumGroup.appendChild(textMainPercentage);
+    momentumGroup.appendChild(textMomentum);
+
+    valueDiff = momentum.value_at_end - momentum.value_at_start;
+    diffSign = valueDiff < 0 ? "-" : "+";
+    diffText = `${diffSign} ${Math.abs(valueDiff)}% в этом цикле`;
+    diffColor = valueDiff < 0 ? "fill-purple-200" : "fill-cyan-200";
+
+    momentumGroup.appendChild(
+      this.generateRectangleWithText(
+        200 / 2 - 140 / 2,
+        "35%",
+        "140",
+        "35",
+        "50%",
+        "42.5%",
+        diffText,
+        `diff-rect ${diffColor}`,
+        "diff-text text-sm",
+      ),
+    );
+
+    this.el.querySelector("svg").replaceChildren(momentumGroup);
   },
 
   mounted() {
     this.handleEvent(`init_${this.el.id}`, (momentum) => {
-      this.generateMomentum(momentum);
+      if (momentum.generator_type == "weekly") {
+        this.generateWeeklyMomentum(momentum);
+      } else {
+        this.generateBiweeklyMomentum(momentum);
+      }
       var tl = gsap.timeline();
 
       tl.from(`.momentum-${momentum.id} .momentum-name`, {

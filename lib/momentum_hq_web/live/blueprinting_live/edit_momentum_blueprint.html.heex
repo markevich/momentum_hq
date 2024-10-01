@@ -6,38 +6,55 @@
     <span :if={@momentum_blueprint.generator_type == :weekly} class="text-gray-500">
       Еженедельный моментум
     </span>
+    <span :if={@momentum_blueprint.generator_type == :biweekly} class="text-gray-500">
+      Двухнедельный моментум
+    </span>
   </div>
 </div>
 
 <div class="bg-white p-4">
-  <table class="table border-spacing-y-4 w-full border-separate space-y-4 text-sm rounded">
-    <tbody>
-      <tr :for={{schedules_in_a_day, index} <- Enum.with_index(@task_days_schedules)} class="">
-        <td class="w-8 font-bold align-top">
-          <div class="w-full text-start">
-            <%= case index + 1 do
-              1 -> "Пн"
-              2 -> "Вт"
-              3 -> "Ср"
-              4 -> "Чт"
-              5 -> "Пт"
-              6 -> "Сб"
-              7 -> "Вс"
-            end %>
-          </div>
-        </td>
-        <td>
-          <table class="w-full">
-            <tbody>
-              <tr :for={task <- schedules_in_a_day}>
-                <td>
-                  <.link
-                    phx-click={JS.push_focus()}
-                    patch={
-                      ~p"/blueprinting/#{@momentum_blueprint.id}/edit/task_blueprints/#{task.id}/edit"
-                    }
-                  >
-                    <div class={"
+  <.simple_form
+    for={@form}
+    id="momentum_blueprint-form"
+    phx-change="save"
+    phx-submit="save_and_redirect"
+  >
+    <.input
+      field={@form[:name]}
+      type="text"
+      label="Название моментума"
+      phx-debounce="blur"
+    />
+
+    <div :if={@momentum_blueprint.generator_type == :weekly}>
+      <table class="table border-spacing-y-4 mt-0 w-full border-separate space-y-4 text-sm rounded">
+        <tbody>
+          <tr :for={{schedules_in_a_day, index} <- Enum.with_index(@task_days_schedules)} class="">
+            <td class="w-8 font-bold align-top">
+              <div class="w-full text-start">
+                <%= case index + 1 do
+                  1 -> "Пн"
+                  2 -> "Вт"
+                  3 -> "Ср"
+                  4 -> "Чт"
+                  5 -> "Пт"
+                  6 -> "Сб"
+                  7 -> "Вс"
+                end %>
+              </div>
+            </td>
+            <td>
+              <table class="w-full">
+                <tbody>
+                  <tr :for={task <- schedules_in_a_day}>
+                    <td>
+                      <.link
+                        phx-click={JS.push_focus()}
+                        patch={
+                          ~p"/blueprinting/#{@momentum_blueprint.id}/edit/task_blueprints/#{task.id}/edit"
+                        }
+                      >
+                        <div class={"
                         flex 
                         bg-#{task.color}-500
                         border 
@@ -53,52 +70,213 @@
                         cursor-pointer 
                         duration-500 
                         ease"}>
-                      <div :if={task.icon} class="mr-2">
-                        <%= task.icon %>
-                      </div>
-                      <span class="font-semibold">
-                        <%= task.name %>
-                      </span>
-                    </div>
-                  </.link>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <.link
-                    phx-click={JS.push_focus()}
-                    patch={
-                      ~p"/blueprinting/#{@momentum_blueprint.id}/edit/task_blueprints/new?day=#{index + 1}"
-                    }
-                  >
-                    <div class="hover:bg-gray-50 border-gray-300 border rounded text-center event text-sm p-1 transition cursor-pointer duration-500 ease">
-                      <span>
-                        <span class="">+</span> Добавить задачу
-                      </span>
-                      <span class="event-name font-semibold"></span>
-                    </div>
-                  </.link>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+                          <div :if={task.icon} class="mr-2">
+                            <%= task.icon %>
+                          </div>
+                          <span class="font-semibold">
+                            <%= task.name %>
+                          </span>
+                        </div>
+                      </.link>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <.link
+                        phx-click={JS.push_focus()}
+                        patch={
+                          ~p"/blueprinting/#{@momentum_blueprint.id}/edit/task_blueprints/new?day=#{index + 1}"
+                        }
+                      >
+                        <div class="hover:bg-gray-50 border-gray-300 border rounded text-center event text-sm p-1 transition cursor-pointer duration-500 ease">
+                          <span>
+                            <span class="">+</span> Добавить задачу
+                          </span>
+                          <span class="event-name font-semibold"></span>
+                        </div>
+                      </.link>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-  <.simple_form
-    for={@form}
-    id="momentum_blueprint-form"
-    phx-change="save"
-    phx-submit="save_and_redirect"
-  >
-    <.input
-      field={@form[:name]}
-      type="text"
-      label="Название моментума"
-      phx-debounce="blur"
-    />
+    <div :if={@momentum_blueprint.generator_type == :biweekly}>
+      <div class="block p-2 rounded text-l font-semibold leading-6 text-zinc-800 bg-orange-300/60 text-center">
+        Неделя 1
+      </div>
+      <table class="table border-spacing-y-4 mt-0 w-full border-separate space-y-4 text-sm rounded">
+        <tbody>
+          <tr
+            :for={
+              {schedules_in_a_day, index} <-
+                Enum.slice(@task_days_schedules, 0, 7) |> Enum.with_index()
+            }
+            class=""
+          >
+            <td class="w-8 font-bold align-top">
+              <div class="w-full text-start">
+                <%= case index + 1 do
+                  1 -> "Пн"
+                  2 -> "Вт"
+                  3 -> "Ср"
+                  4 -> "Чт"
+                  5 -> "Пт"
+                  6 -> "Сб"
+                  7 -> "Вс"
+                end %>
+              </div>
+            </td>
+            <td>
+              <table class="w-full">
+                <tbody>
+                  <tr :for={task <- schedules_in_a_day}>
+                    <td>
+                      <.link
+                        phx-click={JS.push_focus()}
+                        patch={
+                          ~p"/blueprinting/#{@momentum_blueprint.id}/edit/task_blueprints/#{task.id}/edit"
+                        }
+                      >
+                        <div class={"
+                        flex 
+                        bg-#{task.color}-500
+                        border 
+                        border-#{task.color}-600 
+                        text-white 
+                        hover:bg-#{task.color}-600 
+                        rounded-md 
+                        text-sm 
+                        p-2 
+                        pl-2 
+                        justify-start 
+                        transition 
+                        cursor-pointer 
+                        duration-500 
+                        ease"}>
+                          <div :if={task.icon} class="mr-2">
+                            <%= task.icon %>
+                          </div>
+                          <span class="font-semibold">
+                            <%= task.name %>
+                          </span>
+                        </div>
+                      </.link>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <.link
+                        phx-click={JS.push_focus()}
+                        patch={
+                          ~p"/blueprinting/#{@momentum_blueprint.id}/edit/task_blueprints/new?day=#{index + 1}"
+                        }
+                      >
+                        <div class="hover:bg-gray-50 border-gray-300 border rounded text-center event text-sm p-1 transition cursor-pointer duration-500 ease">
+                          <span>
+                            <span class="">+</span> Добавить задачу
+                          </span>
+                          <span class="event-name font-semibold"></span>
+                        </div>
+                      </.link>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="block p-2 rounded text-l font-semibold leading-6 text-zinc-800 bg-red-300/60 text-center">
+        Неделя 2
+      </div>
+      <table class="table border-spacing-y-4 mt-0 w-full border-separate space-y-4 text-sm rounded">
+        <tbody>
+          <tr
+            :for={
+              {schedules_in_a_day, index} <-
+                Enum.slice(@task_days_schedules, 7, 7) |> Enum.with_index(7)
+            }
+            class=""
+          >
+            <td class="w-8 font-bold align-top">
+              <div class="w-full text-start">
+                <%= case index + 1 do
+                  8 -> "Пн"
+                  9 -> "Вт"
+                  10 -> "Ср"
+                  11 -> "Чт"
+                  12 -> "Пт"
+                  13 -> "Сб"
+                  14 -> "Вс"
+                end %>
+              </div>
+            </td>
+            <td>
+              <table class="w-full">
+                <tbody>
+                  <tr :for={task <- schedules_in_a_day}>
+                    <td>
+                      <.link
+                        phx-click={JS.push_focus()}
+                        patch={
+                          ~p"/blueprinting/#{@momentum_blueprint.id}/edit/task_blueprints/#{task.id}/edit"
+                        }
+                      >
+                        <div class={"
+                        flex 
+                        bg-#{task.color}-500
+                        border 
+                        border-#{task.color}-600 
+                        text-white 
+                        hover:bg-#{task.color}-600 
+                        rounded-md 
+                        text-sm 
+                        p-2 
+                        pl-2 
+                        justify-start 
+                        transition 
+                        cursor-pointer 
+                        duration-500 
+                        ease"}>
+                          <div :if={task.icon} class="mr-2">
+                            <%= task.icon %>
+                          </div>
+                          <span class="font-semibold">
+                            <%= task.name %>
+                          </span>
+                        </div>
+                      </.link>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <.link
+                        phx-click={JS.push_focus()}
+                        patch={
+                          ~p"/blueprinting/#{@momentum_blueprint.id}/edit/task_blueprints/new?day=#{index + 1}"
+                        }
+                      >
+                        <div class="hover:bg-gray-50 border-gray-300 border rounded text-center event text-sm p-1 transition cursor-pointer duration-500 ease">
+                          <span>
+                            <span class="">+</span> Добавить задачу
+                          </span>
+                          <span class="event-name font-semibold"></span>
+                        </div>
+                      </.link>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <:actions>
       <.button phx-disable-with="Сохранение...">Сохранить</.button>
       <.link class="text-red-700" phx-click="delete" data-confirm="Точно удаляем?">
@@ -124,6 +302,7 @@
     title={@page_title}
     action={@live_action}
     momentum_blueprint_id={@momentum_blueprint.id}
+    momentum_blueprint={@momentum_blueprint}
     task_blueprint={@task_blueprint}
     user_id={@user_id}
     patch={~p"/blueprinting/#{@momentum_blueprint.id}/edit"}

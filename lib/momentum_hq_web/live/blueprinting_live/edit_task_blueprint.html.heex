@@ -55,12 +55,110 @@
         <label for={@form[:color].name} class="color_checkbox_label"></label>
       </div>
     </div>
+    <!-- <.checkgroup field={@form[:schedules]} label="Расписание" options={@days_options} /> !-->
+    <div phx-feedback-for={@form[:schedules].name} class="text-sm">
+      <.label for={@form[:schedules].id}><%= "Расписание" %></.label>
+      <input type="hidden" name={@form[:schedules].name <> "[]"} value="" />
 
-    <.checkgroup
-      field={@form[:schedules]}
-      label="Расписание"
-      options={[{"Пн", 1}, {"Вт", 2}, {"Ср", 3}, {"Чт", 4}, {"Пт", 5}, {"Сб", 6}, {"Вс", 7}]}
-    />
+      <div
+        :if={@momentum_blueprint.generator_type == :weekly}
+        class="mt-1 w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+      >
+        <div>
+          <table class="text-sm items-baseline">
+            <thead class="text-sm text-left leading-6 text-zinc-500">
+              <tr>
+                <th :for={{header, _value} <- @days_options} class="p-0 pb-4 pr-6 font-normal">
+                  <%= header %>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="relative divide-y divide-zinc-100 border-t border-zinc-200 text-sm leading-6 text-zinc-700">
+              <tr>
+                <td :for={{_header, value} <- @days_options}>
+                  <input
+                    type="checkbox"
+                    id={"#{@form[:schedules].name}[]-#{value}"}
+                    name={@form[:schedules].name <> "[]"}
+                    value={value}
+                    checked={value in @form[:schedules].value}
+                    class="mr-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 transition duration-150 ease-in-out"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div :if={@momentum_blueprint.generator_type == :biweekly}>
+        <div class="text-center">
+          Неделя 1
+        </div>
+        <div class="mt-1 w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          <table class="text-sm items-baseline">
+            <thead class="text-sm text-left leading-6 text-zinc-500">
+              <tr>
+                <th
+                  :for={{header, _value} <- Enum.slice(@days_options, 0, 7)}
+                  class="p-0 pb-4 pr-6 font-normal"
+                >
+                  <%= header %>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="relative divide-y divide-zinc-100 border-t border-zinc-200 text-sm leading-6 text-zinc-700">
+              <tr>
+                <td :for={{_header, value} <- Enum.slice(@days_options, 0, 7)}>
+                  <input
+                    type="checkbox"
+                    id={"#{@form[:schedules].name}[]-#{value}"}
+                    name={@form[:schedules].name <> "[]"}
+                    value={value}
+                    checked={value in @form[:schedules].value}
+                    class="mr-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 transition duration-150 ease-in-out"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="text-center mt-5">
+          Неделя 2
+        </div>
+        <div class="mt-1 w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          <table class="text-sm items-baseline">
+            <thead class="text-sm text-left leading-6 text-zinc-500">
+              <tr>
+                <th
+                  :for={{header, _value} <- Enum.slice(@days_options, 7, 7)}
+                  class="p-0 pb-4 pr-6 font-normal"
+                >
+                  <%= header %>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="relative divide-y divide-zinc-100 border-t border-zinc-200 text-sm leading-6 text-zinc-700">
+              <tr>
+                <td :for={{_header, value} <- Enum.slice(@days_options, 7, 7)}>
+                  <input
+                    type="checkbox"
+                    id={"#{@form[:schedules].name}[]-#{value}"}
+                    name={@form[:schedules].name <> "[]"}
+                    value={value}
+                    checked={value in @form[:schedules].value}
+                    class="mr-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 transition duration-150 ease-in-out"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <.error :for={msg <- @form[:schedules].errors}><%= msg %></.error>
+    </div>
+
     <:actions>
       <.button phx-disable-with="Сохраняю...">Сохранить</.button>
 

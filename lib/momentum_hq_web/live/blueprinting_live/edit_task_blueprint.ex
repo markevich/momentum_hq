@@ -9,9 +9,34 @@ defmodule MomentumHqWeb.BlueprintingLive.EditTaskBlueprint do
   def update(%{task_blueprint: task_blueprint} = assigns, socket) do
     changeset = Blueprinting.task_blueprint_changeset(task_blueprint)
 
+    days_options =
+      case assigns.momentum_blueprint.generator_type do
+        :weekly ->
+          [{"Пн", 1}, {"Вт", 2}, {"Ср", 3}, {"Чт", 4}, {"Пт", 5}, {"Сб", 6}, {"Вс", 7}]
+
+        :biweekly ->
+          [
+            {"Пн", 1},
+            {"Вт", 2},
+            {"Ср", 3},
+            {"Чт", 4},
+            {"Пт", 5},
+            {"Сб", 6},
+            {"Вс", 7},
+            {"Пн", 8},
+            {"Вт", 9},
+            {"Ср", 10},
+            {"Чт", 11},
+            {"Пт", 12},
+            {"Сб", 13},
+            {"Вс", 14}
+          ]
+      end
+
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(days_options: days_options)
      |> assign_form(changeset)}
   end
 

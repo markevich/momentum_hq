@@ -28,23 +28,54 @@ defmodule MomentumHqWeb.MomentumLive.ListMomentums do
   end
 
   defp momentum_attrs_for_event(momentum) do
-    empty_set = %{
-      1 => [],
-      2 => [],
-      3 => [],
-      4 => [],
-      5 => [],
-      6 => [],
-      7 => []
-    }
+    empty_set =
+      case momentum.momentum_blueprint.generator_type do
+        :weekly ->
+          %{
+            1 => [],
+            2 => [],
+            3 => [],
+            4 => [],
+            5 => [],
+            6 => [],
+            7 => []
+          }
+
+        :biweekly ->
+          %{
+            1 => [],
+            2 => [],
+            3 => [],
+            4 => [],
+            5 => [],
+            6 => [],
+            7 => [],
+            8 => [],
+            9 => [],
+            10 => [],
+            11 => [],
+            12 => [],
+            13 => [],
+            14 => []
+          }
+      end
 
     future_tasks =
       if Date.compare(momentum.to, Date.utc_today()) == :gt do
         today_day_of_week =
-          CurrentDayAndWeek.relative_to(
-            momentum.momentum_blueprint.inserted_at,
-            Date.utc_today()
-          ).day_of_week
+          case momentum.momentum_blueprint.generator_type do
+            :weekly ->
+              CurrentDayAndWeek.weekly_relative_to(
+                momentum.momentum_blueprint.inserted_at,
+                Date.utc_today()
+              ).day_of_cycle
+
+            :biweekly ->
+              CurrentDayAndWeek.biweekly_relative_to(
+                momentum.momentum_blueprint.inserted_at,
+                Date.utc_today()
+              ).day_of_cycle
+          end
 
         task_blueprints = momentum.momentum_blueprint.task_blueprints
 
@@ -108,6 +139,7 @@ defmodule MomentumHqWeb.MomentumLive.ListMomentums do
     %{
       id: momentum.id,
       name: momentum.momentum_blueprint.name,
+      generator_type: momentum.momentum_blueprint.generator_type,
       value_at_start: Decimal.round(momentum.value_at_start, 0, :up),
       value_at_end: Decimal.round(momentum.value_at_end, 0, :up),
       maximum_tasks_in_a_day: maximum_tasks_in_a_day,

@@ -20,7 +20,7 @@
           </div>
           <div class="flex justify-center items-center mt-3">
             <.icon class="mr-1 h-10 w-10 text-violet-500 opacity-60" name="hero-calendar-days" />
-            <div :if={momentum_blueprint.generator_type == :weekly}>
+            <div>
               <div class="-mx-0.5 grid grid-cols-7">
                 <span
                   :for={{day, count} <- momentum_blueprint.schedules}

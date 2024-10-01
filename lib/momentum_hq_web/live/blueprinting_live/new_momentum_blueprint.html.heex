@@ -11,14 +11,14 @@
       label="Название группы задач"
       placeholder="Физ. Активность"
     />
-    
-    <!-- TODO: make explicit mapping -->
+
     <div class="relative h-[250px]">
       <input
         type="radio"
-        name="generator_type"
+        name={@form[:generator_type].name}
         id="radio_weekly"
         value="weekly"
+        checked={to_string(@form[:generator_type].value) == "weekly"}
         class="radio_weekly"
       />
       <label for="radio_weekly">
@@ -67,7 +67,7 @@
               </div>
             </div>
           </div>
-    
+
           <div class="mt-10 px-1">
             <p class="text-sm">🏋️ Ходить в зал в <span class="font-bold">пн, ср, пт</span></p>
             <p class="text-sm">🏃 Бегать в <span class="font-bold">вт, чт</span></p>
@@ -80,9 +80,10 @@
     <div class="relative h-[270px]">
       <input
         type="radio"
-        name="generator_type"
+        name={@form[:generator_type].name}
         id="radio_biweekly"
         value="biweekly"
+        checked={to_string(@form[:generator_type].value) == "biweekly"}
         class="radio_weekly"
       />
       <label for="radio_biweekly">
@@ -122,7 +123,7 @@
               <p>вс</p>
               <div class="rounded-full h-9 w-9 border text-center pt-1.5"></div>
             </div>
-            
+
             <div class="flex flex-col justify-center items-center">
               <div class="rounded-full h-9 w-9 border text-center pt-1.5">
                 🛏️
@@ -149,21 +150,19 @@
               </div>
             </div>
           </div>
-          
-    
+
           <div class="mt-7 px-1">
             <p class="text-sm">🛏️ Менять постель каждый <span class="font-bold">пн</span></p>
-            <p class="text-sm">🧹 Пылесосить каждый <span class="font-bold">нечетный четверг</span></p>
-            <p class="text-sm">🫧 Мыть полы каждое <span class="font-bold">четное воскресенье</span></p>
+            <p class="text-sm">
+              🧹 Пылесосить каждый <span class="font-bold">нечетный четверг</span>
+            </p>
+            <p class="text-sm">
+              🫧 Мыть полы каждое <span class="font-bold">четное воскресенье</span>
+            </p>
           </div>
         </div>
       </label>
     </div>
-
-    <.radio_group field={@form[:generator_type]}>
-      <:radio value="weekly" name="radio_weekly">Еженедельный</:radio>
-      <:radio value="biweekly">Двухнедельный</:radio>
-    </.radio_group>
 
     <.button phx-disable-with="Сохраняем...">Продолжить</.button>
   </.simple_form>

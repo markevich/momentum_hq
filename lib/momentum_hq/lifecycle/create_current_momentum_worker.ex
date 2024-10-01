@@ -12,7 +12,15 @@ defmodule MomentumHq.Lifecycle.CreateCurrentMomentumWorker do
       }) do
     date = Date.from_iso8601!(string_date)
     momentum_blueprint = Blueprinting.get_momentum_blueprint!(momentum_blueprint_id)
-    current_period = CurrentDayAndWeek.relative_to(momentum_blueprint.inserted_at, date)
+
+    current_period =
+      case momentum_blueprint.generator_type do
+        :weekly ->
+          CurrentDayAndWeek.weekly_relative_to(momentum_blueprint.inserted_at, date)
+
+        :biweekly ->
+          CurrentDayAndWeek.biweekly_relative_to(momentum_blueprint.inserted_at, date)
+      end
 
     # Fail and alert if we don't receive back {:ok, _result} tuple
     {:ok, _result} =
@@ -22,7 +30,7 @@ defmodule MomentumHq.Lifecycle.CreateCurrentMomentumWorker do
           create_new_current_momentum(momentum_blueprint, current_period)
 
         # We have a current momentum, but it's cycle/week_number is in the past.
-        %Momentum{cycle_number: cycle_number} when cycle_number != current_period.week_number ->
+        %Momentum{cycle_number: cycle_number} when cycle_number != current_period.cycle_number ->
           create_new_current_momentum(momentum_blueprint, current_period)
 
         # Otherwise current momentum is for the current cycle. No need to do anything
@@ -33,9 +41,9 @@ defmodule MomentumHq.Lifecycle.CreateCurrentMomentumWorker do
 
   defp create_new_current_momentum(momentum_blueprint, current_day_and_week) do
     attrs = %{
-      from: current_day_and_week.start_day_of_week,
-      to: current_day_and_week.end_day_of_week,
-      cycle_number: current_day_and_week.week_number,
+      from: current_day_and_week.start_day_of_cycle,
+      to: current_day_and_week.end_day_of_cycle,
+      cycle_number: current_day_and_week.cycle_number,
       momentum_blueprint_id: momentum_blueprint.id,
       name: momentum_blueprint.name,
       value_at_start: momentum_blueprint.current_value,

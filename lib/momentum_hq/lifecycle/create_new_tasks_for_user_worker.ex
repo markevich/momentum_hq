@@ -29,7 +29,14 @@ defmodule MomentumHq.Lifecycle.CreateNewTasksForUserWorker do
   end
 
   defp prepare_tasks_transaction(momentum_blueprint, date, multi) do
-    current_period = CurrentDayAndWeek.relative_to(momentum_blueprint.inserted_at, date)
+    current_period =
+      case momentum_blueprint.generator_type do
+        :weekly ->
+          CurrentDayAndWeek.weekly_relative_to(momentum_blueprint.inserted_at, date)
+
+        :biweekly ->
+          CurrentDayAndWeek.biweekly_relative_to(momentum_blueprint.inserted_at, date)
+      end
 
     momentum_blueprint.task_blueprints
     |> Enum.filter(fn task_blueprint ->
@@ -38,7 +45,7 @@ defmodule MomentumHq.Lifecycle.CreateNewTasksForUserWorker do
       # Task is not already exists
 
       !task_blueprint.deleted_at &&
-        current_period.day_of_week in task_blueprint.schedules &&
+        current_period.day_of_cycle in task_blueprint.schedules &&
         !Enum.any?(momentum_blueprint.current_momentum.tasks, fn existing_task ->
           existing_task.task_blueprint_id == task_blueprint.id &&
             existing_task.target_date == date
@@ -54,7 +61,7 @@ defmodule MomentumHq.Lifecycle.CreateNewTasksForUserWorker do
         status: "pending",
         affect_value: task_blueprint.affect_value,
         target_date: date,
-        day_number: current_period.day_of_week
+        day_number: current_period.day_of_cycle
       })
     end)
     |> Enum.with_index()

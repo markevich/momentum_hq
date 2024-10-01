@@ -11,7 +11,6 @@ defmodule MomentumHq.Repo.Migrations.CreateTaskBlueprints do
       add :name, :string
       add :icon, :string
       add :color, :string
-      add :week_number, :integer
       add :schedules, {:array, :integer}, null: false, default: fragment("'{}'")
       add :affect_value, :decimal, null: false
       add :deleted_at, :utc_datetime

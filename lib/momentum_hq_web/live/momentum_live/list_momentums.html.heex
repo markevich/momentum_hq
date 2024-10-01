@@ -35,7 +35,21 @@
           <%= current_momentum.from %> - <%= current_momentum.to %>
         </div>
         <div class="m-auto mt-10 mb-10" id={"momentum_#{current_momentum.id}"} phx-hook="Momentum">
-          <svg class="m-auto mt-20 overflow-visible -mb-12" width="200px"></svg>
+          <svg
+            :if={current_momentum.momentum_blueprint.generator_type == :weekly}
+            class="m-auto mt-20 overflow-visible -mb-12"
+            width="200px"
+            height="150px"
+          >
+          </svg>
+
+          <svg
+            :if={current_momentum.momentum_blueprint.generator_type == :biweekly}
+            class="m-auto mt-20 overflow-visible -mb-12"
+            width="200px"
+            height="300px"
+          >
+          </svg>
         </div>
       </div>
     </div>

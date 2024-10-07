@@ -286,12 +286,22 @@ defmodule MomentumHq.MissionControl do
       )
     end)
     |> Ecto.Multi.run(:updated_value, fn _repo, %{sum_of_changes: sum_of_changes} ->
-      {:ok,
-       momentum.value_at_start
-       |> Decimal.add(sum_of_changes.neg_sum || 0)
-       |> Decimal.max(0)
-       |> Decimal.add(sum_of_changes.pos_sum || 0)
-       |> Decimal.min(100)}
+      updated_value =
+        if Decimal.lt?(momentum.value_at_end, Decimal.new(51)) do
+          momentum.value_at_start
+          |> Decimal.add(sum_of_changes.neg_sum || 0)
+          |> Decimal.max(0)
+          |> Decimal.add(sum_of_changes.pos_sum || 0)
+          |> Decimal.min(100)
+        else
+          momentum.value_at_start
+          |> Decimal.add(sum_of_changes.pos_sum || 0)
+          |> Decimal.min(100)
+          |> Decimal.add(sum_of_changes.neg_sum || 0)
+          |> Decimal.max(0)
+        end
+
+      {:ok, updated_value}
     end)
     |> Ecto.Multi.update(:momentum, fn %{updated_value: updated_value} ->
       momentum_changeset(momentum, %{value_at_end: updated_value})

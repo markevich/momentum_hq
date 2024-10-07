@@ -25,9 +25,11 @@
   >
     <div class="grid grid-cols-1 gap-5">
       <div class="row-span-1 mt-5">
-        <div class="text-center momentum-name text-4xl">
-          <%= current_momentum.momentum_blueprint.name %>
-        </div>
+        <.link patch={~p"/blueprinting/#{current_momentum.momentum_blueprint.id}/edit"}>
+          <div class="text-center momentum-name text-4xl">
+            <%= current_momentum.momentum_blueprint.name %>
+          </div>
+        </.link>
         <div class="text-center cycle-number text-xl mt-4">
           Цикл <%= current_momentum.cycle_number + 1 %>
         </div>

@@ -80,13 +80,29 @@ defmodule MomentumHq.Lifecycle.CurrentDayAndWeek do
         7 + Date.day_of_week(target_date)
       end
 
+    start_day_of_cycle =
+      if cycle_week_number == 0 do
+        Date.beginning_of_week(target_date)
+      else
+        Date.beginning_of_week(target_date)
+        |> Date.add(-7)
+      end
+
+    end_day_of_cycle =
+      if cycle_week_number == 0 do
+        Date.end_of_week(target_date)
+        |> Date.add(7)
+      else
+        Date.end_of_week(target_date)
+      end
+
     %{
       target_date: target_date,
       day_of_cycle: target_day_of_cycle,
       cycle_number: cycle_number,
       cycle_week_number: cycle_week_number,
-      start_day_of_cycle: Date.beginning_of_week(target_date),
-      end_day_of_cycle: Date.end_of_week(target_date)
+      start_day_of_cycle: start_day_of_cycle,
+      end_day_of_cycle: end_day_of_cycle
     }
   end
 end

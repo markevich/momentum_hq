@@ -18,17 +18,20 @@ defmodule MomentumHq.MissionControl do
   end
 
   def fail_expired_user_tasks(user_id, date) do
-    {_cnt, ids} =
-      from(
-        task in Task,
-        where: task.user_id == ^user_id,
-        where: task.status == :pending,
-        where: task.target_date < ^date,
-        select: task.id
-      )
-      |> Repo.update_all(set: [status: :failed, updated_at: DateTime.utc_now()])
+    from(
+      task in Task,
+      where: task.user_id == ^user_id,
+      where: task.status == :pending,
+      where: task.target_date < ^date
+    )
+    |> Repo.all()
+    |> Repo.preload([:momentum_change, :task_blueprint, momentum: [:tasks, :momentum_blueprint]])
+    |> Enum.map(fn task ->
+      task
+      |> change_task_status_and_recalculate_momentum(:failed)
 
-    ids
+      task.id
+    end)
   end
 
   def schedule_deletion_of_obsolete_messages(user_id, date) do
@@ -227,20 +230,36 @@ defmodule MomentumHq.MissionControl do
       get_task!(task_id)
       |> Repo.preload([:momentum_change, :task_blueprint, momentum: [:tasks, :momentum_blueprint]])
 
-    {new_status, change_amount} =
+    new_status =
       case task.status do
         :pending ->
-          {:completed, task.task_blueprint.affect_value}
+          :completed
 
         :completed ->
-          {:failed, Decimal.negate(task.task_blueprint.affect_value)}
+          :failed
 
         :failed ->
           if task.target_date == Date.utc_today() do
-            {:pending, Decimal.new(0)}
+            :pending
           else
-            {:completed, task.task_blueprint.affect_value}
+            :completed
           end
+      end
+
+    change_task_status_and_recalculate_momentum(task, new_status)
+  end
+
+  def change_task_status_and_recalculate_momentum(task, new_status) do
+    change_amount =
+      case new_status do
+        :pending ->
+          Decimal.new(0)
+
+        :completed ->
+          task.task_blueprint.affect_value
+
+        :failed ->
+          Decimal.negate(task.task_blueprint.affect_value)
       end
 
     {:ok, %{task: updated_task}} =

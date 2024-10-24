@@ -10,7 +10,7 @@ defmodule MomentumHq.Lifecycle.NewDayStartedWorker do
   def perform(_job) do
     MissionControl.list_enabled_active_users()
     |> Enum.each(fn user ->
-      iso_date = Date.to_iso8601(DateTime.to_date(DateTime.utc_now()))
+      iso_date = Date.utc_today()
 
       jobs_args = %{user_id: user.id, date: iso_date}
 

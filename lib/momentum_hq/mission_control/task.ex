@@ -27,6 +27,8 @@ defmodule MomentumHq.MissionControl.Task do
 
     field :target_date, :date
 
+    field :notify_at, :utc_datetime
+
     timestamps(type: :utc_datetime)
   end
 
@@ -41,7 +43,8 @@ defmodule MomentumHq.MissionControl.Task do
       :day_number,
       :affect_value,
       :name,
-      :icon
+      :icon,
+      :notify_at
     ])
     |> validate_required([
       :user_id,

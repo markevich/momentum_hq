@@ -33,10 +33,15 @@ defmodule MomentumHqWeb.BlueprintingLive.EditTaskBlueprint do
           ]
       end
 
+    # Check if notification is enabled
+    notification_enabled =
+      !is_nil(task_blueprint.notify_at_hour) and !is_nil(task_blueprint.notify_at_minute)
+
     {:ok,
      socket
      |> assign(assigns)
      |> assign(days_options: days_options)
+     |> assign(notification_enabled: notification_enabled)
      |> assign_form(changeset)}
   end
 
@@ -54,13 +59,31 @@ defmodule MomentumHqWeb.BlueprintingLive.EditTaskBlueprint do
   end
 
   def handle_event("save", %{"task_blueprint" => task_blueprint_params}, socket) do
-    save_task_blueprint(socket, socket.assigns.action, task_blueprint_params)
+    # If notification is disabled, clear the notification fields
+    params =
+      if socket.assigns.notification_enabled do
+        task_blueprint_params
+      else
+        Map.merge(task_blueprint_params, %{
+          "notify_at_hour" => nil,
+          "notify_at_minute" => nil
+        })
+      end
+
+    save_task_blueprint(socket, socket.assigns.action, params)
+  end
+
+  def handle_event("toggle_notification", %{"notification_enabled" => value}, socket) do
+    # For checkbox, value is "on" when checked, nil when unchecked
+    notification_enabled = value == "on"
+    {:noreply, assign(socket, notification_enabled: notification_enabled)}
   end
 
   defp save_task_blueprint(socket, :edit_task_blueprint, task_blueprint_params) do
     case Blueprinting.update_task_blueprint(socket.assigns.task_blueprint, task_blueprint_params) do
       {:ok, task_blueprint} ->
         MissionControl.refresh_today_tasks_name(task_blueprint)
+        MissionControl.refresh_today_tasks_notification_time(task_blueprint)
         MissionControl.maybe_delete_obsolete_today_tasks(task_blueprint)
 
         notify_parent({:task_blueprint_changed, :edit, task_blueprint})

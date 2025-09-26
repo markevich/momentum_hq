@@ -58,8 +58,8 @@ config :momentum_hq, MomentumHqWeb.Endpoint,
   https: [
     port: 4001,
     cipher_suite: :strong,
-    certfile: "priv/cert/selfsigned.pem",
-    keyfile: "priv/cert/selfsigned_key.pem"
+    certfile: "priv/cert/tg-mini-app.local+2.pem",
+    keyfile: "priv/cert/tg-mini-app.local+2-key.pem"
   ],
   live_reload: [
     patterns: [

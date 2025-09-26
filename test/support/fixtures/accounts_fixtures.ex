@@ -10,17 +10,25 @@ defmodule MomentumHq.AccountsFixtures do
   def valid_user_attributes(attrs \\ %{}) do
     Enum.into(attrs, %{
       email: unique_user_email(),
-      password: valid_user_password()
+      password: valid_user_password(),
+      telegram_id: System.unique_integer([:positive]),
+      username: "test_user_#{System.unique_integer()}"
     })
   end
 
   def user_fixture(attrs \\ %{}) do
-    {:ok, user} =
-      attrs
-      |> valid_user_attributes()
-      |> MomentumHq.Accounts.register_user()
+    default_attrs = %{
+      telegram_id: System.unique_integer([:positive]),
+      username: "test_user_#{System.unique_integer()}",
+      first_name: "Test User",
+      timezone: "UTC"
+    }
 
-    user
+    attrs = Enum.into(attrs, default_attrs)
+
+    %MomentumHq.Accounts.User{}
+    |> MomentumHq.Accounts.User.changeset(attrs)
+    |> MomentumHq.Repo.insert!()
   end
 
   def extract_user_token(fun) do

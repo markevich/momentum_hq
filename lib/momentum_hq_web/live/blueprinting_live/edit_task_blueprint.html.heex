@@ -165,7 +165,8 @@
           type="checkbox"
           id="notification_enabled"
           name="notification_enabled"
-          phx-change="toggle_notification"
+          phx-click="toggle_notification"
+          phx-value-checked={@notification_enabled}
           phx-target={@myself}
           checked={@notification_enabled}
           class="mr-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"

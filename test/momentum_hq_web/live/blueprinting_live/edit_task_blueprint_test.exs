@@ -133,10 +133,10 @@ defmodule MomentumHqWeb.BlueprintingLive.EditTaskBlueprintTest do
         })
       }
 
-      # Test toggle to enabled
+      # Test toggle to enabled (simulating real browser behavior)
       {:noreply, updated_socket} = MomentumHqWeb.BlueprintingLive.EditTaskBlueprint.handle_event(
         "toggle_notification",
-        %{"notification_enabled" => "on"},
+        %{"value" => "on"},
         socket
       )
 
@@ -145,7 +145,7 @@ defmodule MomentumHqWeb.BlueprintingLive.EditTaskBlueprintTest do
       # Test toggle to disabled
       {:noreply, updated_socket} = MomentumHqWeb.BlueprintingLive.EditTaskBlueprint.handle_event(
         "toggle_notification",
-        %{"notification_enabled" => nil},
+        %{"value" => "on"},
         updated_socket
       )
 

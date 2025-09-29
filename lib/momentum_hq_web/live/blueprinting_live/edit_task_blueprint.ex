@@ -73,9 +73,9 @@ defmodule MomentumHqWeb.BlueprintingLive.EditTaskBlueprint do
     save_task_blueprint(socket, socket.assigns.action, params)
   end
 
-  def handle_event("toggle_notification", %{"notification_enabled" => value}, socket) do
-    # For checkbox, value is "on" when checked, nil when unchecked
-    notification_enabled = value == "on"
+  def handle_event("toggle_notification", _params, socket) do
+    # Simply toggle the current state regardless of parameters
+    notification_enabled = not socket.assigns.notification_enabled
     {:noreply, assign(socket, notification_enabled: notification_enabled)}
   end
 

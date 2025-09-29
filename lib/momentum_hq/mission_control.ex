@@ -376,6 +376,30 @@ defmodule MomentumHq.MissionControl do
     |> Repo.all()
   end
 
+  def get_tasks_for_notification_for_user(user_id, current_time) do
+    from(t in Task,
+      where: t.user_id == ^user_id,
+      where: not is_nil(t.notify_at),
+      where: t.notify_at <= ^current_time,
+      where: t.target_date <= ^Date.utc_today(),
+      where: t.status == :pending,
+      preload: [:user]
+    )
+    |> Repo.all()
+  end
+
+  def get_user_ids_with_notification_tasks(current_time) do
+    from(t in Task,
+      where: not is_nil(t.notify_at),
+      where: t.notify_at <= ^current_time,
+      where: t.target_date <= ^Date.utc_today(),
+      where: t.status == :pending,
+      select: t.user_id,
+      distinct: true
+    )
+    |> Repo.all()
+  end
+
 
   def clear_task_notification_fields(task) do
     task

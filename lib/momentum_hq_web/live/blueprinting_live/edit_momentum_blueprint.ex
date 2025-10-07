@@ -108,6 +108,11 @@ defmodule MomentumHqWeb.BlueprintingLive.EditMomentumBlueprint do
   end
 
   @impl true
+  def handle_event("close_modal", _params, socket) do
+    {:noreply, push_patch(socket, to: ~p"/blueprinting/#{socket.assigns.momentum_blueprint.id}/edit")}
+  end
+
+  @impl true
   def handle_info({EditTaskBlueprint, {:task_blueprint_changed, _event, _task_blueprint}}, socket) do
     date = Date.utc_today()
 

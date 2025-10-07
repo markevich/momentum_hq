@@ -126,6 +126,35 @@ defmodule MomentumHq.MissionControl do
     ids
   end
 
+  def refresh_today_tasks_notification_time(task_blueprint) do
+    # Get user to calculate timezone
+    user = Repo.get!(User, task_blueprint.user_id)
+
+    # Calculate new notification datetime
+    new_notify_at = MomentumHq.Time.calculate_notification_datetime(
+      task_blueprint.notify_at_hour,
+      task_blueprint.notify_at_minute,
+      Date.utc_today(),
+      user.timezone
+    )
+
+    {_cnt, ids} =
+      from(
+        task in Task,
+        where: task.task_blueprint_id == ^task_blueprint.id,
+        where: task.target_date == ^Date.utc_today(),
+        select: task.id
+      )
+      |> Repo.update_all(set: [
+        notify_at: new_notify_at,
+        updated_at: DateTime.utc_now()
+      ])
+
+    ids
+  end
+
+
+
   def maybe_delete_obsolete_today_tasks(task_blueprint) do
     from(
       task in Task,
@@ -330,5 +359,59 @@ defmodule MomentumHq.MissionControl do
         current_value: updated_value
       })
     end)
+  end
+
+  # Task notification functions
+  def get_tasks_for_notification(current_time) do
+    from(t in Task,
+      where: not is_nil(t.notify_at),
+      where: t.notify_at <= ^current_time,
+      where: t.target_date <= ^Date.utc_today(),
+      where: t.status == :pending,
+      preload: [:user]
+    )
+    |> Repo.all()
+  end
+
+  def get_tasks_for_notification_for_user(user_id, current_time) do
+    from(t in Task,
+      where: t.user_id == ^user_id,
+      where: not is_nil(t.notify_at),
+      where: t.notify_at <= ^current_time,
+      where: t.target_date <= ^Date.utc_today(),
+      where: t.status == :pending,
+      preload: [:user]
+    )
+    |> Repo.all()
+  end
+
+  def get_user_ids_with_notification_tasks(current_time) do
+    from(t in Task,
+      where: not is_nil(t.notify_at),
+      where: t.notify_at <= ^current_time,
+      where: t.target_date <= ^Date.utc_today(),
+      where: t.status == :pending,
+      select: t.user_id,
+      distinct: true
+    )
+    |> Repo.all()
+  end
+
+
+  def clear_task_notification_fields(task) do
+    task
+    |> task_changeset(%{
+      notify_at: nil
+    })
+    |> Repo.update()
+  end
+
+  def build_task_notification_message(task) do
+    emoji = if task.icon, do: "#{task.icon} ", else: "📋 "
+
+    message = "#{emoji}Напоминание: #{task.name}"
+
+    # Escape Telegram markdown special characters
+    MomentumHq.Telegram.escape_telegram_markdown(message)
   end
 end

@@ -60,7 +60,8 @@ defmodule MomentumHqMixProject do
       {:oban, "~> 2.17"},
       {:plug_cowboy, "~> 2.0"},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
-      {:telegram, github: "visciang/telegram"}
+      {:telegram, github: "visciang/telegram"},
+      {:timex, "~> 3.7"}
     ]
   end
 

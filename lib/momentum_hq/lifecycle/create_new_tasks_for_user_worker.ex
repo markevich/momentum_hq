@@ -23,12 +23,12 @@ defmodule MomentumHq.Lifecycle.CreateNewTasksForUserWorker do
     {:ok, _result} =
       user.momentum_blueprints
       |> Enum.reduce(Ecto.Multi.new(), fn momentum_blueprint, multi ->
-        prepare_tasks_transaction(momentum_blueprint, date, multi)
+        prepare_tasks_transaction(momentum_blueprint, date, user, multi)
       end)
       |> MomentumHq.Repo.transaction()
   end
 
-  defp prepare_tasks_transaction(momentum_blueprint, date, multi) do
+  defp prepare_tasks_transaction(momentum_blueprint, date, user, multi) do
     current_period =
       case momentum_blueprint.generator_type do
         :weekly ->
@@ -61,7 +61,8 @@ defmodule MomentumHq.Lifecycle.CreateNewTasksForUserWorker do
         status: "pending",
         affect_value: task_blueprint.affect_value,
         target_date: date,
-        day_number: current_period.day_of_cycle
+        day_number: current_period.day_of_cycle,
+        notify_at: calculate_notification_datetime(task_blueprint, date, user)
       })
     end)
     |> Enum.with_index()
@@ -69,5 +70,14 @@ defmodule MomentumHq.Lifecycle.CreateNewTasksForUserWorker do
       multi
       |> Ecto.Multi.insert("task_#{momentum_blueprint.id}.#{index}", task_changeset)
     end)
+  end
+
+  defp calculate_notification_datetime(task_blueprint, date, user) do
+    MomentumHq.Time.calculate_notification_datetime(
+      task_blueprint.notify_at_hour,
+      task_blueprint.notify_at_minute,
+      date,
+      user.timezone
+    )
   end
 end

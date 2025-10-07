@@ -1,5 +1,5 @@
 defmodule MomentumHq.AccountsTest do
-  use MomentumHq.DataCase
+  use MomentumHqDataCase
 
   alias MomentumHq.Accounts
 
@@ -501,8 +501,9 @@ defmodule MomentumHq.AccountsTest do
   end
 
   describe "inspect/2 for the User module" do
-    test "does not include password" do
-      refute inspect(%User{password: "123456"}) =~ "password: \"123456\""
+    test "does not include sensitive data" do
+      user = user_fixture()
+      refute inspect(user) =~ "password"
     end
   end
 end

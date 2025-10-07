@@ -6,9 +6,9 @@
   </div>
 
   <.simple_form for={@form} id="area-form" phx-target={@myself} phx-submit="save">
-    <.input field={@form[:name]} type="text" label="Название" />
+    <.input field={@form[:name]} type="text" label="Название" phx-update="ignore" />
 
-    <.input field={@form[:icon]} type="text" label="Эмоджи">
+    <.input field={@form[:icon]} type="text" label="Эмоджи" phx-update="ignore">
       <:after_label>
         <div class="text text-xs text-gray-500">Mac OS: ctrl + command + space</div>
         <div class="text text-xs text-gray-500">Windows: Win + ;</div>
@@ -41,6 +41,7 @@
           id={"#{@form[:color].id}-#{idx}"}
           value={color}
           checked={to_string(@form[:color].value) == to_string(color)}
+          phx-update="ignore"
           class={"rounded-full 
             focus:ring-#{color}-500 
             focus:ring-1 bg-#{color}-500 
@@ -82,6 +83,7 @@
                     name={@form[:schedules].name <> "[]"}
                     value={value}
                     checked={value in @form[:schedules].value}
+                    phx-update="ignore"
                     class="mr-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 transition duration-150 ease-in-out"
                   />
                 </td>
@@ -116,6 +118,7 @@
                     name={@form[:schedules].name <> "[]"}
                     value={value}
                     checked={value in @form[:schedules].value}
+                    phx-update="ignore"
                     class="mr-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 transition duration-150 ease-in-out"
                   />
                 </td>
@@ -148,6 +151,7 @@
                     name={@form[:schedules].name <> "[]"}
                     value={value}
                     checked={value in @form[:schedules].value}
+                    phx-update="ignore"
                     class="mr-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 transition duration-150 ease-in-out"
                   />
                 </td>
@@ -166,7 +170,6 @@
           id="notification_enabled"
           name="notification_enabled"
           phx-click="toggle_notification"
-          phx-value-checked={@notification_enabled}
           phx-target={@myself}
           checked={@notification_enabled}
           class="mr-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"

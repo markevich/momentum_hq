@@ -58,6 +58,10 @@ defmodule MomentumHqWeb.BlueprintingLive.EditTaskBlueprint do
      |> push_navigate(to: socket.assigns.patch)}
   end
 
+  def handle_event("close_modal", _params, socket) do
+    {:noreply, push_patch(socket, to: socket.assigns.patch)}
+  end
+
   def handle_event("save", %{"task_blueprint" => task_blueprint_params}, socket) do
     # If notification is disabled, clear the notification fields
     params =
@@ -91,7 +95,8 @@ defmodule MomentumHqWeb.BlueprintingLive.EditTaskBlueprint do
         {:noreply,
          socket
          |> put_flash(:info, "Task blueprint updated successfully")
-         |> push_patch(to: socket.assigns.patch)}
+         |> push_patch(to: socket.assigns.patch)
+         |> push_event("close_modal", %{})}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign_form(socket, changeset)}
@@ -113,7 +118,8 @@ defmodule MomentumHqWeb.BlueprintingLive.EditTaskBlueprint do
         {:noreply,
          socket
          |> put_flash(:info, "Task blueprint created successfully")
-         |> push_patch(to: socket.assigns.patch)}
+         |> push_patch(to: socket.assigns.patch)
+         |> push_event("close_modal", %{})}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign_form(socket, changeset)}

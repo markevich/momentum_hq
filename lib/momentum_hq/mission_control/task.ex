@@ -7,7 +7,6 @@ defmodule MomentumHq.MissionControl.Task do
   alias MomentumHq.Blueprinting.TaskBlueprint
   alias MomentumHq.MissionControl.Momentum
   alias MomentumHq.MissionControl.MomentumChange
-  alias MomentumHq.MissionControl.TelegramTaskReference
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -17,7 +16,6 @@ defmodule MomentumHq.MissionControl.Task do
     belongs_to :momentum, Momentum
     belongs_to :user, User
     has_one :momentum_change, MomentumChange
-    has_one :telegram_task_reference, TelegramTaskReference
 
     field :name, :string
     field :icon, :string

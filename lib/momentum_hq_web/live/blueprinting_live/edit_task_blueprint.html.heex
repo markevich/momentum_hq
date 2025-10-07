@@ -1,5 +1,5 @@
 <div>
-  <div class="tg-back-button" data-navigate={JS.exec("data-cancel", to: "#area-modal")}></div>
+  <div class="tg-back-button" phx-click="close_modal" data-navigate={JS.navigate(~p"/blueprinting")}></div>
   <div :if={@action == :new_task_blueprint} class="text-center text-4xl">Новая задача</div>
   <div :if={@action == :edit_task_blueprint} class="text-center text-4xl">
     Редактирование задачи
@@ -225,7 +225,7 @@
       </.link>
       <button
         :if={@action == :new_task_blueprint}
-        phx-click={JS.exec("data-cancel", to: "#area-modal")}
+        phx-click="close_modal"
         type="button"
         class="-m-3 flex-none p-3 opacity-80"
         aria-label={gettext("close")}

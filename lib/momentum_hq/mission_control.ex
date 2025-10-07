@@ -131,7 +131,12 @@ defmodule MomentumHq.MissionControl do
     user = Repo.get!(User, task_blueprint.user_id)
 
     # Calculate new notification datetime
-    new_notify_at = calculate_notification_datetime(task_blueprint, Date.utc_today(), user)
+    new_notify_at = MomentumHq.Time.calculate_notification_datetime(
+      task_blueprint.notify_at_hour,
+      task_blueprint.notify_at_minute,
+      Date.utc_today(),
+      user.timezone
+    )
 
     {_cnt, ids} =
       from(
@@ -149,14 +154,6 @@ defmodule MomentumHq.MissionControl do
   end
 
 
-  defp calculate_notification_datetime(task_blueprint, date, user) do
-    MomentumHq.Time.calculate_notification_datetime(
-      task_blueprint.notify_at_hour,
-      task_blueprint.notify_at_minute,
-      date,
-      user.timezone
-    )
-  end
 
   def maybe_delete_obsolete_today_tasks(task_blueprint) do
     from(

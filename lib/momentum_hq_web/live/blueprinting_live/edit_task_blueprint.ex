@@ -78,7 +78,7 @@ defmodule MomentumHqWeb.BlueprintingLive.EditTaskBlueprint do
   end
 
   def handle_event("toggle_notification", _params, socket) do
-    # Simply toggle the current state regardless of parameters
+    # Simply toggle the current state
     notification_enabled = not socket.assigns.notification_enabled
     {:noreply, assign(socket, notification_enabled: notification_enabled)}
   end

@@ -64,6 +64,7 @@ config :momentum_hq, MomentumHq.Repo, migration_primary_key: [type: :uuid]
 
 config :momentum_hq, Oban,
   engine: Oban.Engines.Basic,
+  notifier: Oban.Notifiers.PG,
   plugins: [
     {Oban.Plugins.Cron,
      crontab: [

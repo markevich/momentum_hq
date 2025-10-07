@@ -75,4 +75,5 @@ defmodule MomentumHq.Blueprinting.TaskBlueprint do
         changeset
     end
   end
+
 end

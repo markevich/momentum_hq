@@ -1,6 +1,7 @@
 defmodule MomentumHqWeb.Router do
   use MomentumHqWeb, :router
 
+  import Oban.Web.Router
   import MomentumHqWeb.UserAuth
 
   pipeline :browser do
@@ -63,5 +64,6 @@ defmodule MomentumHqWeb.Router do
     pipe_through [:browser]
 
     delete "/users/log_out", UserSessionController, :delete
+    oban_dashboard "/oban"
   end
 end

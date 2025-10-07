@@ -38,5 +38,16 @@ defmodule MomentumHq.Lifecycle.UserTaskNotificationWorker do
         reference_id: task.id
       }
     })
+
+    # Schedule deletion of the notification message after 1 hour
+    schedule_notification_deletion(task.user_id, task.target_date, task.id)
+  end
+
+  defp schedule_notification_deletion(user_id, _target_date, _task_id) do
+    # Schedule deletion of ALL task notification messages for this user after 1 hour
+    MomentumHq.Telegram.DeleteTaskNotificationsWorker.new(%{
+      "user_id" => user_id
+    }, schedule_in: 60 * 60)  # Schedule for 1 hour from now
+    |> Oban.insert()
   end
 end

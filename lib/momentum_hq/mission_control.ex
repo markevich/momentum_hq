@@ -74,6 +74,15 @@ defmodule MomentumHq.MissionControl do
     |> Repo.all()
   end
 
+  def list_task_notification_references(user_id) do
+    from(
+      reference in TelegramDayReference,
+      where: reference.user_id == ^user_id,
+      where: reference.message_type == "task_notification"
+    )
+    |> Repo.all()
+  end
+
   def list_current_momentums(user_id) do
     from(
       momentum in Momentum,
